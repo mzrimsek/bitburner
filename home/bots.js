@@ -1,9 +1,11 @@
 import { log as utilLog, padString, getFormattedTime, getShouldBuyOrUpgrade, PORT_MAPPING, getDocument } from 'utils.js';
 
+const MAX_RAM = 1048576;
 const MAX_BOTS = 25;
 const BUY = 'BUY';
 const UPGRADE = 'UPGRADE';
 
+let hasResizedForMaxed = false;
 let lastServerAction = '';
 let lastServerName = '';
 let lastServerPrice = 0;
@@ -136,13 +138,27 @@ function printBots(ns) {
         }
     }
 
-    ns.print('INFO\tCORES\tRAM\t\tUPCOST');
-    const padSize = servers.map(server => `${server.maxRam}`.length)[0];
+    const numMaxedServers = servers.filter(server => server.maxRam === MAX_RAM).length;
+    if (numMaxedServers === MAX_BOTS) {
+        if (!hasResizedForMaxed) {
+            ns.resizeTail(500, 80, ns.pid);
+            hasResizedForMaxed = true;
+        }
+        ns.print(`All ${MAX_BOTS} bots are maxed out`);
+    } else if (numMaxedServers !== 0) {
+        ns.print(`Maxed out bots: ${numMaxedServers}`);
+    }
 
-    servers.forEach(server => {
-        const costToUpgrade = ns.getPurchasedServerUpgradeCost(server.hostname, server.maxRam * 2);
-        ns.print(`${server.hostname}\t${server.cpuCores}\t${padString(server.maxRam, padSize)}GB\t\t$${ns.formatNumber(costToUpgrade)}`);
-    });
+    const unMaxedservers = servers.filter(server => server.maxRam !== MAX_RAM);
+    if (unMaxedservers.length !== 0) {
+        ns.print('INFO\tCORES\tRAM\t\tUPCOST');
+        const padSize = unMaxedservers.map(server => `${server.maxRam}`.length)[0];
+
+        unMaxedservers.forEach(server => {
+            const costToUpgrade = ns.getPurchasedServerUpgradeCost(server.hostname, server.maxRam * 2);
+            ns.print(`${server.hostname}\t${server.cpuCores}\t${padString(server.maxRam, padSize)}GB\t\t$${ns.formatNumber(costToUpgrade)}`);
+        });
+    }
 }
 
 function log(...args) {
