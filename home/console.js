@@ -1,4 +1,4 @@
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     // Acquire a reference to the terminal text field
     const terminalInput = document.getElementById("terminal-input");

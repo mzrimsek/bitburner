@@ -1,6 +1,6 @@
 import { PORT_MAPPING } from 'utils.js';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const currentData = ns.peek(PORT_MAPPING.DO_STONKS);
     if (currentData === 0 || currentData === 1) {

@@ -1,6 +1,6 @@
 import { PORT_MAPPING } from 'utils.js';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const startStopped = ns.args.includes('--stopped');
     const startWithStonks = ns.args.includes('--stonks');

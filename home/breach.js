@@ -1,4 +1,4 @@
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     if (!ns.args || ns.args.length === 0) {
         ns.tprint('Valid option required: --cybersec, --nitesec, --blackhand, --bitrunners, --cave, --stay, or --all');
@@ -69,7 +69,7 @@ function buildConnectString(serverChain) {
     }, '');
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function connectAndBackdoor(ns, serverChain) {
     const connectString = buildConnectString(serverChain);
     ns.run('console.js', 1, connectString);
@@ -78,7 +78,7 @@ async function connectAndBackdoor(ns, serverChain) {
     await ns.sleep(500);
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function goHome(ns) {
     ns.run('console.js', 1, 'home');
 }

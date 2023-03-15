@@ -10,7 +10,7 @@ let lastServerPrice = 0;
 let lastServerTime = new Date();
 let lastLogMessage = '';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const logsToDisable = [
         'sleep',
@@ -43,7 +43,7 @@ export async function main(ns) {
     }
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function buyOrUpgradeBots(ns) {
     const bots = ns.getPurchasedServers().map(server => ns.getServer(server));
     if (bots.length === 0) {
@@ -123,7 +123,7 @@ function getNextIndex(bots) {
     return indices.sort((a, b) => b - a)[0] + 1;
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function printBots(ns) {
     const bots = ns.getPurchasedServers();
     const servers = bots.map(bot => ns.getServer(bot));

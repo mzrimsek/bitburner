@@ -6,7 +6,7 @@ const hackFile = '/basic/hack.js';
 const weakenFile = '/basic/weaken.js';
 const growFile = '/basic/grow.js';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const children = getChildren(ns, hackSource);
     const serverNames = getServerNames(ns, hackSource, children).filter(serverName => !excludedServers.includes(serverName));

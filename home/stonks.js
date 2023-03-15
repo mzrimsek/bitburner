@@ -1,6 +1,6 @@
 import { getShouldDoStonks, getFormattedTime, PORT_MAPPING, getDocument } from 'utils.js';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const logsToDisable = [
         'sleep',
@@ -55,7 +55,7 @@ const MIN_EXIT_FORECAST_PERCENT = 0.05 // in case the forecast turn under this v
 const KEEP_MONEY_ON_HOME_MILLION = 1 // how many million you want to keep out from trading (like for use it for something else)
 
 // Implementation:
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function trader(ns) {
     const stock = ns.stock
 
@@ -129,7 +129,7 @@ async function trader(ns) {
     }
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function availableMoney(ns) {
     const money = ns.getServerMoneyAvailable('home') - KEEP_MONEY_ON_HOME_MILLION * 1000000
     return money
@@ -217,7 +217,7 @@ let logs = []
 let earnedMoney = 0
 
 const dateSuffix = (ns) => `${ns.nFormat(new Date().getMonth(), '00')}-${ns.nFormat(new Date().getDate(), '00')}`
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function readLogs(ns) {
     const logFile = `${LOG_FILE_PREFIX}_${dateSuffix(ns)}.txt`
     const incomeFile = `${INCOME_FILE_PREFIX}_${dateSuffix(ns)}.txt`
@@ -225,7 +225,7 @@ function readLogs(ns) {
     if (ns.fileExists(incomeFile)) earnedMoney = JSON.parse(ns.read(incomeFile)).income
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function writeLogs(ns) {
     const logFile = `${LOG_FILE_PREFIX}_${dateSuffix(ns)}.txt`
     const incomeFile = `${INCOME_FILE_PREFIX}_${dateSuffix(ns)}.txt`
@@ -233,19 +233,19 @@ async function writeLogs(ns) {
     await ns.write(incomeFile, JSON.stringify({ income: earnedMoney }), 'w')
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function logSell(ns, symObj) {
     const profit = getPossibleIncome(ns.stock, symObj.sym)
     earnedMoney += profit
     await logBuySell(ns, { ...symObj, profit }, false)
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function logBuy(ns, symObj) {
     await logBuySell(ns, symObj, true)
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 async function logBuySell(ns, symObj, isBuy) {
     const { sym, long, short, profit } = symObj
     const dateObj = new Date()
@@ -273,7 +273,7 @@ function writeToPort(ns, data, date) {
     ns.writePort(PORT_MAPPING.LOG_FEED, message);
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function printLogs(ns) {
     const onMarketValueChange = getOwnedSymbols(ns.stock)
         .map(s => getPossibleIncome(ns.stock, s.sym))

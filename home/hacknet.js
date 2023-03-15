@@ -12,7 +12,7 @@ let lastCost = 0;
 let lastTime = new Date();
 let lastLogMessage = '';
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 export async function main(ns) {
     const logsToDisable = [
         'sleep',
@@ -44,7 +44,7 @@ export async function main(ns) {
     }
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function purchaseUpgradeOrNode(ns) {
     const next = getNextUpgrade(ns);
     if (!next) {
@@ -75,7 +75,7 @@ function purchaseUpgradeOrNode(ns) {
     }
 }
 
-/** @param {NS} ns */
+/** @param {import(".").NS } ns */
 function getNextUpgrade(ns) {
     const nodeCount = ns.hacknet.numNodes();
     const nodes = [...new Array(nodeCount)].map((_, index) => {
