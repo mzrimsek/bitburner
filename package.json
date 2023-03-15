@@ -1,0 +1,20 @@
+{
+  "name": "bitburner",
+  "version": "1.0.0",
+  "description": "Some scripts I used. I stole some of them.",
+  "main": "index.js",
+  "scripts": {
+    "moneyhack": "node ./hacks/moneyhack/moneyHack.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mzrimsek/bitburner.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mzrimsek/bitburner/issues"
+  },
+  "homepage": "https://github.com/mzrimsek/bitburner#readme",
+  "type": "module"
+}
