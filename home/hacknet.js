@@ -14,33 +14,38 @@ let lastLogMessage = '';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+    await handleHacknet(ns, true);
+}
+
+/** @param {import(".").NS } ns */
+export async function handleHacknet(ns, showWindow = false, width = 500, height = 80, xWidthOffset = 835, yPos = 880) {
     const logsToDisable = [
         'sleep',
     ]
     logsToDisable.forEach(l => ns.disableLog(l))
 
-    const sleepTime = ns.args[0] || 100;
-
     ns.atExit(() => {
         ns.closeTail(ns.pid);
     });
+    
+    if (showWindow) {
+        ns.tail()
 
-    ns.tail()
+        await ns.sleep(100);    
 
-    await ns.sleep(100);    
-
-    ns.resizeTail(500, 80);
-    ns.moveTail(getDocument().body.clientWidth - 835, 880);
+        ns.resizeTail(width, height);
+        ns.moveTail(getDocument().body.clientWidth - xWidthOffset, yPos);
+    }
 
     while(true) {
         ns.clearLog();
-        printInfo(ns);
+        printHacknetInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {
             purchaseUpgradeOrNode(ns);
         }
 
-        await ns.sleep(sleepTime);
+        await ns.sleep(100);
     }
 }
 
@@ -169,7 +174,7 @@ function processUpgrade(ns, next) {
 
 /** @param {import(".").NS } ns
  */
-function printInfo(ns) {
+function printHacknetInfo(ns) {
     const numHackNetNodes = ns.hacknet.numNodes();
     let hacknetProductionRaw = 0;
     for(let i = 0; i < numHackNetNodes; i++) {
@@ -178,7 +183,7 @@ function printInfo(ns) {
     }
     const hacknetIncome = ns.formatNumber(hacknetProductionRaw, 2);
 
-    ns.print(`${numHackNetNodes} nodes producing $${hacknetIncome}/sec\n\n`);
+    ns.print(`${numHackNetNodes} hacknet nodes producing $${hacknetIncome}/sec\n\n`);
 
     if (lastAction && lastNode && lastCost) {
         const message = `[${getFormattedTime(lastTime)}] ($${ns.formatNumber(lastCost)}) ${getActionMessage(lastAction)} ${lastNode}`;

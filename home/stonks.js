@@ -2,6 +2,11 @@ import { getShouldDoStonks, getFormattedTime, PORT_MAPPING, getDocument } from '
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+    await handleStonks(ns, true);
+}
+
+/** @param {import(".").NS } ns */
+export async function handleStonks(ns, showWindow = false, width = 500, height = 570, xWidthOffset = 1345, yPos = 5) {
     const logsToDisable = [
         'sleep',
         'getServerMoneyAvailable',
@@ -28,12 +33,15 @@ export async function main(ns) {
     });
 
     readLogs(ns)
-    ns.tail()
 
-    await ns.sleep(100);
+    if (showWindow) {
+        ns.tail()
 
-    ns.resizeTail(500, 570, ns.pid);
-    ns.moveTail(getDocument().body.clientWidth - 1345, 5, ns.pid);
+        await ns.sleep(100);
+
+        ns.resizeTail(width, height);
+        ns.moveTail(getDocument().body.clientWidth - xWidthOffset, yPos);
+    }
 
     while (true) {
         ns.clearLog()

@@ -5,7 +5,6 @@ const MAX_BOTS = 25;
 const BUY = 'BUY';
 const UPGRADE = 'UPGRADE';
 
-let hasResizedForMaxed = false;
 let lastServerAction = '';
 let lastServerName = '';
 let lastServerPrice = 0;
@@ -14,34 +13,39 @@ let lastLogMessage = '';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+    await handleBots(ns, true);
+}
+
+/** @param {import(".").NS } ns */
+export async function handleBots(ns, showWindow = false, width = 500, height = 665, xWidthOffset = 835, yPos = 5) {
     const logsToDisable = [
         'sleep',
         'purchaseServer'
     ];
     logsToDisable.forEach(l => ns.disableLog(l));
 
-    const sleepAmount = ns.args[0] || 100;
-
     ns.atExit(() => {
         ns.closeTail(ns.pid);
     });
 
-    ns.tail();
+    if (showWindow) {
+        ns.tail()
 
-    await ns.sleep(100);
-    
-    ns.resizeTail(500, 665, ns.pid);
-    ns.moveTail(getDocument().body.clientWidth - 835, 5, ns.pid);
+        await ns.sleep(100);    
+
+        ns.resizeTail(width, height);
+        ns.moveTail(getDocument().body.clientWidth - xWidthOffset, yPos);
+    }
     
     while (true) {
         ns.clearLog()
-        printBots(ns);
+        printBotInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {
             buyOrUpgradeBots(ns);
         }
         
-        await ns.sleep(sleepAmount);
+        await ns.sleep(100);
     }
 }
 
@@ -126,7 +130,7 @@ function getNextIndex(bots) {
 }
 
 /** @param {import(".").NS } ns */
-function printBots(ns) {
+function printBotInfo(ns) {
     const bots = ns.getPurchasedServers();
     const servers = bots.map(bot => ns.getServer(bot));
 

@@ -8,6 +8,11 @@ const growFile = '/basic/grow.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+    await handleAttackServer(ns, true);
+}
+
+/** @param {import(".").NS } ns */
+export async function handleAttackServer(ns, showWindow = false, width = 500, height = 180, xWidthOffset = 835, yPos = 685) {
     const children = getChildren(ns, hackSource);
     const serverNames = getServerNames(ns, hackSource, children).filter(serverName => !excludedServers.includes(serverName));
 
@@ -36,14 +41,16 @@ export async function main(ns) {
         ns.closeTail(ns.pid);
     });
 
-    ns.tail()
+    if (showWindow) {
+        ns.tail()
 
-    await ns.sleep(100);    
+        await ns.sleep(100);
 
-    ns.resizeTail(500, 180);
-    ns.moveTail(getDocument().body.clientWidth - 835, 685);
+        ns.resizeTail(width, height);
+        ns.moveTail(getDocument().body.clientWidth - xWidthOffset, yPos);
+    }
 
-    while(true) {
+    while (true) {
         ns.clearLog()
         
         await openServers(ns, serverNames);
