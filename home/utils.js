@@ -16,7 +16,8 @@ export const STARTUP_SCRIPTS = [
 export const PORT_MAPPING = {
     'DO_BUY': 1,
     'DO_STONKS': 2,
-    'LOG_FEED': 100
+    'HAS_MAX_BOTS': 21,
+    'LOG_FEED': 100,
 };
 
 export function padString(str, targetLength, padStr = ' ') {

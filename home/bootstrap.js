@@ -20,6 +20,8 @@ export async function main(ns) {
         initPort(ns, PORT_MAPPING.DO_STONKS, 0);
     }
 
+    initPort(ns, PORT_MAPPING.HAS_MAX_BOTS, 0);
+
     ns.run('hacknet.js', 1, 100);
     ns.run('bots.js', 100);
     ns.run('attackServer.js', 1);

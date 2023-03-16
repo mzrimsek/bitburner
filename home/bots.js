@@ -140,10 +140,7 @@ function printBots(ns) {
 
     const numMaxedServers = servers.filter(server => server.maxRam === MAX_RAM).length;
     if (numMaxedServers === MAX_BOTS) {
-        if (!hasResizedForMaxed) {
-            ns.resizeTail(500, 80, ns.pid);
-            hasResizedForMaxed = true;
-        }
+        ns.writePort(PORT_MAPPING.HAS_MAX_BOTS, 1);
         ns.print(`All ${MAX_BOTS} bots are maxed out`);
     } else if (numMaxedServers !== 0) {
         ns.print(`Maxed out bots: ${numMaxedServers}`);
