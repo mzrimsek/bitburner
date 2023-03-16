@@ -38,7 +38,7 @@ export async function handleBots(ns, showWindow = false, width = 500, height = 6
     }
     
     while (true) {
-        ns.clearLog()
+        if (showWindow) ns.clearLog();
         printBotInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {

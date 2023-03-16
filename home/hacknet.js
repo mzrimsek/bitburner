@@ -38,7 +38,7 @@ export async function handleHacknet(ns, showWindow = false, width = 500, height 
     }
 
     while(true) {
-        ns.clearLog();
+        if (showWindow) ns.clearLog();
         printHacknetInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {

@@ -51,7 +51,7 @@ export async function handleAttackServer(ns, showWindow = false, width = 500, he
     }
 
     while (true) {
-        ns.clearLog()
+        if (showWindow) ns.clearLog();
         
         await openServers(ns, serverNames);
         const hackableServerNames = await getHackableServerNames(ns, serverNames);

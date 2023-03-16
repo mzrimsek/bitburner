@@ -44,7 +44,7 @@ export async function handleStonks(ns, showWindow = false, width = 500, height =
     }
 
     while (true) {
-        ns.clearLog()
+        if (showWindow) ns.clearLog();
         printLogs(ns)
         await trader(ns)
         for (let i = 0; i < 20; i++) await ns.sleep(99)
