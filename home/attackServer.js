@@ -54,7 +54,7 @@ export async function main(ns) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string[]} hackableServerNames
  */
 async function coordinateAttack(ns, hackableServerNames) {
@@ -119,7 +119,7 @@ async function coordinateAttack(ns, hackableServerNames) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string[]} hackableServernames
  */
 function getTargetServer(ns, hackableServernames) {
@@ -141,7 +141,7 @@ function getTargetServer(ns, hackableServernames) {
     return target;
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string[]} serverNames
  */
 async function getHackableServerNames(ns, allServerNames) {
@@ -155,7 +155,7 @@ async function getHackableServerNames(ns, allServerNames) {
     return [...new Set(allNames)];
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  */
 async function getOwnedServerNames(ns) {
     const local = ns.scan(hackSource);
@@ -163,7 +163,7 @@ async function getOwnedServerNames(ns) {
     return servers.filter(server => server.purchasedByPlayer).map(server => server.hostname);
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string[]} serverNames
  */
 async function openServers(ns, serverNames) {
@@ -172,7 +172,7 @@ async function openServers(ns, serverNames) {
     servers.forEach(async (server) => await openServer(ns, server));
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {Server} server
  */
 async function openServer(ns, server) {
@@ -219,7 +219,7 @@ async function openServer(ns, server) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} host
  *  @param {string} parent
  *  @param {string[]} list
@@ -234,7 +234,7 @@ function getServerNames(ns, host, children, list = []) {
     return list;
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} host
  *  @param {string} parent
  */
@@ -246,28 +246,28 @@ function getChildren(ns, host, parent) {
     })
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string[]} serverNames
  */
 async function getServers(ns, serverNames) {
     return serverNames.map(serverName => ns.getServer(serverName));
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} serverName
  */
 function getFreeRam(ns, serverName) {
     return serverName === hackSource ? getHackSourceFreeRam(ns) : getServerFreeRam(ns, serverName);
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} serverName
  */
 function getServerFreeRam(ns, serverName) {
     return ns.getServerMaxRam(serverName) - ns.getServerUsedRam(serverName);
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  */
 function getHackSourceFreeRam(ns) {
     const freeRam = getServerFreeRam(ns, hackSource);
@@ -278,7 +278,7 @@ function getHackSourceFreeRam(ns) {
     return freeRam - specialRam;
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} serverName
  */
 function killScripts(ns, serverName) {
@@ -293,7 +293,7 @@ function killScripts(ns, serverName) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} host
  *  @param {number} securityThresh
  *  @param {number} numTimesToHack

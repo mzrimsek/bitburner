@@ -167,7 +167,7 @@ function processUpgrade(ns, next) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  */
 function printInfo(ns) {
     const numHackNetNodes = ns.hacknet.numNodes();

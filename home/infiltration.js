@@ -409,7 +409,7 @@ const infiltrationGames = [
 	},
 ];
 
-/** @param {NS} ns **/
+/** @param {import(".").NS } ns **/
 export async function main(ns) {
 	const args = ns.flags([
 		["start", false],

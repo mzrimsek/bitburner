@@ -14,7 +14,7 @@ export async function main(ns) {
     
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} host
  *  @param {string} parent
  *  @param {string[]} list
@@ -34,7 +34,7 @@ function getServerNames(ns, host, children) {
     };
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {string} host
  *  @param {string} parent
  */

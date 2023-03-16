@@ -65,7 +65,7 @@ function buyOrUpgradeBots(ns) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {Server[]} bots
  */
 function buyBot(ns, bots) {
@@ -87,7 +87,7 @@ function buyBot(ns, bots) {
     }
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {Server[]} bots
  */
 function getBotToUpgrade(ns, bots) {
@@ -110,7 +110,7 @@ function getBotToUpgrade(ns, bots) {
     return mapped.sort((bot1, bot2) => bot1.costToUpgrade - bot2.costToUpgrade)[0];
 }
 
-/** @param {NS} ns
+/** @param {import(".").NS } ns
  *  @param {Server[]} bots
  */
 function getNextIndex(bots) {
