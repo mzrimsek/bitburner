@@ -1,4 +1,4 @@
-import { log as utilLog, getFormattedTime, getShouldBuyOrUpgrade, PORT_MAPPING, getDocument } from 'utils.js';
+import { getFormattedTime, getShouldBuyOrUpgrade, PORT_MAPPING, getDocument } from 'utils.js';
 import { HacknetService } from 'services/hacknet.js';
 
 
@@ -86,8 +86,4 @@ function getActionMessage(lastAction) {
             return lastAction;
         }
     }
-}
-
-function log(...args) {
-    utilLog('hacknet', ...args);
 }

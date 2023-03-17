@@ -1,6 +1,11 @@
 import { log as utilLog } from 'utils.js';
 
 export class BotService {
+
+  MAX_BOTS = 25;
+  BUY = 'BUY';
+  UPGRADE = 'UPGRADE';
+
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -15,11 +20,11 @@ export class BotService {
       if (botToUpgrade) {
         this._log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
         this.ns.upgradePurchasedServer(botToUpgrade.hostname, botToUpgrade.targetRam);
-        lastServerAction = UPGRADE;
+        lastServerAction = this.UPGRADE;
         lastServerName = botToUpgrade.hostname;
         lastServerPrice = botToUpgrade.costToUpgrade;
         lastServerTime = new Date();
-      } else if (bots.length < MAX_BOTS) {
+      } else if (bots.length < this.MAX_BOTS) {
         this._buyBot(bots);
       }
     }
@@ -38,7 +43,7 @@ export class BotService {
     if (money >= cost) {
       this._log(`buying ${nextBotName}`);
       this.ns.purchaseServer(nextBotName, 2);
-      lastServerAction = BUY;
+      lastServerAction = this.BUY;
       lastServerName = nextBotName;
       lastServerPrice = cost;
       lastServerTime = new Date();
