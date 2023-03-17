@@ -1,6 +1,6 @@
 import { log as utilLog } from 'utils.js';
 
-export default class BotService {
+export class BotService {
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;

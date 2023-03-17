@@ -1,6 +1,6 @@
 import { log as utilLog } from 'utils.js';
 
-export default class HacknetService {
+export class HacknetService {
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
