@@ -1,6 +1,13 @@
 import { log as utilLog } from 'utils.js';
 
+// TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
+
 export class HacknetService {
+
+  MAX_LEVEL = 200;
+  MAX_RAM = 64;
+  MAX_CORES = 16;
+
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -64,7 +71,7 @@ export class HacknetService {
 
     const currentMoney = this.ns.getPlayer().money;
     const potentialUpgrades = nodes.reduce((items, node) => {
-      if (node.level.current < maxLevel) {
+      if (node.level.current < this.MAX_LEVEL) {
         if (node.level.upgradeCost <= currentMoney) {
           items = [...items, {
             upgrade: 'level',
@@ -75,7 +82,7 @@ export class HacknetService {
         }
       }
 
-      if (node.ram.current < maxRam) {
+      if (node.ram.current < this.MAX_RAM) {
         if (node.ram.upgradeCost <= currentMoney) {
           items = [...items, {
             upgrade: 'ram',
@@ -86,7 +93,7 @@ export class HacknetService {
         }
       }
 
-      if (node.cores.current < maxCores) {
+      if (node.cores.current < this.MAX_CORES) {
         if (node.cores.upgradeCost <= currentMoney) {
           items = [...items, {
             upgrade: 'cores',
