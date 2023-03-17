@@ -13,7 +13,7 @@ export class HacknetService {
     this.ns = ns;
   }
 
-  purchaseUpgradeOrNode(onUpgradeOrPurchase) {
+  purchaseUpgradeOrNode(eventHandler) {
     const next = this._getNextUpgrade();
     if (!next) {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
@@ -29,7 +29,7 @@ export class HacknetService {
           cost: nodeCost,
           time: new Date()
         };
-        onUpgradeOrPurchase(currentAction);
+        eventHandler(currentAction);
       }
     } else {
       this._log(`(${next.name}) Upgrading ${next.upgrade}`);
@@ -41,7 +41,7 @@ export class HacknetService {
           cost: next.cost,
           time: new Date()
         };
-        onUpgradeOrPurchase(currentAction);
+        eventHandler(currentAction);
         this._log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
       } else {
         this._log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
