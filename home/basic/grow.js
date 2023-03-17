@@ -1,7 +1,7 @@
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     const target = ns.args[0];
-    while(true){
+    while (true) {
         await ns.grow(target);
     }
 }
