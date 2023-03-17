@@ -13,7 +13,7 @@ export class HacknetService {
     this.ns = ns;
   }
 
-  purchaseUpgradeOrNode() {
+  purchaseUpgradeOrNode(onUpgradeOrPurchase) {
     const next = this._getNextUpgrade();
     if (!next) {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
@@ -23,19 +23,25 @@ export class HacknetService {
         this._log(`Buying new node for ${nodeCost}`);
         const newIndex = this.ns.hacknet.purchaseNode();
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
-        lastAction = 'buy';
-        lastNode = newStats.name;
-        lastCost = nodeCost;
-        lastTime = new Date();
+        const currentAction = {
+          action: 'buy',
+          name: newStats.name,
+          cost: nodeCost,
+          time: new Date()
+        };
+        onUpgradeOrPurchase(currentAction);
       }
     } else {
       this._log(`(${next.name}) Upgrading ${next.upgrade}`);
       const success = this._processUpgrade(next);
       if (success) {
-        lastAction = next.upgrade;
-        lastNode = next.name;
-        lastCost = next.cost;
-        lastTime = new Date();
+        const currentAction = {
+          action: next.upgrade,
+          name: next.name,
+          cost: next.cost,
+          time: new Date()
+        };
+        onUpgradeOrPurchase(currentAction);
         this._log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
       } else {
         this._log(`(${next.name}) Failed to upgrade ${next.upgrade}`);

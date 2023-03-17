@@ -43,7 +43,12 @@ export async function handleBots(ns, showWindow = false, width = 500, height = 6
         printBotInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {
-            botService.buyOrUpgradeBots();
+            botService.buyOrUpgradeBots((currentServerInfo) => {
+                lastServerAction = currentServerInfo.action;
+                lastServerName = currentServerInfo.name;
+                lastServerPrice = currentServerInfo.price;
+                lastServerTime = currentServerInfo.time;
+            });
         }
 
         await ns.sleep(100);

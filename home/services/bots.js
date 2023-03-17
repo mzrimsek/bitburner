@@ -11,21 +11,24 @@ export class BotService {
     this.ns = ns;
   }
 
-  buyOrUpgradeBots() {
+  buyOrUpgradeBots(onBuyOrUpgrade) {
     const bots = this.ns.getPurchasedServers().map(server => this.ns.getServer(server));
     if (bots.length === 0) {
-      this._buyBot(bots);
+      this._buyBot(bots, onBuyOrUpgrade);
     } else {
       const botToUpgrade = this._getBotToUpgrade(bots);
       if (botToUpgrade) {
         this._log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
         this.ns.upgradePurchasedServer(botToUpgrade.hostname, botToUpgrade.targetRam);
-        lastServerAction = this.UPGRADE;
-        lastServerName = botToUpgrade.hostname;
-        lastServerPrice = botToUpgrade.costToUpgrade;
-        lastServerTime = new Date();
+        const currentServerAction = {
+          action: this.UPGRADE,
+          name: botToUpgrade.hostname,
+          price: botToUpgrade.costToUpgrade,
+          time: new Date()
+        };
+        onBuyOrUpgrade(currentServerAction);
       } else if (bots.length < this.MAX_BOTS) {
-        this._buyBot(bots);
+        this._buyBot(bots, onBuyOrUpgrade);
       }
     }
   }
@@ -33,7 +36,7 @@ export class BotService {
   /**
    *  @param {import("..").Server[]} bots
    */
-  _buyBot(bots) {
+  _buyBot(bots, onBuyOrUpgrade) {
     const nextIndex = this._getNextIndex(bots);
     const nextBotName = `bot-${nextIndex}`;
 
@@ -43,10 +46,13 @@ export class BotService {
     if (money >= cost) {
       this._log(`buying ${nextBotName}`);
       this.ns.purchaseServer(nextBotName, 2);
-      lastServerAction = this.BUY;
-      lastServerName = nextBotName;
-      lastServerPrice = cost;
-      lastServerTime = new Date();
+      const currentServerAction = {
+        action: this.BUY,
+        name: nextBotName,
+        price: cost,
+        time: new Date()
+      };
+      onBuyOrUpgrade(currentServerAction);
     } else {
       this._log('cannot buy bot at this time');
     }

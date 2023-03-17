@@ -39,7 +39,12 @@ export async function handleHacknet(ns, showWindow = false, width = 500, height 
         printHacknetInfo(ns);
 
         if (getShouldBuyOrUpgrade(ns)) {
-            hacknetService.purchaseUpgradeOrNode();
+            hacknetService.purchaseUpgradeOrNode((currentAction) => {
+                lastAction = currentAction.action;
+                lastNode = currentAction.name;
+                lastCost = currentAction.cost;
+                lastTime = currentAction.time;
+            });
         }
 
         await ns.sleep(100);
