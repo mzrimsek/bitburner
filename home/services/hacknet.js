@@ -1,3 +1,5 @@
+import { log as utilLog } from 'utils.js';
+
 export default class HacknetService {
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -11,7 +13,7 @@ export default class HacknetService {
       const currentMoney = this.ns.getPlayer().money;
 
       if (nodeCost <= currentMoney) {
-        log(`Buying new node for ${nodeCost}`);
+        this._log(`Buying new node for ${nodeCost}`);
         const newIndex = this.ns.hacknet.purchaseNode();
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
         lastAction = 'buy';
@@ -20,16 +22,16 @@ export default class HacknetService {
         lastTime = new Date();
       }
     } else {
-      log(`(${next.name}) Upgrading ${next.upgrade}`);
+      this._log(`(${next.name}) Upgrading ${next.upgrade}`);
       const success = this._processUpgrade(next);
       if (success) {
         lastAction = next.upgrade;
         lastNode = next.name;
         lastCost = next.cost;
         lastTime = new Date();
-        log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
+        this._log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
       } else {
-        log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
+        this._log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
       }
     }
   }
@@ -102,7 +104,7 @@ export default class HacknetService {
       return null;
     }
 
-    log(`Found ${potentialUpgrades.length} potential upgrades`);
+    this._log(`Found ${potentialUpgrades.length} potential upgrades`);
     const sortedPotentialUpgrades = potentialUpgrades.sort((a, b) => a.cost - b.cost);
 
     return sortedPotentialUpgrades[0];
@@ -123,5 +125,9 @@ export default class HacknetService {
         return false;
       }
     }
+  }
+
+  _log(...args) {
+    utilLog('hacknet', ...args);
   }
 }

@@ -1,3 +1,5 @@
+import { log as utilLog } from 'utils.js';
+
 export default class BotService {
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -11,7 +13,7 @@ export default class BotService {
     } else {
       const botToUpgrade = this._getBotToUpgrade(bots);
       if (botToUpgrade) {
-        log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
+        this._log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
         this.ns.upgradePurchasedServer(botToUpgrade.hostname, botToUpgrade.targetRam);
         lastServerAction = UPGRADE;
         lastServerName = botToUpgrade.hostname;
@@ -34,14 +36,14 @@ export default class BotService {
     const cost = this.ns.getPurchasedServerCost(2);
 
     if (money >= cost) {
-      log(`buying ${nextBotName}`);
+      this._log(`buying ${nextBotName}`);
       this.ns.purchaseServer(nextBotName, 2);
       lastServerAction = BUY;
       lastServerName = nextBotName;
       lastServerPrice = cost;
       lastServerTime = new Date();
     } else {
-      log('cannot buy bot at this time');
+      this._log('cannot buy bot at this time');
     }
   }
 
@@ -81,5 +83,9 @@ export default class BotService {
       return parseInt(parts[1]);
     });
     return indices.sort((a, b) => b - a)[0] + 1;
+  }
+
+  _log(...args) {
+    utilLog('bots', ...args);
   }
 }
