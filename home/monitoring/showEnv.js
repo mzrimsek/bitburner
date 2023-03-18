@@ -15,8 +15,8 @@ export async function main(ns) {
 
     await ns.sleep(100);
 
-    ns.resizeTail(350, 250, ns.pid);
-    ns.moveTail(getDocument().body.clientWidth - 355, 635, ns.pid);
+    ns.resizeTail(350, 200, ns.pid);
+    ns.moveTail(getDocument().body.clientWidth - 360, 700, ns.pid);
 
     while (true) {
         ns.clearLog();

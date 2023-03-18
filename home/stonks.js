@@ -2,7 +2,7 @@ import { getShouldDoStonks, getFormattedTime, PORT_MAPPING, getDocument } from '
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-    await handleStonks(ns, true);
+    await handleStonks(ns, true, 500, 570, 775, 5);
 }
 
 /** @param {import(".").NS } ns */
@@ -271,7 +271,7 @@ async function logBuySell(ns, symObj, isBuy) {
 
 function writeToPort(ns, data, date) {
     const { sym, long, short, profit, isBuy } = data;
-    
+
     const amount = short > 0 ? `(SHORT $${ns.formatNumber(short)})` : `(LONG $${ns.formatNumber(long)})`
     const operation = isBuy ? 'BUY' : 'SELL';
     const symStr = sym.length == 3 ? sym + ' ' : sym;
