@@ -55,7 +55,9 @@ export class AttackService {
       const currentAction = {
         action: 'weaken',
         name: target,
-        cost: hackableServerNames.length
+        attackers: hackableServerNames.length,
+        threshhold: securityThreshhold,
+        amount: numTimesToHack
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(numTimesToHack * this.ns.getWeakenTime(target) + 300);
@@ -76,7 +78,9 @@ export class AttackService {
       const currentAction = {
         action: 'grow',
         name: target,
-        cost: hackableServerNames.length
+        attackers: hackableServerNames.length,
+        threshhold: securityThreshhold,
+        amount: numTimesToHack
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(numTimesToHack * this.ns.getGrowTime(target) + 300);
@@ -97,7 +101,9 @@ export class AttackService {
       const currentAction = {
         action: 'hack',
         name: target,
-        cost: hackableServerNames.length
+        attackers: hackableServerNames.length,
+        threshhold: securityThreshhold,
+        amount: numTimesToHack
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(numTimesToHack * this.ns.getHackTime(target) + 300);

@@ -7996,10 +7996,23 @@ interface AutocompleteData {
  * Handler function parameter interface
  * @public
  */
-interface ScriptEvent {
+interface ScriptPurchaseEvent {
   action: string;
   name: string;
   cost?: number;
+  time?: Date; // undefined means now
+}
+
+/**
+ * Handler function parameter interface
+ * @public
+ */
+interface ScriptAttackEvent {
+  action: string;
+  name: string;
+  attackers: number;
+  threshold: number;
+  amount: number;
   time?: Date; // undefined means now
 }
 
@@ -8016,4 +8029,4 @@ interface ScriptEvent {
  * }
  * ```
  */
-type ScriptHandler = (event: ScriptEvent, ...args: any[]) => any;
+type ScriptHandler = (event: ScriptPurchaseEvent | ScriptAttackEvent, ...args: any[]) => any;
