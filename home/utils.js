@@ -78,3 +78,30 @@ export function getCycles(rawCycles) {
     }
     return 0;
 }
+
+let lastLogMessage = "";
+
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptEvent } scriptEvent */
+export function logPurchase(ns, scriptEvent) {
+    const time = scriptEvent?.time || new Date();
+    const cost = scriptEvent?.cost || 0;
+    const message = `[${getFormattedTime(time)}] ($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.name}`;
+    if (message !== lastLogMessage) {
+        ns.writePort(PORT_MAPPING.LOG_FEED, message);
+        lastLogMessage = message;
+    }
+}
+
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptAttackEvent } scriptEvent */
+export function logAttack(ns, scriptEvent) {
+    const time = scriptEvent?.time || new Date();
+    const message = `[${getFormattedTime(time)}] ${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers}`;
+    if (message !== lastLogMessage) {
+        ns.writePort(PORT_MAPPING.LOG_FEED, message);
+        lastLogMessage = message;
+    }
+}

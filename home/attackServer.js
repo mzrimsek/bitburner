@@ -1,4 +1,4 @@
-import { getFormattedTime, getDocument } from 'utils.js';
+import { getFormattedTime, getDocument, logAttack } from 'utils.js';
 import { AttackService } from 'services/attack.js';
 
 /** @param {import(".").NS } ns */
@@ -50,6 +50,7 @@ export async function handleAttackServer(ns, showWindow = false, width = 500, he
 
         await attackService.initiateAttack(scriptEvent => {
             printServerDetails(ns, scriptEvent.name, scriptEvent.threshold, scriptEvent.amount, scriptEvent.action, scriptEvent.cost);
+            logAttack(ns, scriptEvent);
         });
     }
 }
