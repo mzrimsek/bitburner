@@ -3,7 +3,8 @@ import { AttackService } from 'services/attack.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-    await handleAttackServer(ns, true);
+    const openWindow = !ns.args.includes('--no-open');
+    await handleAttackServer(ns, openWindow);
 }
 
 /** @param {import(".").NS } ns */
