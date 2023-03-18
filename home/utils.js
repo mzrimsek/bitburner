@@ -18,7 +18,7 @@ export const PORT_MAPPING = {
     'DO_BUY': 1,
     'DO_STONKS': 2,
     'DO_GANG': 3,
-    'HAS_MAX_BOTS': 21,
+    'HAS_ALL_MAXED_BOTS': 21,
     'LOG_FEED': 100,
 };
 
@@ -39,6 +39,18 @@ export function getFormattedTime(date) {
     const secs = date.getSeconds();
 
     return `${padTimePart(hours)}:${padTimePart(mins)}:${padTimePart(secs)}`;
+}
+
+/** @param {number} baseTimeS
+ */
+export function getFormattedDuration(baseTimeS) {
+    if (baseTimeS >= 60) { // 
+        const mins = Math.floor(baseTimeS / 60);
+        const secs = baseTimeS - (mins * 60);
+        return `${mins}min ${secs}s`;
+    }
+
+    return `${baseTimeS}s`;
 }
 
 /** @param {number} part
@@ -99,7 +111,7 @@ export function logPurchase(ns, scriptEvent) {
  * @param {import(".").ScriptAttackEvent } scriptEvent */
 export function logAttack(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
-    const message = `[${getFormattedTime(time)}] ${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers}`;
+    const message = `[${getFormattedTime(time)}] ${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)})}`;
     if (message !== lastLogMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
         lastLogMessage = message;

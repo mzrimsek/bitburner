@@ -1,4 +1,4 @@
-import { getFormattedTime, getDocument, logAttack } from 'utils.js';
+import { getFormattedTime, getDocument, logAttack, getFormattedDuration } from 'utils.js';
 import { AttackService } from 'services/attack.js';
 
 /** @param {import(".").NS } ns */
@@ -102,16 +102,4 @@ async function printServerDetails(ns, host, securityThresh, numTimesToHack, hack
 
     ns.print(`Next action at ${getFormattedTime(nextExcutionDate)} after ${getFormattedDuration(estimatedTimeS)}`);
     return;
-}
-
-/** @param {number} baseTimeS
- */
-function getFormattedDuration(baseTimeS) {
-    if (baseTimeS >= 60) { // 
-        const mins = Math.floor(baseTimeS / 60);
-        const secs = baseTimeS - (mins * 60);
-        return `${mins}min ${secs}s`;
-    }
-
-    return `${baseTimeS}s`;
 }

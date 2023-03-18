@@ -46,7 +46,7 @@ export async function handleBots(ns, showWindow = false, width = 500, height = 6
             botService.buyOrUpgradeBots((currentServerInfo) => {
                 lastServerAction = currentServerInfo.action;
                 lastServerName = currentServerInfo.name;
-                lastServerPrice = currentServerInfo.price;
+                lastServerPrice = currentServerInfo.cost;
                 lastServerTime = currentServerInfo.time || new Date();
             });
         }
@@ -70,7 +70,7 @@ function printBotInfo(ns) {
 
     const numMaxedServers = servers.filter(server => server.maxRam === MAX_RAM).length;
     if (numMaxedServers === MAX_BOTS) {
-        ns.writePort(PORT_MAPPING.HAS_MAX_BOTS, 1);
+        ns.writePort(PORT_MAPPING.HAS_ALL_MAXED_BOTS, 1);
         ns.print(`All ${MAX_BOTS} bots are maxed out`);
     } else if (numMaxedServers !== 0) {
         ns.print(`Maxed out bots: ${numMaxedServers}`);

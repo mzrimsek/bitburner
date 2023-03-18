@@ -24,7 +24,7 @@ export class BotService {
         const currentAction = {
           action: this.UPGRADE,
           name: botToUpgrade.hostname,
-          price: botToUpgrade.costToUpgrade
+          cost: botToUpgrade.costToUpgrade
         };
         eventHandler && eventHandler(currentAction);
       } else if (bots.length < this.MAX_BOTS) {
@@ -50,7 +50,7 @@ export class BotService {
       const currentAction = {
         action: this.BUY,
         name: nextBotName,
-        price: cost
+        cost: cost
       };
       eventHandler && eventHandler(currentAction);
     } else {

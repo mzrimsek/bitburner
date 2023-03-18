@@ -20,7 +20,7 @@ export async function main(ns) {
         initPort(ns, PORT_MAPPING.DO_STONKS, 0);
     }
 
-    initPort(ns, PORT_MAPPING.HAS_MAX_BOTS, 0);
+    initPort(ns, PORT_MAPPING.HAS_ALL_MAXED_BOTS, 0);
     initPort(ns, PORT_MAPPING.DO_GANG, 0);
 
     ns.run('dashboard.js', 1);

@@ -52,15 +52,17 @@ export class AttackService {
           this.ns.exec(this.weakenFile, serverName, numThreads, target);
         }
       }
+      const duration = numTimesToHack * this.ns.getWeakenTime(target) + 300;
       const currentAction = {
         action: 'weaken',
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
-        amount: numTimesToHack
+        amount: numTimesToHack,
+        duration
       };
       eventHandler && eventHandler(currentAction);
-      await this.ns.sleep(numTimesToHack * this.ns.getWeakenTime(target) + 300);
+      await this.ns.sleep(duration);
     } else if (availableMoney < moneyThreshhold) {
       this._log(`${target} growing`);
       for (const serverName of hackableServerNames) {
@@ -75,15 +77,17 @@ export class AttackService {
           this.ns.exec(this.growFile, serverName, numThreads, target);
         }
       }
+      const duration = numTimesToHack * this.ns.getGrowTime(target) + 300;
       const currentAction = {
         action: 'grow',
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
-        amount: numTimesToHack
+        amount: numTimesToHack,
+        duration
       };
       eventHandler && eventHandler(currentAction);
-      await this.ns.sleep(numTimesToHack * this.ns.getGrowTime(target) + 300);
+      await this.ns.sleep(duration);
     } else {
       this._log(`${target} hacking`);
       for (const serverName of hackableServerNames) {
@@ -98,15 +102,17 @@ export class AttackService {
           this.ns.exec(this.hackFile, serverName, numThreads, target);
         }
       }
+      const duration = numTimesToHack * this.ns.getHackTime(target) + 300;
       const currentAction = {
         action: 'hack',
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
-        amount: numTimesToHack
+        amount: numTimesToHack,
+        duration
       };
       eventHandler && eventHandler(currentAction);
-      await this.ns.sleep(numTimesToHack * this.ns.getHackTime(target) + 300);
+      await this.ns.sleep(duration);
     }
   }
 

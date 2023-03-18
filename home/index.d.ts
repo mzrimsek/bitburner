@@ -7993,27 +7993,32 @@ interface AutocompleteData {
 /** MY TYPES */
 
 /**
- * Handler function parameter interface
+ * Handler function base parameter interface
  * @public
  */
-interface ScriptPurchaseEvent {
+interface ScriptEvent {
   action: string;
   name: string;
-  cost?: number;
   time?: Date; // undefined means now
 }
 
 /**
- * Handler function parameter interface
+ * Handler function parameter purchase event interface
  * @public
  */
-interface ScriptAttackEvent {
-  action: string;
-  name: string;
+interface ScriptPurchaseEvent extends ScriptEvent {
+  cost?: number;
+}
+
+/**
+ * Handler function parameter attack event interface
+ * @public
+ */
+interface ScriptAttackEvent extends ScriptEvent {
   attackers: number;
   threshold: number;
   amount: number;
-  time?: Date; // undefined means now
+  duration: number;
 }
 
 /**
