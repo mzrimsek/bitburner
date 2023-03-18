@@ -14,10 +14,10 @@ export async function main(ns) {
     ns.tail()
 
     await ns.sleep(100);
-    
-    ns.resizeTail(300, 200, ns.pid);
-    ns.moveTail(getDocument().body.clientWidth - 315, 635, ns.pid);
-    
+
+    ns.resizeTail(350, 250, ns.pid);
+    ns.moveTail(getDocument().body.clientWidth - 355, 635, ns.pid);
+
     while (true) {
         ns.clearLog();
 
@@ -35,7 +35,7 @@ function printPort(ns, portNum, name) {
 }
 
 function printPorts(ns) {
-    const length = Object.keys(PORT_MAPPING).map(key => key.length).sort((a,b) => b-a)[0];
+    const length = Object.keys(PORT_MAPPING).map(key => key.length).sort((a, b) => b - a)[0];
     Object.keys(PORT_MAPPING).forEach(name => {
         const envName = padString(name, length);
         printPort(ns, PORT_MAPPING[name], envName);
