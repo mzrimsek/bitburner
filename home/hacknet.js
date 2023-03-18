@@ -1,8 +1,9 @@
-import { getFormattedTime, getShouldBuyOrUpgrade, PORT_MAPPING, getDocument } from 'utils.js';
+import { getFormattedTime, getShouldBuyOrUpgrade, PORT_MAPPING, getDocument, HACKNET_UPGRADE_TYPES } from 'utils.js';
 import { HacknetService } from 'services/hacknet.js';
 
 
 let lastAction = '';
+let lastType = '';
 let lastNode = '';
 let lastCost = 0;
 let lastTime = new Date();
@@ -36,11 +37,12 @@ export async function handleHacknet(ns, showWindow = false, width = 500, height 
     const hacknetService = new HacknetService(ns);
     while (true) {
         if (showWindow) ns.clearLog();
-        printHacknetInfo(ns);
+        printHacknetInfo(ns, hacknetService);
 
         if (getShouldBuyOrUpgrade(ns)) {
             hacknetService.purchaseUpgradeOrNode((currentAction) => {
                 lastAction = currentAction.action;
+                lastType = currentAction.type;
                 lastNode = currentAction.name;
                 lastCost = currentAction.cost;
                 lastTime = currentAction.time || new Date();
@@ -53,14 +55,8 @@ export async function handleHacknet(ns, showWindow = false, width = 500, height 
 
 /** @param {import(".").NS } ns
  */
-function printHacknetInfo(ns) {
-    const numHackNetNodes = ns.hacknet.numNodes();
-    let hacknetProductionRaw = 0;
-    for (let i = 0; i < numHackNetNodes; i++) {
-        const node = ns.hacknet.getNodeStats(i);
-        hacknetProductionRaw += node.production;
-    }
-    const hacknetIncome = ns.formatNumber(hacknetProductionRaw, 2);
+function printHacknetInfo(ns, hacknetService) {
+    const hacknetIncome = hacknetService.getHacknetIncome();
 
     ns.print(`${numHackNetNodes} hacknet nodes producing $${hacknetIncome}/sec\n\n`);
 
@@ -74,21 +70,21 @@ function printHacknetInfo(ns) {
 }
 
 function getActionMessage(lastAction) {
-    switch (lastAction) {
-        case 'buy': {
+    switch (lastType) {
+        case HACKNET_UPGRADE_TYPES.BUY: {
             return 'BUY';
         }
-        case 'level': {
+        case HACKNET_UPGRADE_TYPES.LEVEL: {
             return 'LVL UP';
         }
-        case 'ram': {
+        case HACKNET_UPGRADE_TYPES.RAM: {
             return 'RAM UP';
         }
-        case 'cores': {
+        case HACKNET_UPGRADE_TYPES.CORES: {
             return 'CORE UP';
         }
         default: {
-            return lastAction;
+            return lastType;
         }
     }
 }

@@ -1,4 +1,6 @@
 /** @param {import("..").NS } ns **/
+import { HacknetService } from 'services/hacknet.js';
+
 export async function main(ns) {
     /*
         Original script by: u/I_hate_you_wasTaken, (https://www.reddit.com/r/Bitburner/comments/10urhbn/custom_overview_stats_but_better/)
@@ -92,6 +94,8 @@ export async function main(ns) {
             var scriptIncome = ns.formatNumber(cumulative, 2); // $/sec
             var scriptXP = ns.formatNumber(ns.getTotalScriptExpGain(), 2); // xp/sec
 
+            const hacknetIncome = new HacknetService(ns).getHacknetIncome();
+
             // End paramaters, begin CSS: 
 
             removeByClassName('.HUD_el');
@@ -145,6 +149,12 @@ export async function main(ns) {
             colorByClassName(".HUD_ScrExp_H", theme['hack'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_ScrExp HUD_el"><br>${scriptXP + ' XP/sec'}</element>`)
             colorByClassName(".HUD_ScrExp", theme['hack'])
+
+            // hacknetIncome
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>HNtInc &nbsp;&nbsp;&nbsp;</element>`)
+            colorByClassName(".HUD_HNtInc_H", theme['money'])
+            hook1.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc HUD_el"><br>${"$" + hacknetIncome + '/sec'}</element>`)
+            colorByClassName(".HUD_HNtInc", theme['money'])
 
             // playerKarma
             hook0.insertAdjacentHTML('beforeend', `<element class="HUD_Karma_H HUD_el" title="Your karma."><br>Karma &nbsp;&nbsp;&nbsp;</element>`)

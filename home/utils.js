@@ -34,7 +34,8 @@ export const ACTIONS = {
 export const HACKNET_UPGRADE_TYPES = {
     LEVEL: 'level',
     RAM: 'ram',
-    CORES: 'cores'
+    CORES: 'cores',
+    BUY: 'buy'
 };
 
 export function padString(str, targetLength, padStr = ' ') {

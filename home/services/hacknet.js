@@ -26,6 +26,7 @@ export class HacknetService {
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
         const currentAction = {
           action: ACTIONS.BUY,
+          type: HACKNET_UPGRADE_TYPES.BUY,
           name: newStats.name,
           cost: nodeCost
         };
@@ -47,6 +48,16 @@ export class HacknetService {
         this._log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
       }
     }
+  }
+
+  getHacknetIncome() {
+    const numHackNetNodes = this.ns.hacknet.numNodes();
+    let hacknetProductionRaw = 0;
+    for (let i = 0; i < numHackNetNodes; i++) {
+      const node = this.ns.hacknet.getNodeStats(i);
+      hacknetProductionRaw += node.production;
+    }
+    return this.ns.formatNumber(hacknetProductionRaw, 2);
   }
 
   _getNextUpgrade() {
