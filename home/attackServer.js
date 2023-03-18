@@ -1,4 +1,4 @@
-import { getFormattedTime, getDocument, logAttack, getFormattedDuration } from 'utils.js';
+import { getFormattedTime, getDocument, logAttack, getFormattedDuration, ACTIONS } from 'utils.js';
 import { AttackService } from 'services/attack.js';
 
 /** @param {import(".").NS } ns */
@@ -76,13 +76,13 @@ async function printServerDetails(ns, host, securityThresh, numTimesToHack, hack
     let workTime = 0;
     let workType = "NONE";
 
-    if (hackType == "hack") {
+    if (hackType == ACTIONS.HACK) {
         workTime = ns.getHackTime(host);
         workType = "HACKING";
-    } else if (hackType == "grow") {
+    } else if (hackType == ACTIONS.GROW) {
         workTime = ns.getGrowTime(host);
         workType = "GROWING";
-    } else if (hackType == "weaken") {
+    } else if (hackType == ACTIONS.WEAKEN) {
         workTime = ns.getWeakenTime(host);
         workType = "WEAKENING";
     } else {

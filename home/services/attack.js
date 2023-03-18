@@ -57,7 +57,7 @@ export class AttackService {
         action: ACTIONS.WEAKEN,
         name: target,
         attackers: hackableServerNames.length,
-        threshhold: securityThreshhold,
+        threshold: securityThreshhold,
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
@@ -82,7 +82,7 @@ export class AttackService {
         action: ACTIONS.GROW,
         name: target,
         attackers: hackableServerNames.length,
-        threshhold: securityThreshhold,
+        threshold: securityThreshhold,
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
@@ -107,7 +107,7 @@ export class AttackService {
         action: ACTIONS.HACK,
         name: target,
         attackers: hackableServerNames.length,
-        threshhold: securityThreshhold,
+        threshold: securityThreshhold,
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
