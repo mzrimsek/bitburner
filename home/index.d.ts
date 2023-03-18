@@ -7989,3 +7989,31 @@ interface AutocompleteData {
   txts: string[];
   flags(schema: [string, string | number | boolean | string[]][]): { [key: string]: ScriptArg | string[] };
 }
+
+/** MY TYPES */
+
+/**
+ * Handler function parameter interface
+ * @public
+ */
+interface ScriptEvent {
+  action: string;
+  name: string;
+  cost?: number;
+  time?: Date; // undefined means now
+}
+
+/**
+ * Handler function type
+ * @public
+ * @param event - Event object
+ * @param args - Arguments passed to the handler
+ * @returns - Return value of the handler
+ * @example
+ * ```js
+ * export async function main(event: ScriptEvent, ...args: any[]): Promise<any> {
+ *  // Do something
+ * }
+ * ```
+ */
+type ScriptHandler = (event: ScriptEvent, ...args: any[]) => any;

@@ -42,8 +42,8 @@ export async function handleHacknet(ns, showWindow = false, width = 500, height 
             hacknetService.purchaseUpgradeOrNode((currentAction) => {
                 lastAction = currentAction.action;
                 lastNode = currentAction.name;
-                lastCost = currentAction.cost;
-                lastTime = currentAction.time;
+                lastCost = currentAction.price;
+                lastTime = currentAction.time || new Date();
             });
         }
 

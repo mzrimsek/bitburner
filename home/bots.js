@@ -47,7 +47,7 @@ export async function handleBots(ns, showWindow = false, width = 500, height = 6
                 lastServerAction = currentServerInfo.action;
                 lastServerName = currentServerInfo.name;
                 lastServerPrice = currentServerInfo.price;
-                lastServerTime = currentServerInfo.time;
+                lastServerTime = currentServerInfo.time || new Date();
             });
         }
 

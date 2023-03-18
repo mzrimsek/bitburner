@@ -13,6 +13,7 @@ export class HacknetService {
     this.ns = ns;
   }
 
+  /** @param {import("..").ScriptHandler} eventHandler */
   purchaseUpgradeOrNode(eventHandler) {
     const next = this._getNextUpgrade();
     if (!next) {
@@ -26,8 +27,7 @@ export class HacknetService {
         const currentAction = {
           action: 'buy',
           name: newStats.name,
-          cost: nodeCost,
-          time: new Date()
+          price: nodeCost
         };
         eventHandler(currentAction);
       }
@@ -38,8 +38,7 @@ export class HacknetService {
         const currentAction = {
           action: next.upgrade,
           name: next.name,
-          cost: next.cost,
-          time: new Date()
+          price: next.cost
         };
         eventHandler(currentAction);
         this._log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
