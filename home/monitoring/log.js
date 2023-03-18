@@ -1,6 +1,6 @@
 import { PORT_MAPPING, getDocument, DEFAULT_PORT_VALUE } from 'utils.js';
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     const logsToDisable = [
         'sleep'

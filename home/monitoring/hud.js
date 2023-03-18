@@ -1,4 +1,4 @@
-/** @param {import(".").NS } ns **/
+/** @param {import("..").NS } ns **/
 export async function main(ns) {
     /*
         Original script by: u/I_hate_you_wasTaken, (https://www.reddit.com/r/Bitburner/comments/10urhbn/custom_overview_stats_but_better/)

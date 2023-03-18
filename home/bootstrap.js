@@ -27,7 +27,7 @@ export async function main(ns) {
     ns.run('attackServer.js', 1);
     ns.run('stonks.js', 1);
 
-    ns.run('log.js', 1);
-    ns.run('showEnv.js', 1);
-    ns.run('hud.js', 1);
+    ns.run('/monitoring/hud.js', 1);
+    ns.run('/monitoring/log.js', 1);
+    ns.run('/monitoring/showEnv.js', 1);
 }

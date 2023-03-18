@@ -5,11 +5,11 @@ export function log(tag, ...args) {
 export const STARTUP_SCRIPTS = [
     'dashboard.js',
     'attackServer.js',
-    'hud.js',
     'infiltration.js',
     'stonks.js',
-    'showEnv.js',
-    'log.js'
+    '/monitoring/hud.js',
+    '/monitoring/log.js',
+    '/monitoring/showEnv.js'
 ];
 
 export const DEFAULT_PORT_VALUE = 'NULL PORT DATA';
