@@ -1,4 +1,4 @@
-import { getShouldBuyOrUpgrade, getShouldDoGang, logPurchase } from 'utils.js';
+import { getShouldBuyOrUpgrade, getShouldDoGang, logPurchase, logUpgrade } from 'utils.js';
 import { BotService } from 'services/bots.js';
 import { HacknetService } from 'services/hacknet.js';
 import { GangService } from 'services/gangs.js';
@@ -13,7 +13,13 @@ export async function main(ns) {
   while (true) {
     if (getShouldBuyOrUpgrade(ns)) {
       botService.buyOrUpgradeBots(scriptEvent => logPurchase(ns, scriptEvent));
-      hacknetService.purchaseUpgradeOrNode(scriptEvent => logPurchase(ns, scriptEvent));
+      hacknetService.purchaseUpgradeOrNode(scriptEvent => {
+        if (scriptEvent.type) {
+          logUpgrade(ns, scriptEvent);
+        } else {
+          logPurchase(ns, scriptEvent);
+        }
+      });
     }
 
     if (getShouldDoGang(ns)) {

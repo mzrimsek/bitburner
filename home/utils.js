@@ -22,6 +22,15 @@ export const PORT_MAPPING = {
     'LOG_FEED': 100,
 };
 
+export const ACTIONS = {
+    'BUY': '💰',
+    'UPGRADE': '🔩',
+    'HACK': '🔓',
+    'WEAKEN': '🔪',
+    'GROW': '🌱',
+    'ASCEND': '🚀',
+};
+
 export function padString(str, targetLength, padStr = ' ') {
     let strCopy = str;
 
@@ -95,11 +104,24 @@ let lastLogMessage = "";
 
 /** 
  * @param {import(".").NS } ns
- * @param {import(".").ScriptEvent } scriptEvent */
+ * @param {import(".").ScriptPurchaseEvent } scriptEvent */
 export function logPurchase(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const cost = scriptEvent?.cost || 0;
     const message = `[${getFormattedTime(time)}] ($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.name}`;
+    if (message !== lastLogMessage) {
+        ns.writePort(PORT_MAPPING.LOG_FEED, message);
+        lastLogMessage = message;
+    }
+}
+
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptUpgradeEvent } scriptEvent */
+export function logUpgrade(ns, scriptEvent) {
+    const time = scriptEvent?.time || new Date();
+    const cost = scriptEvent?.cost || 0;
+    const message = `[${getFormattedTime(time)}] ($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.type} ${scriptEvent.name}`;
     if (message !== lastLogMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
         lastLogMessage = message;

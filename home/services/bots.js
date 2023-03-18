@@ -1,10 +1,8 @@
-import { log as utilLog } from 'utils.js';
+import { log as utilLog, ACTIONS } from 'utils.js';
 
 export class BotService {
 
   MAX_BOTS = 25;
-  BUY = 'BUY';
-  UPGRADE = 'UPGRADE';
 
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -22,7 +20,7 @@ export class BotService {
         this._log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
         this.ns.upgradePurchasedServer(botToUpgrade.hostname, botToUpgrade.targetRam);
         const currentAction = {
-          action: this.UPGRADE,
+          action: ACTIONS.UPGRADE,
           name: botToUpgrade.hostname,
           cost: botToUpgrade.costToUpgrade
         };
@@ -48,7 +46,7 @@ export class BotService {
       this._log(`buying ${nextBotName}`);
       this.ns.purchaseServer(nextBotName, 2);
       const currentAction = {
-        action: this.BUY,
+        action: ACTIONS.BUY,
         name: nextBotName,
         cost: cost
       };

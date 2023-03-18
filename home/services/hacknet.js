@@ -1,4 +1,4 @@
-import { log as utilLog } from 'utils.js';
+import { log as utilLog, ACTIONS } from 'utils.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
@@ -25,7 +25,7 @@ export class HacknetService {
         const newIndex = this.ns.hacknet.purchaseNode();
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
         const currentAction = {
-          action: 'buy',
+          action: ACTIONS.BUY,
           name: newStats.name,
           cost: nodeCost
         };
@@ -36,7 +36,8 @@ export class HacknetService {
       const success = this._processUpgrade(next);
       if (success) {
         const currentAction = {
-          action: next.upgrade,
+          action: ACTIONS.UPGRADE,
+          type: next.upgrade,
           name: next.name,
           cost: next.cost
         };

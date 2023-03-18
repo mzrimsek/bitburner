@@ -1,4 +1,4 @@
-import { log as utilLog, STARTUP_SCRIPTS } from 'utils.js';
+import { log as utilLog, STARTUP_SCRIPTS, ACTIONS } from 'utils.js';
 
 export class AttackService {
 
@@ -54,7 +54,7 @@ export class AttackService {
       }
       const duration = numTimesToHack * this.ns.getWeakenTime(target) + 300;
       const currentAction = {
-        action: 'weaken',
+        action: ACTIONS.WEAKEN,
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
@@ -79,7 +79,7 @@ export class AttackService {
       }
       const duration = numTimesToHack * this.ns.getGrowTime(target) + 300;
       const currentAction = {
-        action: 'grow',
+        action: ACTIONS.GROW,
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
@@ -104,7 +104,7 @@ export class AttackService {
       }
       const duration = numTimesToHack * this.ns.getHackTime(target) + 300;
       const currentAction = {
-        action: 'hack',
+        action: ACTIONS.HACK,
         name: target,
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
