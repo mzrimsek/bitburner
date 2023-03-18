@@ -1,4 +1,4 @@
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     // const target = ns.args[0];
 
@@ -11,10 +11,10 @@ export async function main(ns) {
     const networkMap = getServerNames(ns, 'home', children);
 
     console.log(networkMap);
-    
+
 }
 
-/** @param {import(".").NS } ns
+/** @param {import("..").NS } ns
  *  @param {string} host
  *  @param {string} parent
  *  @param {string[]} list
@@ -34,7 +34,7 @@ function getServerNames(ns, host, children) {
     };
 }
 
-/** @param {import(".").NS } ns
+/** @param {import("..").NS } ns
  *  @param {string} host
  *  @param {string} parent
  */

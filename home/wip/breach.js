@@ -1,4 +1,4 @@
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     if (!ns.args || ns.args.length === 0) {
         ns.tprint('Valid option required: --cybersec, --nitesec, --blackhand, --bitrunners, --cave, --stay, or --all');
@@ -39,13 +39,13 @@ export async function main(ns) {
         if (!isStay) { goHome(ns); }
         await connectAndBackdoor(ns, serverChain);
     }
-    
+
     if (isBlackHand || isBreachAll) {
         const serverChain = ['hong-fang-tea', 'CSEC', 'omega-net', 'netlink', 'I.I.I.I'];
         if (!isStay) { goHome(ns); }
         await connectAndBackdoor(ns, serverChain);
     }
-    
+
     if (isBitRunners || isBreachAll) {
         const serverChain = ['hong-fang-tea', 'CSEC', 'omega-net', 'netlink', 'catalyst', 'lexo-corp', 'galactic-cyber', 'omnia', 'solaris', 'infocom', 'runfortheh111z'];
         if (!isStay) { goHome(ns); }
@@ -69,7 +69,7 @@ function buildConnectString(serverChain) {
     }, '');
 }
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 async function connectAndBackdoor(ns, serverChain) {
     const connectString = buildConnectString(serverChain);
     ns.run('console.js', 1, connectString);
@@ -78,7 +78,7 @@ async function connectAndBackdoor(ns, serverChain) {
     await ns.sleep(500);
 }
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 function goHome(ns) {
     ns.run('console.js', 1, 'home');
 }
