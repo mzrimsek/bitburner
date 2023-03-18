@@ -42,7 +42,6 @@ export class GangService {
     gangMembersWhoCanAscend.forEach(gangMember => {
       this.gang.ascendMember(gangMember.name);
       const currentAction = {
-        type: "ascend",
         action: '👼',
         name: gangMember.name
       };
@@ -54,7 +53,6 @@ export class GangService {
     while (nextUpgrade !== null) {
       this.gang.purchaseEquipment(nextUpgrade.memberName, nextUpgrade.name);
       const currentAction = {
-        type: nextUpgrade.type,
         action: nextUpgrade.name,
         name: nextUpgrade.memberName,
         cost: nextUpgrade.cost,
