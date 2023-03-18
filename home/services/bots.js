@@ -11,7 +11,7 @@ export class BotService {
     this.ns = ns;
   }
 
-  /** @param {import("..").ScriptHandler} eventHandler */
+  /** @param {import("..").ScriptHandler?} eventHandler */
   buyOrUpgradeBots(eventHandler) {
     const bots = this.ns.getPurchasedServers().map(server => this.ns.getServer(server));
     if (bots.length === 0) {
@@ -26,7 +26,7 @@ export class BotService {
           name: botToUpgrade.hostname,
           price: botToUpgrade.costToUpgrade
         };
-        eventHandler(currentAction);
+        eventHandler && eventHandler(currentAction);
       } else if (bots.length < this.MAX_BOTS) {
         this._buyBot(bots, eventHandler);
       }
@@ -35,7 +35,7 @@ export class BotService {
 
   /**
    *  @param {import("..").Server[]} bots
-   *  @param {import("..").ScriptHandler} eventHandler
+   *  @param {import("..").ScriptHandler?} eventHandler
    */
   _buyBot(bots, eventHandler) {
     const nextIndex = this._getNextIndex(bots);
@@ -52,7 +52,7 @@ export class BotService {
         name: nextBotName,
         price: cost
       };
-      eventHandler(currentAction);
+      eventHandler && eventHandler(currentAction);
     } else {
       this._log('cannot buy bot at this time');
     }
