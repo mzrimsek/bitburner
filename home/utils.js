@@ -31,6 +31,12 @@ export const ACTIONS = {
     'ASCEND': '🚀',
 };
 
+export const HACKNET_UPGRADE_TYPES = {
+    LEVEL: 'level',
+    RAM: 'ram',
+    CORES: 'cores'
+};
+
 export function padString(str, targetLength, padStr = ' ') {
     let strCopy = str;
 

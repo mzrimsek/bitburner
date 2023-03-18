@@ -1,4 +1,4 @@
-import { log as utilLog, ACTIONS } from 'utils.js';
+import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES } from 'utils.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
@@ -80,7 +80,7 @@ export class HacknetService {
       if (node.level.current < this.MAX_LEVEL) {
         if (node.level.upgradeCost <= currentMoney) {
           items = [...items, {
-            upgrade: 'level',
+            upgrade: HACKNET_UPGRADE_TYPES.LEVEL,
             index: node.index,
             cost: node.level.upgradeCost,
             name: node.name
@@ -91,7 +91,7 @@ export class HacknetService {
       if (node.ram.current < this.MAX_RAM) {
         if (node.ram.upgradeCost <= currentMoney) {
           items = [...items, {
-            upgrade: 'ram',
+            upgrade: HACKNET_UPGRADE_TYPES.RAM,
             index: node.index,
             cost: node.ram.upgradeCost,
             name: node.name
@@ -102,7 +102,7 @@ export class HacknetService {
       if (node.cores.current < this.MAX_CORES) {
         if (node.cores.upgradeCost <= currentMoney) {
           items = [...items, {
-            upgrade: 'cores',
+            upgrade: HACKNET_UPGRADE_TYPES.CORES,
             index: node.index,
             cost: node.cores.upgradeCost,
             name: node.name
@@ -125,13 +125,13 @@ export class HacknetService {
 
   _processUpgrade(next) {
     switch (next.upgrade) {
-      case 'level': {
+      case HACKNET_UPGRADE_TYPES.LEVEL: {
         return this.ns.hacknet.upgradeLevel(next.index, 1);
       }
-      case 'ram': {
+      case HACKNET_UPGRADE_TYPES.RAM: {
         return this.ns.hacknet.upgradeRam(next.index, 1);
       }
-      case 'cores': {
+      case HACKNET_UPGRADE_TYPES.CORES: {
         return this.ns.hacknet.upgradeCore(next.index, 1);
       }
       default: {
