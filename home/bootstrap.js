@@ -23,17 +23,11 @@ export async function main(ns) {
     initPort(ns, PORT_MAPPING.HAS_MAX_BOTS, 0);
     initPort(ns, PORT_MAPPING.DO_GANG, 0);
 
-    ns.run('hacknet.js', 1, 100);
-    ns.run('bots.js', 100);
+    ns.run('dashboard.js', 1);
     ns.run('attackServer.js', 1);
     ns.run('stonks.js', 1);
 
     ns.run('log.js', 1);
     ns.run('showEnv.js', 1);
     ns.run('hud.js', 1);
-}
-
-function initPort(ns, portNum, initValue) {
-    ns.clearPort(portNum);
-    ns.writePort(portNum, initValue);
 }

@@ -1,4 +1,4 @@
-import { PORT_MAPPING, getDocument } from 'utils.js';
+import { PORT_MAPPING, getDocument, DEFAULT_PORT_VALUE } from 'utils.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
@@ -23,11 +23,11 @@ export async function main(ns) {
         ns.clearLog();
 
         let content = ns.readPort(PORT_MAPPING.LOG_FEED);
-        while (content !== 'NULL PORT DATA') {
+        while (content !== DEFAULT_PORT_VALUE) {
             logs = [...logs, content];
             content = ns.readPort(PORT_MAPPING.LOG_FEED);
         }
-        content = 'NULL PORT DATA';
+        content = DEFAULT_PORT_VALUE;
 
         logs.forEach(log => ns.print(log));
 

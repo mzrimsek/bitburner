@@ -12,12 +12,13 @@ export const STARTUP_SCRIPTS = [
     'log.js'
 ];
 
+export const DEFAULT_PORT_VALUE = 'NULL PORT DATA';
+
 export const PORT_MAPPING = {
     'DO_BUY': 1,
     'DO_STONKS': 2,
     'DO_GANG': 3,
     'HAS_MAX_BOTS': 21,
-    'GANG_UPGRADE_CYCLES': 31,
     'LOG_FEED': 100,
 };
 
@@ -59,12 +60,6 @@ export function getShouldDoStonks(ns) {
 /** @param {import(".").NS } ns */
 export function getShouldDoGang(ns) {
     return ns.peek(PORT_MAPPING.DO_GANG) === 1;
-}
-
-/** @param {import(".").NS } ns */
-export function getTimesToUpgradeGangMembers(ns) {
-    const cycles = ns.peek(PORT_MAPPING.GANG_UPGRADE_CYCLES);
-    return getCycles(cycles);
 }
 
 export function getDocument() {
