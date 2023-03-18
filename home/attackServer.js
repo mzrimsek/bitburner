@@ -49,7 +49,7 @@ export async function handleAttackServer(ns, showWindow = false, width = 500, he
         if (showWindow) ns.clearLog();
 
         await attackService.initiateAttack(scriptEvent => {
-            printServerDetails(ns, scriptEvent.name, scriptEvent.threshold, scriptEvent.amount, scriptEvent.action, scriptEvent.cost);
+            printServerDetails(ns, scriptEvent.name, scriptEvent.threshold, scriptEvent.amount, scriptEvent.action, scriptEvent.attackers);
             logAttack(ns, scriptEvent);
         });
     }
