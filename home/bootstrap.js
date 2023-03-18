@@ -24,7 +24,6 @@ export async function main(ns) {
     initPort(ns, PORT_MAPPING.DO_GANG, 0);
 
     ns.run('dashboard.js', 1);
-    ns.run('attackServer.js', 1);
     ns.run('stonks.js', 1);
 
     ns.run('log.js', 1);

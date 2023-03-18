@@ -1,11 +1,5 @@
-import { log as utilLog, STARTUP_SCRIPTS, getFormattedTime, getDocument } from 'utils.js';
+import { getFormattedTime, getDocument } from 'utils.js';
 import { AttackService } from 'services/attack.js';
-
-const hackSource = 'home';
-const excludedServers = [hackSource];
-const hackFile = '/basic/hack.js';
-const weakenFile = '/basic/weaken.js';
-const growFile = '/basic/grow.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
@@ -55,7 +49,7 @@ export async function handleAttackServer(ns, showWindow = false, width = 500, he
         if (showWindow) ns.clearLog();
 
         await attackService.initiateAttack(scriptEvent => {
-            printServerDetails(ns, scriptEvent.name, 0, 0, scriptEvent.action, 0);
+            printServerDetails(ns, scriptEvent.name, 0, 0, scriptEvent.action, scriptEvent.cost);
         });
     }
 }

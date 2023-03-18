@@ -2,6 +2,7 @@ import { PORT_MAPPING, getFormattedTime, getShouldBuyOrUpgrade, getShouldDoGang 
 import { BotService } from 'services/bots.js';
 import { HacknetService } from 'services/hacknet.js';
 import { GangService } from 'services/gangs.js';
+import { AttackService } from 'services/attack.js';
 
 let lastLogMessage = "";
 
@@ -10,6 +11,7 @@ export async function main(ns) {
   const botService = new BotService(ns);
   const hacknetService = new HacknetService(ns);
   const gangService = new GangService(ns);
+  const attackService = new AttackService(ns);
 
   while (true) {
     if (getShouldBuyOrUpgrade(ns)) {
@@ -20,6 +22,8 @@ export async function main(ns) {
     if (getShouldDoGang(ns)) {
       gangService.handleGang(scriptEvent => log(ns, scriptEvent));
     }
+
+    await attackService.initiateAttack(scriptEvent => log(ns, scriptEvent));
 
     await ns.sleep(100);
   }
