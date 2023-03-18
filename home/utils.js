@@ -111,7 +111,7 @@ export function logPurchase(ns, scriptEvent) {
  * @param {import(".").ScriptAttackEvent } scriptEvent */
 export function logAttack(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
-    const message = `[${getFormattedTime(time)}] ${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)})}`;
+    const message = `[${getFormattedTime(time)}] ${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)}`;
     if (message !== lastLogMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
         lastLogMessage = message;

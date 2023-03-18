@@ -59,7 +59,7 @@ export class AttackService {
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
         amount: numTimesToHack,
-        duration
+        duration: Math.floor(duration / 1000)
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(duration);
@@ -84,7 +84,7 @@ export class AttackService {
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
         amount: numTimesToHack,
-        duration
+        duration: Math.floor(duration / 1000)
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(duration);
@@ -109,7 +109,7 @@ export class AttackService {
         attackers: hackableServerNames.length,
         threshhold: securityThreshhold,
         amount: numTimesToHack,
-        duration
+        duration: Math.floor(duration / 1000)
       };
       eventHandler && eventHandler(currentAction);
       await this.ns.sleep(duration);
