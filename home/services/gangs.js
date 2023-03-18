@@ -49,8 +49,9 @@ export class GangService {
       eventHandler && eventHandler(currentAction);
     });
 
+    // TODO: I think it's stuck here and gets in an infinite loop
     let nextUpgrade = this._getNextUpgrade(gangMembers, memberUpgradeInfo);
-    while (nextUpgrade) {
+    while (nextUpgrade !== null) {
       this.gang.purchaseEquipment(nextUpgrade.memberName, nextUpgrade.name);
       const currentAction = {
         type: nextUpgrade.type,
@@ -86,7 +87,7 @@ export class GangService {
       return null;
     }
 
-    return availableGangMemberUpgrades[0];
+    return ava[0];
   }
 
   _getGangMembers() {
