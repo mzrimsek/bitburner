@@ -1,5 +1,3 @@
-import { getTimesToUpgradeGangMembers } from "utils.js";
-
 export class GangService {
 
   GANG_MEMBER_NAMES = [
@@ -40,8 +38,6 @@ export class GangService {
       this.gang.recruitMember(this._getNextGangMemberName());
     }
 
-    // const timesToUpgrade = getTimesToUpgradeGangMembers(this.ns);
-    // for (let i = 0; i < timesToUpgrade; i++) {
     const gangMembersWhoCanAscend = gangMembers.filter(gangMember => gangMember.canAscend);
     gangMembersWhoCanAscend.forEach(gangMember => {
       this.gang.ascendMember(gangMember.name);
@@ -65,7 +61,6 @@ export class GangService {
       eventHandler && eventHandler(currentAction);
       nextUpgrade = this._getNextUpgrade(gangMembers, memberUpgradeInfo);
     }
-    // }
   }
 
   _getNextUpgrade(gangMembers, memberUpgradeInfo) {
