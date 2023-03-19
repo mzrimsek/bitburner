@@ -8043,4 +8043,4 @@ interface ScriptAttackEvent extends ScriptEvent {
  * }
  * ```
  */
-type ScriptHandler = (event: ScriptPurchaseEvent | ScriptUpgradeEvent | ScriptAttackEvent, ...args: any[]) => any;
+type ScriptHandler = (event: ScriptEvent | ScriptPurchaseEvent | ScriptUpgradeEvent | ScriptAttackEvent, ...args: any[]) => any;
