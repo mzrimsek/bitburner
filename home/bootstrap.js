@@ -2,8 +2,8 @@ import { PORT_MAPPING, initPort } from 'utils.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-    const startStopped = ns.args.includes('--stopped');
-    const startWithStonks = ns.args.includes('--stonks');
+    const startStopped = ns.args.includes('--stopped') || ns.args.includes('-b');
+    const startWithStonks = ns.args.includes('--stonks') || ns.args.includes('-s');
 
     ns.killall('home', true);
 
