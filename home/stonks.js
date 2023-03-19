@@ -2,7 +2,7 @@ import { getShouldDoStonks, getFormattedTime, PORT_MAPPING, getDocument } from '
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
-    await handleStonks(ns, true, 500, 570, 775, 5);
+    await handleStonks(ns, true, 500, 800, 775, 5);
 }
 
 /** @param {import(".").NS } ns */
@@ -292,14 +292,14 @@ function printLogs(ns) {
 
     ns.print(`On Market:     💲${ns.nFormat(onMarketValue, '0.0a')}(+💲${ns.nFormat(onMarketValueChange, '0.0a')})`)
     ns.print(`Earned(today): 💲${ns.nFormat(earnedMoney, '0.0a')}`)
-    // ns.print('INFO\tBUY/SELL LOG')
-    // // const date = new Date()
-    // for (let log of logs) {
-    //     const { sym, long, short, isBuy, profit, date } = log
-    //     const operation = isBuy ? 'BUY ' : 'SELL'
-    //     const amount = short > 0 ? `SHORT ${ns.nFormat(short, '000.0a')}` : `LONG  ${ns.nFormat(long, '000.0a')}`
-    //     const profitStr = profit ? `💲${ns.nFormat(profit, '0.0a')}` : ''
-    //     const symStr = sym.length == 3 ? sym + ' ' : sym
-    //     ns.print(`[${date}] ${operation} ${symStr} - ${amount} ${profitStr}`)
-    // }
+    ns.print('INFO\tBUY/SELL LOG')
+    // const date = new Date()
+    for (let log of logs) {
+        const { sym, long, short, isBuy, profit, date } = log
+        const operation = isBuy ? 'BUY ' : 'SELL'
+        const amount = short > 0 ? `SHORT ${ns.nFormat(short, '000.0a')}` : `LONG  ${ns.nFormat(long, '000.0a')}`
+        const profitStr = profit ? `💲${ns.nFormat(profit, '0.0a')}` : ''
+        const symStr = sym.length == 3 ? sym + ' ' : sym
+        ns.print(`[${date}] ${operation} ${symStr} - ${amount} ${profitStr}`)
+    }
 }
