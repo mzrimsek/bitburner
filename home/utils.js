@@ -107,8 +107,7 @@ export function getCycles(rawCycles) {
     return 0;
 }
 
-let lastLogMessage = "";
-
+let lastPurchaseMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptPurchaseEvent } scriptEvent */
@@ -117,12 +116,13 @@ export function logPurchase(ns, scriptEvent) {
     const cost = scriptEvent?.cost || 0;
     const messageWithoutTime = `($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.name}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
-    if (messageWithoutTime !== lastLogMessage) {
+    if (messageWithoutTime !== lastPurchaseMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
-        lastLogMessage = messageWithoutTime;
+        lastPurchaseMessage = messageWithoutTime;
     }
 }
 
+let lastUpgradeMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptUpgradeEvent } scriptEvent */
@@ -131,12 +131,13 @@ export function logUpgrade(ns, scriptEvent) {
     const cost = scriptEvent?.cost || 0;
     const messageWithoutTime = `($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.type} ${scriptEvent.name}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
-    if (messageWithoutTime !== lastLogMessage) {
+    if (messageWithoutTime !== lastUpgradeMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
-        lastLogMessage = messageWithoutTime;
+        lastUpgradeMessage = messageWithoutTime;
     }
 }
 
+let lastAttackMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptAttackEvent } scriptEvent */
@@ -144,12 +145,13 @@ export function logAttack(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
-    if (messageWithoutTime !== lastLogMessage) {
+    if (messageWithoutTime !== lastAttackMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
-        lastLogMessage = messageWithoutTime;
+        lastAttackMessage = messageWithoutTime;
     }
 }
 
+let lastEventMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptEvent } scriptEvent */
@@ -157,8 +159,8 @@ export function logEvent(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
-    if (messageWithoutTime !== lastLogMessage) {
+    if (messageWithoutTime !== lastEventMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
-        lastLogMessage = messageWithoutTime;
+        lastEventMessage = messageWithoutTime;
     }
 }
