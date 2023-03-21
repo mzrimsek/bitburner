@@ -57,10 +57,10 @@ export async function handleStonks(ns, showWindow = false, width = 500, height =
 // Parameters:
 const OPERATION_COST = 100000 // do not change this is fixed in the game
 
-const MAX_STOCK_OWNED_PERCENT = 0.52 // maximum percentages of stock that can be owned at a time. (the more percent you own the more change you make on the market)
+const MAX_STOCK_OWNED_PERCENT = 0.70 // maximum percentages of stock that can be owned at a time. (the more percent you own the more change you make on the market)
 const MIN_FORECAST_PERCENT = 0.10 // min forecast percent from 0.5
 const MIN_EXIT_FORECAST_PERCENT = 0.05 // in case the forecast turn under this value than exit.
-const KEEP_MONEY_ON_HOME_MILLION = 1 // how many million you want to keep out from trading (like for use it for something else)
+const KEEP_MONEY_ON_HOME_MILLION = 100 // how many million you want to keep out from trading (like for use it for something else)
 
 // Implementation:
 /** @param {import(".").NS } ns */
