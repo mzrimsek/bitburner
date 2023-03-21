@@ -24,11 +24,14 @@ export const PORT_MAPPING = {
 
 export const ACTIONS = {
     'BUY': '💰',
+    'SELL': '💸',
     'UPGRADE': '🔩',
     'HACK': '🔓',
     'WEAKEN': '🔪',
     'GROW': '🌱',
     'ASCEND': '🚀',
+    'SHORT': '📉',
+    'LONG': '📈',
 };
 
 export const HACKNET_UPGRADE_TYPES = {
