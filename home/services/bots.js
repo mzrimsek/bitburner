@@ -2,8 +2,6 @@ import { log as utilLog, ACTIONS } from 'utils.js';
 
 export class BotService {
 
-  MAX_BOTS = 25;
-
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -11,6 +9,7 @@ export class BotService {
 
   /** @param {import("..").ScriptHandler?} eventHandler */
   buyOrUpgradeBots(eventHandler) {
+    const maxBots = this.ns.getPurchasedServerLimit();
     const bots = this.ns.getPurchasedServers().map(server => this.ns.getServer(server));
     if (bots.length === 0) {
       this._buyBot(bots, eventHandler);
@@ -25,7 +24,7 @@ export class BotService {
           cost: botToUpgrade.costToUpgrade
         };
         eventHandler && eventHandler(currentAction);
-      } else if (bots.length < this.MAX_BOTS) {
+      } else if (bots.length < maxBots) {
         this._buyBot(bots, eventHandler);
       }
     }
