@@ -18,7 +18,6 @@ export const PORT_MAPPING = {
     'DO_BUY': 1,
     'DO_STONKS': 2,
     'DO_GANG': 3,
-    'HAS_ALL_MAXED_BOTS': 21,
     'LOG_FEED': 100,
 };
 

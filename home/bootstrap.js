@@ -23,7 +23,6 @@ export async function main(ns) {
         initPort(ns, PORT_MAPPING.DO_STONKS, 0);
     }
 
-    initPort(ns, PORT_MAPPING.HAS_ALL_MAXED_BOTS, 0);
     initPort(ns, PORT_MAPPING.DO_GANG, 0);
 
     ns.run('dashboard.js', 1);
@@ -38,7 +37,6 @@ export async function main(ns) {
 /* bots printout
 const numMaxedServers = servers.filter(server => server.maxRam === MAX_RAM).length;
     if (numMaxedServers === MAX_BOTS) {
-        ns.writePort(PORT_MAPPING.HAS_ALL_MAXED_BOTS, 1);
         ns.print(`All ${MAX_BOTS} bots are maxed out`);
     } else if (numMaxedServers !== 0) {
         ns.print(`Maxed out bots: ${numMaxedServers}`);
