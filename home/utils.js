@@ -31,6 +31,9 @@ export const ACTIONS = {
     'ASCEND': '🚀',
     'SHORT': '📉',
     'LONG': '📈',
+    'SHOCK': '⚡',
+    'SYNC': '🔄',
+    'AUGMENT': '🧬',
 };
 
 export const HACKNET_UPGRADE_TYPES = {

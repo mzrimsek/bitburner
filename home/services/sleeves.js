@@ -1,3 +1,5 @@
+import { ACTIONS } from 'utils.js';
+
 export class SleeveService {
 
   SHOCK_THRESHOLD = 25;
@@ -16,13 +18,13 @@ export class SleeveService {
       if (sleeve.shock > this.SHOCK_THRESHOLD && this.sleeve.getTask(index).type !== 'RECOVERY') {
         this.sleeve.setToShockRecovery(index);
         eventHandler && eventHandler({
-          action: 'shock',
+          action: ACTIONS.SHOCK,
           name: `Sleeve ${index}`
         });
       } else if (sleeve.sync < this.SYNC_THRESHOLD && this.sleeve.getTask(index).type !== 'SYNCHRO') {
         this.sleeve.setToSynchronize(index);
         eventHandler && eventHandler({
-          action: 'sync',
+          action: ACTIONS.SYNC,
           name: `Sleeve ${index}`
         });
       } else {
@@ -35,9 +37,9 @@ export class SleeveService {
           const augment = augmentsByCost[0];
           this.sleeve.purchaseSleeveAug(index, augment.name);
           eventHandler && eventHandler({
-            action: 'augment',
+            action: ACTIONS.AUGMENT,
             name: `Sleeve ${index}`,
-            augment: augment.name
+            name: augment.name
           });
         }
       }

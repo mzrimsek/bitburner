@@ -55,14 +55,16 @@ export class GangService {
     });
 
     let nextUpgrade = this._getNextUpgrade(gangMembers, memberUpgradeInfo);
-    this.gang.purchaseEquipment(nextUpgrade.memberName, nextUpgrade.name);
-    const currentAction = {
-      action: ACTIONS.UPGRADE,
-      type: nextUpgrade.name,
-      name: nextUpgrade.memberName,
-      cost: nextUpgrade.cost,
-    };
-    eventHandler && eventHandler(currentAction);
+    if (nextUpgrade) {
+      this.gang.purchaseEquipment(nextUpgrade.memberName, nextUpgrade.name);
+      const currentAction = {
+        action: ACTIONS.UPGRADE,
+        type: nextUpgrade.name,
+        name: nextUpgrade.memberName,
+        cost: nextUpgrade.cost,
+      };
+      eventHandler && eventHandler(currentAction);
+    }
   }
 
   _getNextUpgrade(gangMembers, memberUpgradeInfo) {
