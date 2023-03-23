@@ -114,6 +114,20 @@ export function getCycles(rawCycles) {
     return 0;
 }
 
+let lastAttackMessage = "";
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptAttackEvent } scriptEvent */
+export function logAttack(ns, scriptEvent) {
+    const time = scriptEvent?.time || new Date();
+    const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)}`;
+    const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
+    if (messageWithoutTime !== lastAttackMessage) {
+        ns.writePort(PORT_MAPPING.LOG_FEED, message);
+        lastAttackMessage = messageWithoutTime;
+    }
+}
+
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").CustomScriptEvent } scriptEvent */
@@ -161,20 +175,6 @@ function logUpgrade(ns, scriptEvent) {
     if (messageWithoutTime !== lastUpgradeMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
         lastUpgradeMessage = messageWithoutTime;
-    }
-}
-
-let lastAttackMessage = "";
-/** 
- * @param {import(".").NS } ns
- * @param {import(".").ScriptAttackEvent } scriptEvent */
-function logAttack(ns, scriptEvent) {
-    const time = scriptEvent?.time || new Date();
-    const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)}`;
-    const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
-    if (messageWithoutTime !== lastAttackMessage) {
-        ns.writePort(PORT_MAPPING.LOG_FEED, message);
-        lastAttackMessage = messageWithoutTime;
     }
 }
 
