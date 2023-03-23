@@ -19,6 +19,7 @@ export class GangService {
     "Bullet",
     "Storm"
   ];
+  WANTED_LEVEL_PENALTY_THRESHOLD = 25;
 
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -35,11 +36,33 @@ export class GangService {
     this._handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
 
     const gangInfo = this.gang.getGangInformation();
-    if (gangInfo.isHacking) {
-      // stuff for hacking gangs
-    } else {
-      // stuff for combat gangs
-    }
+    gangMembers.forEach(gangMember => {
+      if (gangInfo.isHacking) {
+        // const currentTask = taskInfo.find(task => task.name === gangMember.memberInfo.task);
+        // const hasTask = currentTask && currentTask.name !== '' && currentTask.name !== 'Unassigned';
+        // const isDoingEthicalHacking = hasTask && currentTask.name === 'Ethical Hacking';
+        // const isPhishing = hasTask && currentTask.name === 'Phishing';
+        // if (gangInfo.wantedPenalty > this.WANTED_LEVEL_PENALTY_THRESHOLD && !isDoingEthicalHacking) {
+        //   this.gang.setMemberTask(gangMember.name, 'Ethical Hacking');
+        //   const currentAction = {
+        //     action: ACTIONS.TASK,
+        //     name: gangMember.name,
+        //     type: 'Ethical Hacking'
+        //   };
+        //   eventHandler && eventHandler(currentAction);
+        // } else if (!isPhishing) {
+        //   this.gang.setMemberTask(gangMember.name, 'Phishing');
+        //   const currentAction = {
+        //     action: ACTIONS.TASK,
+        //     name: gangMember.name,
+        //     type: 'Phishing'
+        //   };
+        //   eventHandler && eventHandler(currentAction);
+        // }
+      } else {
+        // stuff for combat gangs
+      }
+    });
   }
 
   _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
