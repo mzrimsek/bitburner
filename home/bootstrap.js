@@ -1,4 +1,4 @@
-import { PORT_MAPPING, initPort } from 'utils.js';
+import { PORT_MAPPING, initPort, DEFAULT_PORT_VALUE } from 'utils.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
@@ -29,6 +29,10 @@ export async function main(ns) {
     } else {
         initPort(ns, PORT_MAPPING.DO_GANG, 0);
     }
+
+    const currentLiquidCash = ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
+    const initLiquidCash = currentLiquidCash !== DEFAULT_PORT_VALUE ? currentLiquidCash : 5;
+    initPort(ns, PORT_MAPPING.STONKS_LIQUID_CASH_M, initLiquidCash);
 
     ns.run('dashboard.js', 1);
     ns.run('attackServer.js', 1, openWindowsParam);
