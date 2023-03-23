@@ -18,6 +18,7 @@ export async function main(ns) {
       hacknetService.purchaseUpgradeOrNode(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
 
+// TODO Check if we have a gang
     if (getShouldDoGang(ns)) {
       gangService.handleGang(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
