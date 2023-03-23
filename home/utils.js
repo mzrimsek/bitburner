@@ -30,6 +30,7 @@ export const ACTIONS = {
     'WEAKEN': '🔪',
     'GROW': '🌱',
     'ASCEND': '🚀',
+    'TASK': '📝',
     'SHORT': '📉',
     'LONG': '📈',
     'SHOCK': '⚡',
@@ -154,6 +155,20 @@ export function logAttack(ns, scriptEvent) {
     if (messageWithoutTime !== lastAttackMessage) {
         ns.writePort(PORT_MAPPING.LOG_FEED, message);
         lastAttackMessage = messageWithoutTime;
+    }
+}
+
+let lastTaskMessage = "";
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptTaskEvent } scriptEvent */
+export function logTask(ns, scriptEvent) {
+    const time = scriptEvent?.time || new Date();
+    const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} to ${scriptEvent.task}`;
+    const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
+    if (messageWithoutTime !== lastTaskMessage) {
+        ns.writePort(PORT_MAPPING.LOG_FEED, message);
+        lastTaskMessage = messageWithoutTime;
     }
 }
 
