@@ -4,6 +4,7 @@ import { PORT_MAPPING, initPort } from 'utils.js';
 export async function main(ns) {
     const startStopped = ns.args.includes('--stopped') || ns.args.includes('-b');
     const startWithStonks = ns.args.includes('--stonks') || ns.args.includes('-s');
+    const startWithGang = ns.args.includes('--gang') || ns.args.includes('-g');
 
     const openAll = ns.args.includes('--open') || ns.args.includes('-o');
     const openWindowsParam = openAll ? '' : '--no-open';
@@ -23,7 +24,11 @@ export async function main(ns) {
         initPort(ns, PORT_MAPPING.DO_STONKS, 0);
     }
 
-    initPort(ns, PORT_MAPPING.DO_GANG, 0);
+    if (startWithGang) {
+        initPort(ns, PORT_MAPPING.DO_GANG, 1);
+    } else {
+        initPort(ns, PORT_MAPPING.DO_GANG, 0);
+    }
 
     ns.run('dashboard.js', 1);
     ns.run('attackServer.js', 1, openWindowsParam);

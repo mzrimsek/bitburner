@@ -25,7 +25,13 @@ export async function main(ns) {
     }
 
     if (getShouldDoGang(ns)) {
-      gangService.handleGang(scriptEvent => logPurchase(ns, scriptEvent));
+      gangService.handleGang(scriptEvent => {
+        if (scriptEvent.type) {
+          logUpgrade(ns, scriptEvent);
+        } else {
+          logPurchase(ns, scriptEvent);
+        }
+      });
     }
 
     sleeveService.handleSleeves(scriptEvent => logEvent(ns, scriptEvent));
