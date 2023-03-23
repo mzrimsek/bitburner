@@ -1,4 +1,4 @@
-import { getShouldBuyOrUpgrade, getShouldDoGang, logPurchase, logUpgrade, logEvent, logTask, ACTIONS } from 'utils.js';
+import { getShouldBuyOrUpgrade, getShouldDoGang, logCustomScriptEvent } from 'utils.js';
 import { BotService } from 'services/bots.js';
 import { HacknetService } from 'services/hacknet.js';
 import { GangService } from 'services/gangs.js';
@@ -14,29 +14,15 @@ export async function main(ns) {
 
   while (true) {
     if (getShouldBuyOrUpgrade(ns)) {
-      botService.buyOrUpgradeBots(scriptEvent => logPurchase(ns, scriptEvent));
-      hacknetService.purchaseUpgradeOrNode(scriptEvent => {
-        if (scriptEvent.type) {
-          logUpgrade(ns, scriptEvent);
-        } else {
-          logPurchase(ns, scriptEvent);
-        }
-      });
+      botService.buyOrUpgradeBots(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
+      hacknetService.purchaseUpgradeOrNode(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
 
     if (getShouldDoGang(ns)) {
-      gangService.handleGang(scriptEvent => {
-        if (scriptEvent.action === ACTIONS.TASK) {
-          logTask(ns, scriptEvent);
-        } else if (scriptEvent.type) {
-          logUpgrade(ns, scriptEvent);
-        } else {
-          logPurchase(ns, scriptEvent);
-        }
-      });
+      gangService.handleGang(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
 
-    sleeveService.handleSleeves(scriptEvent => logEvent(ns, scriptEvent));
+    sleeveService.handleSleeves(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
 
     await ns.sleep(100);
   }

@@ -8038,6 +8038,8 @@ interface ScriptTaskEvent extends ScriptEvent {
   task: string;
 }
 
+type CustomScriptEvent = ScriptEvent | ScriptPurchaseEvent | ScriptUpgradeEvent | ScriptAttackEvent | ScriptTaskEvent;
+
 /**
  * Handler function type
  * @public
@@ -8051,4 +8053,4 @@ interface ScriptTaskEvent extends ScriptEvent {
  * }
  * ```
  */
-type ScriptHandler = (event: ScriptEvent | ScriptPurchaseEvent | ScriptUpgradeEvent | ScriptAttackEvent | ScriptTaskEvent, ...args: any[]) => any;
+type ScriptHandler = (event: CustomScriptEvent, ...args: any[]) => any;

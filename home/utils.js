@@ -114,11 +114,31 @@ export function getCycles(rawCycles) {
     return 0;
 }
 
+/** 
+ * @param {import(".").NS } ns
+ * @param {import(".").CustomScriptEvent } scriptEvent */
+export function logCustomScriptEvent(ns, scriptEvent) {
+    switch (scriptEvent.action) {
+        case ACTIONS.BUY: {
+            logPurchase(ns, scriptEvent);
+        }
+        case ACTIONS.UPGRADE: {
+            logUpgrade(ns, scriptEvent);
+        }
+        case ACTIONS.TASK: {
+            logTask(ns, scriptEvent);
+        }
+        default: {
+            logEvent(ns, scriptEvent);
+        }
+    }
+}
+
 let lastPurchaseMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptPurchaseEvent } scriptEvent */
-export function logPurchase(ns, scriptEvent) {
+function logPurchase(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const cost = scriptEvent?.cost || 0;
     const messageWithoutTime = `($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.name}`;
@@ -133,7 +153,7 @@ let lastUpgradeMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptUpgradeEvent } scriptEvent */
-export function logUpgrade(ns, scriptEvent) {
+function logUpgrade(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const cost = scriptEvent?.cost || 0;
     const messageWithoutTime = `($${ns.formatNumber(cost)}) ${scriptEvent.action} ${scriptEvent.type} ${scriptEvent.name}`;
@@ -148,7 +168,7 @@ let lastAttackMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptAttackEvent } scriptEvent */
-export function logAttack(ns, scriptEvent) {
+function logAttack(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} from ${scriptEvent.attackers} for ${getFormattedDuration(scriptEvent.duration)}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
@@ -162,7 +182,7 @@ let lastTaskMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptTaskEvent } scriptEvent */
-export function logTask(ns, scriptEvent) {
+function logTask(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name} to ${scriptEvent.task}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
@@ -176,7 +196,7 @@ let lastEventMessage = "";
 /** 
  * @param {import(".").NS } ns
  * @param {import(".").ScriptEvent } scriptEvent */
-export function logEvent(ns, scriptEvent) {
+function logEvent(ns, scriptEvent) {
     const time = scriptEvent?.time || new Date();
     const messageWithoutTime = `${scriptEvent.action} ${scriptEvent.name}`;
     const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
