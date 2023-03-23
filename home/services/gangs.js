@@ -33,6 +33,13 @@ export class GangService {
     const memberUpgradeInfo = this._getMemberUpgradeInfo();
 
     this._handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
+
+    const gangInfo = this.gang.getGangInformation();
+    if (gangInfo.isHacking) {
+      // stuff for hacking gangs
+    } else {
+      // stuff for combat gangs
+    }
   }
 
   _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
