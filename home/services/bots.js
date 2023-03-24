@@ -21,7 +21,8 @@ export class BotService {
         const currentAction = {
           action: ACTIONS.UPGRADE,
           name: botToUpgrade.hostname,
-          cost: botToUpgrade.costToUpgrade
+          cost: botToUpgrade.costToUpgrade,
+          type: 'ram'
         };
         eventHandler && eventHandler(currentAction);
       } else if (bots.length < maxBots) {

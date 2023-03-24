@@ -2,6 +2,26 @@ import { PORT_MAPPING, initPort, DEFAULT_PORT_VALUE } from 'utils.js';
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+    const isHelp = ns.args.includes('--help') || ns.args.includes('-h');
+
+    if (isHelp) {
+        ns.tprint('Usage: ./bootstrap.js [options]');
+        ns.tprint('Options:');
+        ns.tprint('  -h, --help\t\t\tShow this help message');
+        ns.tprint('  -b, --stopped\t\t\tStart with bots stopped');
+        ns.tprint('  -s, --stonks\t\t\tStart with stocks enabled');
+        ns.tprint('  -g, --gang\t\t\tStart with gang monitoring enabled');
+        ns.tprint('  -o, --open\t\t\tOpen all windows on start');
+        ns.tprint('');
+        ns.tprint('Helpful Aliases:');
+        ns.tprint('  tbuy\t\t\t\tToggle bots and hacknet nodes and upgrades');
+        ns.tprint('  tstonk\t\t\t\tToggle stonks');
+        ns.tprint('  tgang\t\t\t\tToggle gang monitoring');
+        ns.tprint('  slimit\t\t\t\tSet the limit for how much liquid cash to keep out of stonks');
+
+        ns.exit();
+    }
+
     const startStopped = ns.args.includes('--stopped') || ns.args.includes('-b');
     const startWithStonks = ns.args.includes('--stonks') || ns.args.includes('-s');
     const startWithGang = ns.args.includes('--gang') || ns.args.includes('-g');

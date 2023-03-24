@@ -135,15 +135,19 @@ export function logCustomScriptEvent(ns, scriptEvent) {
     switch (scriptEvent.action) {
         case ACTIONS.BUY: {
             logPurchase(ns, scriptEvent);
+            break;
         }
         case ACTIONS.UPGRADE: {
             logUpgrade(ns, scriptEvent);
+            break;
         }
         case ACTIONS.TASK: {
             logTask(ns, scriptEvent);
+            break;
         }
         default: {
             logEvent(ns, scriptEvent);
+            break;
         }
     }
 }
