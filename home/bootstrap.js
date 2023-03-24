@@ -5,6 +5,7 @@ export async function main(ns) {
     const isHelp = ns.args.includes('--help') || ns.args.includes('-h');
 
     if (isHelp) {
+        ns.tprint('Bootstrap script for the home server. This script will start all the other scripts and set up the ports for communication between them.');
         ns.tprint('Usage: ./bootstrap.js [options]');
         ns.tprint('Options:');
         ns.tprint('  -h, --help\t\t\tShow this help message');
