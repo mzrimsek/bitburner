@@ -65,6 +65,10 @@ export class GangService {
     });
   }
 
+  hasGang() {
+    return this.gang.inGang();
+  }
+
   _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
     if (this.gang.canRecruitMember()) {
       this.gang.recruitMember(this._getNextGangMemberName());
