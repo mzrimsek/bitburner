@@ -83,18 +83,8 @@ function padTimePart(part) {
 }
 
 /** @param {import(".").NS } ns */
-export function getShouldBuyOrUpgrade(ns) {
-    return ns.peek(PORT_MAPPING.DO_BUY) === 1;
-}
-
-/** @param {import(".").NS } ns */
 export function getShouldDoStonks(ns) {
     return ns.peek(PORT_MAPPING.DO_STONKS) === 1;
-}
-
-/** @param {import(".").NS } ns */
-export function getShouldDoGang(ns) {
-    return ns.peek(PORT_MAPPING.DO_GANG) === 1;
 }
 
 export function getDocument() {

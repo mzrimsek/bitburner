@@ -1,4 +1,4 @@
-import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES } from 'utils.js';
+import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES, PORT_MAPPING } from 'utils.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
@@ -58,6 +58,10 @@ export class HacknetService {
       hacknetProductionRaw += node.production;
     }
     return this.ns.formatNumber(hacknetProductionRaw, 2);
+  }
+
+  shouldPurchaseUpgradeOrNode() {
+    return this.ns.peek(PORT_MAPPING.DO_BUY) === 1;
   }
 
   _getNextUpgrade() {

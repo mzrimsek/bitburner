@@ -1,4 +1,4 @@
-import { ACTIONS } from 'utils.js';
+import { ACTIONS, PORT_MAPPING } from 'utils.js';
 
 export class GangService {
 
@@ -67,6 +67,10 @@ export class GangService {
 
   hasGang() {
     return this.gang.inGang();
+  }
+
+  shouldHandleGang() {
+    return this.ns.peek(PORT_MAPPING.DO_GANG) === 1;
   }
 
   _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {

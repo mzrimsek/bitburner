@@ -1,4 +1,4 @@
-import { log as utilLog, ACTIONS } from 'utils.js';
+import { log as utilLog, ACTIONS, PORT_MAPPING } from 'utils.js';
 
 export class BotService {
 
@@ -29,6 +29,10 @@ export class BotService {
         this._buyBot(bots, eventHandler);
       }
     }
+  }
+
+  shouldBuyOrUpgradeBots() {
+    return this.ns.peek(PORT_MAPPING.DO_BUY) === 1;
   }
 
   /**
