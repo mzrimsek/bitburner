@@ -2,8 +2,8 @@ import { ACTIONS } from 'utils.js';
 
 export class SleeveService {
 
-  SHOCK_THRESHOLD = 25;
-  SYNC_THRESHOLD = 800;
+  SHOCK_MIN = 0;
+  SYNC_MAX = 100;
 
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -15,13 +15,13 @@ export class SleeveService {
   handleSleeves(eventHandler) {
     const sleeves = this._getSleeves();
     sleeves.forEach((sleeve, index) => {
-      if (sleeve.shock > this.SHOCK_THRESHOLD && this.sleeve.getTask(index).type !== 'RECOVERY') {
+      if (sleeve.shock !== this.SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
         eventHandler && eventHandler({
           action: ACTIONS.SHOCK,
           name: `Sleeve ${index}`
         });
-      } else if (sleeve.sync < this.SYNC_THRESHOLD && this.sleeve.getTask(index).type !== 'SYNCHRO') {
+      } else if (sleeve.sync !== this.SYNC_MAX) {
         this.sleeve.setToSynchronize(index);
         eventHandler && eventHandler({
           action: ACTIONS.SYNC,
