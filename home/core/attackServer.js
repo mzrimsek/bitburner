@@ -1,13 +1,13 @@
 import { getFormattedTime, getDocument, logAttack, getFormattedDuration, ACTIONS } from 'utils.js';
 import { AttackService } from 'services/attack.js';
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
     const openWindow = !ns.args.includes('--no-open');
     await handleAttackServer(ns, openWindow);
 }
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function handleAttackServer(ns, showWindow = false, width = 500, height = 180, xWidthOffset = 835, yPos = 685) {
 
     const logsToDisable = [
@@ -56,7 +56,7 @@ export async function handleAttackServer(ns, showWindow = false, width = 500, he
     }
 }
 
-/** @param {import(".").NS } ns
+/** @param {import("..").NS } ns
  *  @param {string} host
  *  @param {number} securityThresh
  *  @param {number} numTimesToHack

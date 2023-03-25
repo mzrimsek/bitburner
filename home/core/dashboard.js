@@ -5,7 +5,7 @@ import { GangService } from 'services/gangs.js';
 import { SleeveService } from 'services/sleeves.js';
 
 
-/** @param {import(".").NS } ns */
+/** @param {import("..").NS } ns */
 export async function main(ns) {
   const botService = new BotService(ns);
   const hacknetService = new HacknetService(ns);
@@ -18,8 +18,7 @@ export async function main(ns) {
       hacknetService.purchaseUpgradeOrNode(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
 
-// TODO Check if we have a gang
-    if (getShouldDoGang(ns)) {
+    if (ns.gang.inGang() && getShouldDoGang(ns)) {
       gangService.handleGang(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
     }
 
