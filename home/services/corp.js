@@ -10,4 +10,13 @@ export class CorpService {
 
   }
 
+  hasCorp() {
+    return this.corp.getCorporation() != null;
+  }
+
+  getDividendEarnings() {
+    const corpInfo = this.corp.getCorporation();
+    return this.ns.formatNumber(corpInfo.dividendEarnings);
+  }
+
 }

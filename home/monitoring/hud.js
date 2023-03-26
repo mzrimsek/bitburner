@@ -1,6 +1,7 @@
-/** @param {import("..").NS } ns **/
 import { HacknetService } from 'services/hacknet.js';
+import { CorpService } from 'services/corp.js';
 
+/** @param {import("..").NS } ns **/
 export async function main(ns) {
     /*
         Original script by: u/I_hate_you_wasTaken, (https://www.reddit.com/r/Bitburner/comments/10urhbn/custom_overview_stats_but_better/)
@@ -96,6 +97,10 @@ export async function main(ns) {
 
             const hacknetIncome = new HacknetService(ns).getHacknetIncome();
 
+            const corpService = new CorpService(ns);
+
+            const dividendEarnings = corpService.getDividendEarnings();
+
             // End paramaters, begin CSS: 
 
             removeByClassName('.HUD_el');
@@ -128,7 +133,7 @@ export async function main(ns) {
                 // gangRespect
                 hook0.insertAdjacentHTML('beforeend', `<element class="HUD_GN_R HUD_el" title="The respect of your gang.">Gang Respect</element><br class="HUD_el">`)
                 colorByClassName(".HUD_GN_R", theme['int'])
-                hook1.insertAdjacentHTML('beforeend', `<element class="HUD_GN_R HUD_el">${gangRespect + '<br class="HUD_el">'}</element>`)
+                hook1.insertAdjacentHTML('beforeend', `<element class="HUD_GN_R HUD_el">${Math.floor(gangRespect) + '<br class="HUD_el">'}</element>`)
                 colorByClassName(".HUD_GN_R", theme['int'])
 
                 // gangIncome
@@ -138,20 +143,28 @@ export async function main(ns) {
                 colorByClassName(".HUD_GN", theme['int'])
             }
 
+            if (corpService.hasCorp()) {
+                // corpDividends
+                hook0.insertAdjacentHTML('beforeend', `<element class="HUD_Corp_D HUD_el" title="The dividends of your corporation.">Corp Dividends</element><br class="HUD_el">`)
+                colorByClassName(".HUD_Corp_D", theme['rep'])
+                hook1.insertAdjacentHTML('beforeend', `<element class="HUD_Corp_D HUD_el">${"$" + dividendEarnings + '/sec<br class="HUD_el">'}</element>`)
+                colorByClassName(".HUD_Corp_D", theme['rep'])
+            }
+
             // scriptIncome
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc_H HUD_el" title="Money Gain from Scripts per Second.">ScrInc &nbsp;&nbsp;&nbsp;</element>`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc_H HUD_el" title="Money Gain from Scripts per Second.">Script Inc &nbsp;&nbsp;&nbsp;</element>`)
             colorByClassName(".HUD_ScrInc_H", theme['money'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc HUD_el">${"$" + scriptIncome + '/sec'}</element>`)
             colorByClassName(".HUD_ScrInc", theme['money'])
 
             // scriptXP
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrExp_H HUD_el" title="XP Gain from Scripts per Second."><br>ScrExp &nbsp;&nbsp;&nbsp;</element>`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrExp_H HUD_el" title="XP Gain from Scripts per Second."><br>Script Exp &nbsp;&nbsp;&nbsp;</element>`)
             colorByClassName(".HUD_ScrExp_H", theme['hack'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_ScrExp HUD_el"><br>${scriptXP + ' XP/sec'}</element>`)
             colorByClassName(".HUD_ScrExp", theme['hack'])
 
             // hacknetIncome
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>HNtInc &nbsp;&nbsp;&nbsp;</element>`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>Hacknet Inc &nbsp;&nbsp;&nbsp;</element>`)
             colorByClassName(".HUD_HNtInc_H", theme['money'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc HUD_el"><br>${"$" + hacknetIncome + '/sec'}</element>`)
             colorByClassName(".HUD_HNtInc", theme['money'])
