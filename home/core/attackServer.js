@@ -116,10 +116,7 @@ async function printServerDetails(ns, host, securityThresh, numTimesToHack, hack
   const nextExecutionTime = new Date().getTime() + estimatedTimeMS;
   const nextExcutionDate = new Date(nextExecutionTime);
 
-  ns.print(
-    `Next action at ${getFormattedTime(nextExcutionDate)} after ${getFormattedDuration(
-      estimatedTimeS
-    )}`
-  );
+  const estimatedTime = getFormattedDuration(estimatedTimeS);
+  ns.print(`Next action at ${getFormattedTime(nextExcutionDate)} after ${estimatedTime}`);
   return;
 }
