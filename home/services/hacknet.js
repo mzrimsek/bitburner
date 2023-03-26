@@ -1,9 +1,8 @@
-import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES, PORT_MAPPING } from 'utils.js';
+import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES } from 'utils.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
 export class HacknetService {
-
   MAX_LEVEL = 200;
   MAX_RAM = 64;
   MAX_CORES = 16;
@@ -90,34 +89,43 @@ export class HacknetService {
     const potentialUpgrades = nodes.reduce((items, node) => {
       if (node.level.current < this.MAX_LEVEL) {
         if (node.level.upgradeCost <= currentMoney) {
-          items = [...items, {
-            upgrade: HACKNET_UPGRADE_TYPES.LEVEL,
-            index: node.index,
-            cost: node.level.upgradeCost,
-            name: node.name
-          }];
+          items = [
+            ...items,
+            {
+              upgrade: HACKNET_UPGRADE_TYPES.LEVEL,
+              index: node.index,
+              cost: node.level.upgradeCost,
+              name: node.name
+            }
+          ];
         }
       }
 
       if (node.ram.current < this.MAX_RAM) {
         if (node.ram.upgradeCost <= currentMoney) {
-          items = [...items, {
-            upgrade: HACKNET_UPGRADE_TYPES.RAM,
-            index: node.index,
-            cost: node.ram.upgradeCost,
-            name: node.name
-          }];
+          items = [
+            ...items,
+            {
+              upgrade: HACKNET_UPGRADE_TYPES.RAM,
+              index: node.index,
+              cost: node.ram.upgradeCost,
+              name: node.name
+            }
+          ];
         }
       }
 
       if (node.cores.current < this.MAX_CORES) {
         if (node.cores.upgradeCost <= currentMoney) {
-          items = [...items, {
-            upgrade: HACKNET_UPGRADE_TYPES.CORES,
-            index: node.index,
-            cost: node.cores.upgradeCost,
-            name: node.name
-          }];
+          items = [
+            ...items,
+            {
+              upgrade: HACKNET_UPGRADE_TYPES.CORES,
+              index: node.index,
+              cost: node.cores.upgradeCost,
+              name: node.name
+            }
+          ];
         }
       }
 

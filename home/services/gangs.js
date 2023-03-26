@@ -103,8 +103,12 @@ export class GangService {
   _getNextUpgrade(gangMembers, memberUpgradeInfo) {
     const availableGangMemberUpgrades = gangMembers
       .reduce((upgrades, gangMember) => {
-        const memberUpgrades = gangMember.memberInfo.upgrades.concat(gangMember.memberInfo.augmentations);
-        const memberUpgradesByPrice = memberUpgradeInfo.filter(info => !memberUpgrades.includes(info.name));
+        const memberUpgrades = gangMember.memberInfo.upgrades.concat(
+          gangMember.memberInfo.augmentations
+        );
+        const memberUpgradesByPrice = memberUpgradeInfo.filter(
+          info => !memberUpgrades.includes(info.name)
+        );
         const upgradeData = memberUpgradesByPrice.map(upgrade => {
           return {
             name: upgrade.name,
@@ -144,8 +148,10 @@ export class GangService {
   _getNextGangMemberName() {
     const gangMemberNames = this.gang.getMemberNames();
 
-    const randomName = this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
-    const randomName2 = this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
+    const randomName =
+      this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
+    const randomName2 =
+      this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
     const newName = `${randomName} ${randomName2}`;
 
     if (gangMemberNames.includes(newName)) {

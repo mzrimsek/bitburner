@@ -1,7 +1,6 @@
 import { ACTIONS } from 'utils.js';
 
 export class SleeveService {
-
   SHOCK_MIN = 0;
   SYNC_MAX = 100;
 
@@ -17,16 +16,18 @@ export class SleeveService {
     sleeves.forEach((sleeve, index) => {
       if (sleeve.shock !== this.SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
-        eventHandler && eventHandler({
-          action: ACTIONS.SHOCK,
-          name: `Sleeve ${index}`
-        });
+        eventHandler &&
+          eventHandler({
+            action: ACTIONS.SHOCK,
+            name: `Sleeve ${index}`
+          });
       } else if (sleeve.sync !== this.SYNC_MAX) {
         this.sleeve.setToSynchronize(index);
-        eventHandler && eventHandler({
-          action: ACTIONS.SYNC,
-          name: `Sleeve ${index}`
-        });
+        eventHandler &&
+          eventHandler({
+            action: ACTIONS.SYNC,
+            name: `Sleeve ${index}`
+          });
       } else {
         const augmentsForSale = this.sleeve.getSleevePurchasableAugs(index);
         const affordableAugments = augmentsForSale.filter(augment => {
@@ -36,11 +37,12 @@ export class SleeveService {
         if (augmentsByCost.length > 0) {
           const augment = augmentsByCost[0];
           this.sleeve.purchaseSleeveAug(index, augment.name);
-          eventHandler && eventHandler({
-            action: ACTIONS.AUGMENT,
-            name: `Sleeve ${index}`,
-            name: augment.name
-          });
+          eventHandler &&
+            eventHandler({
+              action: ACTIONS.AUGMENT,
+              name: `Sleeve ${index}`,
+              type: augment.name
+            });
         }
       }
     });

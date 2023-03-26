@@ -1,7 +1,6 @@
 import { PORT_MAPPING } from 'utils.js';
 
 export class EnvService {
-
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;

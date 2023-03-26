@@ -1,7 +1,6 @@
 import { log as utilLog, ACTIONS, PORT_MAPPING } from 'utils.js';
 
 export class BotService {
-
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -60,13 +59,14 @@ export class BotService {
    *  @param {import("..").Server[]} bots
    */
   _getBotToUpgrade(bots) {
-    const mapped = bots.map(bot => {
-      return {
-        hostname: bot.hostname,
-        costToUpgrade: this.ns.getPurchasedServerUpgradeCost(bot.hostname, bot.maxRam * 2),
-        targetRam: bot.maxRam * 2
-      };
-    })
+    const mapped = bots
+      .map(bot => {
+        return {
+          hostname: bot.hostname,
+          costToUpgrade: this.ns.getPurchasedServerUpgradeCost(bot.hostname, bot.maxRam * 2),
+          targetRam: bot.maxRam * 2
+        };
+      })
       .filter(bot => {
         const money = this.ns.getPlayer().money;
         return money >= bot.costToUpgrade;

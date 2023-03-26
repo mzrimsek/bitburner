@@ -32,7 +32,9 @@ export class CorpService {
       if (currentDivisions === 0) {
         // create a tobacco division
         const divisionName =
-          this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
+          this.TOBACCO_DIVISION_NAMES[
+            Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)
+          ];
         this.corp.expandIndustry('Tobacco', divisionName);
       } else {
         currentDivisions.forEach(divisionName => {
@@ -48,11 +50,30 @@ export class CorpService {
             const products = divisionInfo.products;
 
             if (products.length === 0 && currentMoney >= 3000000000) {
-              const getCity = () => divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
+              const getCity = () =>
+                divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
 
-              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 1', 1000000000, 1000000000);
-              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 2', 250000000, 250000000);
-              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 3', 250000000, 250000000);
+              this.corp.makeProduct(
+                divisionInfo.name,
+                getCity(),
+                'Product 1',
+                1000000000,
+                1000000000
+              );
+              this.corp.makeProduct(
+                divisionInfo.name,
+                getCity(),
+                'Product 2',
+                250000000,
+                250000000
+              );
+              this.corp.makeProduct(
+                divisionInfo.name,
+                getCity(),
+                'Product 3',
+                250000000,
+                250000000
+              );
             } else {
               products.forEach(productName => {
                 const productInfo = this.corp.getProduct(divisionInfo.name, productName);

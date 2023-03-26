@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "moneyhack": "node ./hacks/moneyhack/moneyHack.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "prettier --write ./**",
+    "lint": "eslint --ext js ./**"
   },
   "repository": {
     "type": "git",
@@ -19,11 +21,17 @@
   "homepage": "https://github.com/mzrimsek/bitburner#readme",
   "type": "module",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.21.3",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md}": [
+      "eslint",
+      "prettier --write"
+    ]
   }
 }

@@ -1,0 +1,7 @@
+node_modules
+.env*
+*.json
+.gitignore
+LICENSE
+.prettierignore
+.husky

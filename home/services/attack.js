@@ -1,7 +1,6 @@
 import { log as utilLog, STARTUP_SCRIPTS, ACTIONS } from 'utils.js';
 
 export class AttackService {
-
   hackSource = 'home';
   excludedServers = [this.hackSource];
   hackFile = '/basic/hack.js';
@@ -15,7 +14,9 @@ export class AttackService {
 
   async initiateAttack(eventHandler) {
     const children = this._getChildren(this.hackSource);
-    const serverNames = this._getServerNames(this.hackSource, children).filter(serverName => !this.excludedServers.includes(serverName));
+    const serverNames = this._getServerNames(this.hackSource, children).filter(
+      serverName => !this.excludedServers.includes(serverName)
+    );
 
     await this._openServers(serverNames);
     const hackableServerNames = await this._getHackableServerNames(serverNames);
@@ -25,13 +26,13 @@ export class AttackService {
   }
 
   /**
- *  @param {string[]} hackableServerNames
- */
+   *  @param {string[]} hackableServerNames
+   */
   async _coordinateAttack(hackableServerNames, eventHandler) {
     const target = this._getTargetServer(hackableServerNames);
     this._log(`${target} identified`);
 
-    const moneyThreshhold = this.ns.getServerMaxMoney(target) * .9;
+    const moneyThreshhold = this.ns.getServerMaxMoney(target) * 0.9;
     const securityThreshhold = this.ns.getServerMinSecurityLevel(target) + 5;
 
     const numTimesToHack = 2.05;
@@ -127,7 +128,10 @@ export class AttackService {
 
     for (const serverName of hackableServernames) {
       currVal = this.ns.getServerMaxMoney(serverName);
-      currTime = this.ns.getWeakenTime(serverName) + this.ns.getGrowTime(serverName) + this.ns.getHackTime(serverName);
+      currTime =
+        this.ns.getWeakenTime(serverName) +
+        this.ns.getGrowTime(serverName) +
+        this.ns.getHackTime(serverName);
       currVal /= currTime;
       if (currVal >= optimalVal) {
         optimalVal = currVal;
@@ -143,11 +147,17 @@ export class AttackService {
    */
   async _getHackableServerNames(allServerNames) {
     const servers = await this._getServers(allServerNames);
-    const hackableServerNames = servers.filter(server => {
-      const hackingLevel = this.ns.getHackingLevel();
-      const requiredHackingLevel = this.ns.getServerRequiredHackingLevel(server.hostname);
-      return server.hasAdminRights && requiredHackingLevel <= hackingLevel && server.numOpenPortsRequired <= server.openPortCount;
-    }).map(server => server.hostname);
+    const hackableServerNames = servers
+      .filter(server => {
+        const hackingLevel = this.ns.getHackingLevel();
+        const requiredHackingLevel = this.ns.getServerRequiredHackingLevel(server.hostname);
+        return (
+          server.hasAdminRights &&
+          requiredHackingLevel <= hackingLevel &&
+          server.numOpenPortsRequired <= server.openPortCount
+        );
+      })
+      .map(server => server.hostname);
     const allNames = [this.hackSource, ...hackableServerNames];
     return [...new Set(allNames)];
   }
@@ -164,7 +174,7 @@ export class AttackService {
   async _openServers(serverNames) {
     this._log('opening servers...');
     const servers = await this._getServers(serverNames);
-    servers.forEach(async (server) => await this._openServer(server));
+    servers.forEach(async server => await this._openServer(server));
   }
 
   /**
@@ -203,7 +213,11 @@ export class AttackService {
 
     // get admin access
     const hasNukeHack = this.ns.fileExists('NUKE.exe', this.hackSource);
-    if (!server.hasAdminRights && hasNukeHack && server.numOpenPortsRequired <= server.openPortCount) {
+    if (
+      !server.hasAdminRights &&
+      hasNukeHack &&
+      server.numOpenPortsRequired <= server.openPortCount
+    ) {
       this._log(server.hostname, 'Getting root access');
       this.ns.nuke(server.hostname);
     }
@@ -238,7 +252,7 @@ export class AttackService {
       const isExcluded = this.excludedServers.includes(child);
       const isParent = parent && child === parent;
       return !isExcluded && !isParent;
-    })
+    });
   }
 
   /**
@@ -252,10 +266,12 @@ export class AttackService {
    *  @param {string} serverName
    */
   _getFreeRam(serverName) {
-    return serverName === this.hackSource ? this._getHackSourceFreeRam() : this._getServerFreeRam(serverName);
+    return serverName === this.hackSource
+      ? this._getHackSourceFreeRam()
+      : this._getServerFreeRam(serverName);
   }
 
-  /** 
+  /**
    *  @param {string} serverName
    */
   _getServerFreeRam(serverName) {
@@ -271,7 +287,7 @@ export class AttackService {
     return freeRam - specialRam;
   }
 
-  /** 
+  /**
    *  @param {string} serverName
    */
   _killScripts(serverName) {

@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "parser": "@babel/eslint-parser",
+  "extends": ["eslint:recommended", "prettier"],
+  "rules": {
+    "no-constant-condition": "off",
+    "no-undef": "off",
+    "no-unused-vars": "warn"
+  },
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  }
+}
