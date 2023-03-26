@@ -35,6 +35,18 @@ export class CorpService {
         // buy a warehouse
         // enable smart supply
         // repeat until have expanded to all cities and have a warehouse in each
+
+        // for each product/byproduct in division
+        // if product is produced with no sell price set
+        // set to MAX MP
+        // if byproduct is produced with no sell price set
+        // set to PROD MP
+
+        // eventually we want to add logic here to buy products that will boost production
+        // for each division we will want to look at pricing in each city to determine where to buy
+        // only buy up to 80% warehouse capacity
+        // probably want logic to upgrade warehouse size
+        // possibly incorporate bulk buying into this logic?
       }
 
       // handle hiring and allocating - we only need to worry about logic for expanding bc there is a research for automatic hiring
