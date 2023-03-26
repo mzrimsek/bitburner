@@ -16,7 +16,7 @@ export async function main(ns) {
     await ns.sleep(100);
 
     ns.resizeTail(525, 250);
-    ns.moveTail(getDocument().body.clientWidth - 535, 910, ns.pid);
+    ns.moveTail(getDocument().body.clientWidth - 535, 970, ns.pid);
 
     let logs = [];
 

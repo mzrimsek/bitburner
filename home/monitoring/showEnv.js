@@ -17,7 +17,7 @@ export async function main(ns) {
 
     const width = 390;
     ns.resizeTail(width, 200, ns.pid);
-    ns.moveTail(getDocument().body.clientWidth - width + 10, 700, ns.pid);
+    ns.moveTail(getDocument().body.clientWidth - width - 10, 760, ns.pid);
 
     while (true) {
         ns.clearLog();
