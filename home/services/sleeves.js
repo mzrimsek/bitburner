@@ -46,6 +46,10 @@ export class SleeveService {
     });
   }
 
+  hasSleeves() {
+    return this.sleeve.getNumSleeves() > 0;
+  }
+
   _getSleeves() {
     const numSleeves = this.sleeve.getNumSleeves();
     return new Array(numSleeves).map((_, i) => this.sleeve.getSleeve(i));

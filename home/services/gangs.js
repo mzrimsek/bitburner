@@ -69,10 +69,6 @@ export class GangService {
     return this.gang.inGang();
   }
 
-  shouldHandleGang() {
-    return this.ns.peek(PORT_MAPPING.DO_GANG) === 1;
-  }
-
   _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
     if (this.gang.canRecruitMember()) {
       this.gang.recruitMember(this._getNextGangMemberName());

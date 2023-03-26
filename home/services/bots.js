@@ -31,10 +31,6 @@ export class BotService {
     }
   }
 
-  shouldBuyOrUpgradeBots() {
-    return this.ns.peek(PORT_MAPPING.DO_BUY) === 1;
-  }
-
   /**
    *  @param {import("..").Server[]} bots
    *  @param {import("..").ScriptHandler?} eventHandler

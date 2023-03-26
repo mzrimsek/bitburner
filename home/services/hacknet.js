@@ -60,10 +60,6 @@ export class HacknetService {
     return this.ns.formatNumber(hacknetProductionRaw, 2);
   }
 
-  shouldPurchaseUpgradeOrNode() {
-    return this.ns.peek(PORT_MAPPING.DO_BUY) === 1;
-  }
-
   _getNextUpgrade() {
     const nodeCount = this.ns.hacknet.numNodes();
     const nodes = [...new Array(nodeCount)].map((_, index) => {

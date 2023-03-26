@@ -82,11 +82,6 @@ function padTimePart(part) {
     return padString(`${part}`, 2, '0');
 }
 
-/** @param {import(".").NS } ns */
-export function getShouldDoStonks(ns) {
-    return ns.peek(PORT_MAPPING.DO_STONKS) === 1;
-}
-
 export function getDocument() {
     return eval(`document`);
 }

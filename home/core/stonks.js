@@ -1,4 +1,5 @@
-import { getShouldDoStonks, getFormattedTime, PORT_MAPPING, getDocument, ACTIONS } from 'utils.js';
+import { getFormattedTime, PORT_MAPPING, getDocument, ACTIONS } from 'utils.js';
+import { EnvService } from 'services/env.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -112,7 +113,7 @@ async function trader(ns) {
         const isLong = stock.getForecast(sym) > 0.5;
         const amountToBuy = stock.getMaxShares(sym) * MAX_STOCK_OWNED_PERCENT - shares - sharesShort;
 
-        if (getShouldDoStonks(ns)) {
+        if (new EnvService(ns).getDoStonks()) {
             if (isLong) {
                 const amountToAfford = Math.min(amountToBuy, Math.floor(money / stock.getAskPrice(sym)));
                 if (amountToAfford > 0 && ns.getPlayer().bitNodeN) {
@@ -139,7 +140,7 @@ async function trader(ns) {
 
 /** @param {import("..").NS } ns */
 function availableMoney(ns) {
-    const keepMoney = ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M) * 1000000;
+    const keepMoney = new EnvService(ns).getMillionsToKeepLiquid() * 1000000;
     const money = ns.getServerMoneyAvailable('home') - keepMoney;
     return money;
 }

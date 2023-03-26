@@ -1,30 +1,42 @@
 import { logCustomScriptEvent } from 'utils.js';
 import { BotService } from 'services/bots.js';
+import { EnvService } from 'services/env.js';
 import { HacknetService } from 'services/hacknet.js';
 import { GangService } from 'services/gangs.js';
 import { SleeveService } from 'services/sleeves.js';
+import { CorpService } from 'services/corp.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
+  const envService = new EnvService(ns);
   const botService = new BotService(ns);
   const hacknetService = new HacknetService(ns);
   const gangService = new GangService(ns);
   const sleeveService = new SleeveService(ns);
+  const corpService = new CorpService(ns);
+
+  const eventHandler = scriptEvent => logCustomScriptEvent(ns, scriptEvent);
 
   while (true) {
-    if (hacknetService.shouldPurchaseUpgradeOrNode()) {
-      hacknetService.purchaseUpgradeOrNode(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
+    if (envService.getDoBuy()) {
+      hacknetService.purchaseUpgradeOrNode(eventHandler);
     }
 
-    if (botService.shouldBuyOrUpgradeBots()) {
-      botService.buyOrUpgradeBots(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
+    if (envService.getDoBuy()) {
+      botService.buyOrUpgradeBots(eventHandler);
     }
 
-    if (gangService.hasGang() && gangService.shouldHandleGang()) {
-      gangService.handleGang(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
+    if (gangService.hasGang() && envService.getDoGang()) {
+      gangService.handleGang(eventHandler);
     }
 
-    sleeveService.handleSleeves(scriptEvent => logCustomScriptEvent(ns, scriptEvent));
+    if (sleeveService.hasSleeves()) {
+      sleeveService.handleSleeves(eventHandler);
+    }
+
+    if (corpService.hasCorp()) {
+      corpService.handleCorporation(eventHandler);
+    }
 
     await ns.sleep(100);
   }
