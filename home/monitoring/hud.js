@@ -152,7 +152,7 @@ export async function main(ns) {
             }
 
             // scriptIncome
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc_H HUD_el" title="Money Gain from Scripts per Second.">Script Inc &nbsp;&nbsp;&nbsp;</element>`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc_H HUD_el" title="Money Gain from Scripts per Second.">Script Income &nbsp;&nbsp;&nbsp;</element>`)
             colorByClassName(".HUD_ScrInc_H", theme['money'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_ScrInc HUD_el">${"$" + scriptIncome + '/sec'}</element>`)
             colorByClassName(".HUD_ScrInc", theme['money'])
@@ -164,7 +164,7 @@ export async function main(ns) {
             colorByClassName(".HUD_ScrExp", theme['hack'])
 
             // hacknetIncome
-            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>Hacknet Inc &nbsp;&nbsp;&nbsp;</element>`)
+            hook0.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>Hacknet Income &nbsp;&nbsp;&nbsp;</element>`)
             colorByClassName(".HUD_HNtInc_H", theme['money'])
             hook1.insertAdjacentHTML('beforeend', `<element class="HUD_HNtInc HUD_el"><br>${"$" + hacknetIncome + '/sec'}</element>`)
             colorByClassName(".HUD_HNtInc", theme['money'])
