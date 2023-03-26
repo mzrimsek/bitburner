@@ -154,7 +154,7 @@ export class GangService {
       this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
     const newName = `${randomName} ${randomName2}`;
 
-    if (gangMemberNames.includes(newName)) {
+    if (gangMemberNames.includes(newName) || randomName === randomName2) {
       return this._getNextGangMemberName();
     }
 
