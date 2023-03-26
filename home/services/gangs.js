@@ -1,23 +1,22 @@
-import { ACTIONS, PORT_MAPPING } from 'utils.js';
+import { ACTIONS } from 'utils.js';
 
 export class GangService {
-
   GANG_MEMBER_NAMES = [
-    "Razor",
-    "Vandal",
-    "Spike",
-    "Siren",
-    "Blaze",
-    "Rebel",
-    "Ghost",
-    "Raven",
-    "Fury",
-    "Ace",
-    "Shadow",
-    "Wolf",
-    "Nova",
-    "Bullet",
-    "Storm"
+    'Razor',
+    'Vandal',
+    'Spike',
+    'Siren',
+    'Blaze',
+    'Rebel',
+    'Ghost',
+    'Raven',
+    'Fury',
+    'Ace',
+    'Shadow',
+    'Wolf',
+    'Nova',
+    'Bullet',
+    'Storm'
   ];
   WANTED_LEVEL_PENALTY_THRESHOLD = 25;
 
@@ -95,30 +94,32 @@ export class GangService {
         action: ACTIONS.UPGRADE,
         type: nextUpgrade.name,
         name: nextUpgrade.memberName,
-        cost: nextUpgrade.cost,
+        cost: nextUpgrade.cost
       };
       eventHandler && eventHandler(currentAction);
     }
   }
 
   _getNextUpgrade(gangMembers, memberUpgradeInfo) {
-    const availableGangMemberUpgrades = gangMembers.reduce((upgrades, gangMember) => {
-      const memberUpgrades = gangMember.memberInfo.upgrades.concat(gangMember.memberInfo.augmentations);
-      const memberUpgradesByPrice = memberUpgradeInfo.filter(info => !memberUpgrades.includes(info.name));
-      const upgradeData = memberUpgradesByPrice.map(upgrade => {
-        return {
-          name: upgrade.name,
-          cost: upgrade.cost,
-          type: upgrade.type,
-          stats: upgrade.stats,
-          memberName: gangMember.name
-        };
-      });
-      const currentMoney = this.ns.getPlayer().money;
-      const affordableUpgrades = upgradeData.filter(upgrade => upgrade.cost <= currentMoney);
+    const availableGangMemberUpgrades = gangMembers
+      .reduce((upgrades, gangMember) => {
+        const memberUpgrades = gangMember.memberInfo.upgrades.concat(gangMember.memberInfo.augmentations);
+        const memberUpgradesByPrice = memberUpgradeInfo.filter(info => !memberUpgrades.includes(info.name));
+        const upgradeData = memberUpgradesByPrice.map(upgrade => {
+          return {
+            name: upgrade.name,
+            cost: upgrade.cost,
+            type: upgrade.type,
+            stats: upgrade.stats,
+            memberName: gangMember.name
+          };
+        });
+        const currentMoney = this.ns.getPlayer().money;
+        const affordableUpgrades = upgradeData.filter(upgrade => upgrade.cost <= currentMoney);
 
-      return [...upgrades, ...affordableUpgrades];
-    }, []).sort((a, b) => a.cost - b.cost);
+        return [...upgrades, ...affordableUpgrades];
+      }, [])
+      .sort((a, b) => a.cost - b.cost);
 
     if (availableGangMemberUpgrades.length === 0) {
       return null;
@@ -179,5 +180,4 @@ export class GangService {
       };
     });
   }
-
 }

@@ -1,4 +1,14 @@
 export class CorpService {
+  TOBACCO_DIVISION_NAMES = [
+    'Leaf Life',
+    'Smokes Unlimited Inc.',
+    'Cigarette Corp.',
+    'Smoke and Mirrors',
+    'Nicotine Nation Corp.',
+    'Puff Puff Inc.',
+    'Cloud Chasers Corp.'
+  ];
+
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -18,13 +28,44 @@ export class CorpService {
         this.corp.unlockUpgrade('Smart Supply');
       }
     } else {
-
-      // handle divisions
       const currentDivisions = corpInfo.divisions;
-
       if (currentDivisions === 0) {
         // create a tobacco division
+        const divisionName =
+          this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
+        this.corp.expandIndustry('Tobacco', divisionName);
       } else {
+        currentDivisions.forEach(divisionName => {
+          const divisionInfo = this.corp.getDivision(divisionName);
+          const makesProducts = divisionInfo.makesProducts;
+
+          // enable smart supply in all cities
+          divisionInfo.cities.forEach(cityName => {
+            const info = this.corp.setSmartSupplyUseLeftovers;
+          });
+
+          if (makesProducts) {
+            const products = divisionInfo.products;
+
+            if (products.length === 0 && currentMoney >= 3000000000) {
+              const getCity = () => divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
+
+              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 1', 1000000000, 1000000000);
+              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 2', 250000000, 250000000);
+              this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 3', 250000000, 250000000);
+            } else {
+              products.forEach(productName => {
+                const productInfo = this.corp.getProduct(divisionInfo.name, productName);
+                if (productInfo.developmentProgress === 100) {
+                  // product is ready to be sold
+                  // set sell rate ro MAX
+                  // set sell price to MP
+                }
+              });
+            }
+          }
+          console.log(divisionInfo);
+        });
         // create products
 
         // if division has products, create 3
@@ -70,5 +111,4 @@ export class CorpService {
     const corpInfo = this.corp.getCorporation();
     return this.ns.formatNumber(corpInfo.dividendEarnings);
   }
-
 }

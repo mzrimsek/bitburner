@@ -4,7 +4,8 @@
   "description": "Some scripts I used. I stole some of them.",
   "main": "index.js",
   "scripts": {
-    "moneyhack": "node ./hacks/moneyhack/moneyHack.js"
+    "moneyhack": "node ./hacks/moneyhack/moneyHack.js",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,13 @@
     "url": "https://github.com/mzrimsek/bitburner/issues"
   },
   "homepage": "https://github.com/mzrimsek/bitburner#readme",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.7"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  }
 }
