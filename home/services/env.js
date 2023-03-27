@@ -10,6 +10,10 @@ export class EnvService {
     return this._getBooleanEnvVal('DO_GANG');
   }
 
+  getShouldAscendGangMembers() {
+    return this._getBooleanEnvVal('DO_GANG_ASCEND');
+  }
+
   getDoBuy() {
     return this._getBooleanEnvVal('DO_BUY');
   }

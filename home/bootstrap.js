@@ -36,6 +36,7 @@ export async function main(ns) {
   } else {
     initPort(ns, PORT_MAPPING.DO_GANG, 1);
   }
+  initPort(ns, PORT_MAPPING.DO_GANG_ASCEND, 1);
 
   const currentLiquidCash = ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   const initLiquidCash = currentLiquidCash !== DEFAULT_PORT_VALUE ? currentLiquidCash : 5;

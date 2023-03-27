@@ -18,6 +18,7 @@ export const PORT_MAPPING = {
   DO_BUY: 1,
   DO_STONKS: 2,
   DO_GANG: 3,
+  DO_GANG_ASCEND: 4,
   STONKS_LIQUID_CASH_M: 20,
   LOG_FEED: 100
 };
