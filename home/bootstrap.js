@@ -68,6 +68,7 @@ function printHelpMessage(ns) {
   ns.tprint('  tbuy\t\t\t\tToggle bots and hacknet nodes and upgrades');
   ns.tprint('  tstonk\t\t\t\tToggle stonks');
   ns.tprint('  tgang\t\t\t\tToggle gang monitoring');
+  ns.tprint('  tgasc\t\t\t\tToggle automatic gang member ascension');
   ns.tprint('  slimit\t\t\t\tSet the limit for how much liquid cash to keep out of stonks');
 }
 /* bots printout
