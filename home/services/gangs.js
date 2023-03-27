@@ -1,4 +1,6 @@
 import { ACTIONS } from 'utils.js';
+// import the env service
+import { EnvService } from 'services/env.js';
 
 export class GangService {
   GANG_MEMBER_NAMES = [
@@ -24,6 +26,8 @@ export class GangService {
   constructor(ns) {
     this.ns = ns;
     this.gang = this.ns.gang;
+
+    this.envService = new EnvService(ns);
   }
 
   /** @param {import("..").ScriptHandler?} eventHandler */
@@ -73,19 +77,17 @@ export class GangService {
       this.gang.recruitMember(this._getNextGangMemberName());
     }
 
-    // we need to rethink a bit
-    // this is getting stuck in an infinite loop because we will ascend a member, then do all their upgrades, then check if there's any members to ascend, find that member, and repeat
-    // instead we need to one ascend, then do all their upgrades, then check if we should ascend again - we'll need another port to track this similar to the "num times to upgrade" env we were playing with before
-
-    const gangMembersWhoCanAscend = gangMembers.filter(gangMember => gangMember.canAscend);
-    gangMembersWhoCanAscend.forEach(gangMember => {
-      this.gang.ascendMember(gangMember.name);
-      const currentAction = {
-        action: ACTIONS.ASCEND,
-        name: gangMember.name
-      };
-      eventHandler && eventHandler(currentAction);
-    });
+    if (this.envService.getShouldAscendGangMembers()) {
+      const gangMembersWhoCanAscend = gangMembers.filter(gangMember => gangMember.canAscend);
+      gangMembersWhoCanAscend.forEach(gangMember => {
+        this.gang.ascendMember(gangMember.name);
+        const currentAction = {
+          action: ACTIONS.ASCEND,
+          name: gangMember.name
+        };
+        eventHandler && eventHandler(currentAction);
+      });
+    }
 
     let nextUpgrade = this._getNextUpgrade(gangMembers, memberUpgradeInfo);
     if (nextUpgrade) {

@@ -1,4 +1,4 @@
-import { log as utilLog, ACTIONS, PORT_MAPPING } from 'utils.js';
+import { log as utilLog, ACTIONS } from 'utils.js';
 
 export class BotService {
   /** @param {import("..").NS } ns */

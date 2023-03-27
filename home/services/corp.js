@@ -75,23 +75,20 @@ export class CorpService {
                 250000000
               );
             } else {
-              products.forEach(productName => {
-                const productInfo = this.corp.getProduct(divisionInfo.name, productName);
-                if (productInfo.developmentProgress === 100) {
-                  // product is ready to be sold
-                  // set sell rate ro MAX
-                  // set sell price to MP
-                }
-              });
+              if (this.hasWarehouseApi()) {
+                products.forEach(productName => {
+                  const productInfo = this.corp.getProduct(divisionInfo.name, productName);
+                  if (productInfo.developmentProgress === 100) {
+                    // product is ready to be sold
+                    // set sell rate ro MAX
+                    // set sell price to MP
+                  }
+                });
+              }
             }
           }
           console.log(divisionInfo);
         });
-        // create products
-
-        // if division has products, create 3
-        // 1 with 1b invested in both
-        // 2 with 1m invested in each
 
         // expand division to new city
         // buy a warehouse
@@ -126,6 +123,18 @@ export class CorpService {
 
   hasCorp() {
     return this.corp.getCorporation() != null;
+  }
+
+  hasWarehouseApi() {
+    try {
+      const corpInfo = this.corp.getCorporation();
+      const testDivision = this.corp.getDivision(corpInfo.divisions[0]);
+      const testCity = testDivision.cities[0];
+      this.corp.getUpgradeWarehouseCost(testDivision.name, testCity);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   getDividendEarnings() {
