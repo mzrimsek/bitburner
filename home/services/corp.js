@@ -79,9 +79,9 @@ export class CorpService {
                 products.forEach(productName => {
                   const productInfo = this.corp.getProduct(divisionInfo.name, productName);
                   if (productInfo.developmentProgress === 100) {
-                    // product is ready to be sold
-                    // set sell rate ro MAX
-                    // set sell price to MP
+                    divisionInfo.cities.forEach(cityName => {
+                      this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
+                    });
                   }
                 });
               }
@@ -96,8 +96,6 @@ export class CorpService {
         // repeat until have expanded to all cities and have a warehouse in each
 
         // for each product/byproduct in division
-        // if product is produced with no sell price set
-        // set to MAX MP
         // if byproduct is produced with no sell price set
         // set to PROD MP
 
