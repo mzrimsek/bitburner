@@ -21,8 +21,15 @@ export class AttackService {
     await this._openServers(serverNames);
     const hackableServerNames = await this._getHackableServerNames(serverNames);
     const ownedServerNames = await this._getOwnedServerNames();
-    const allServerNamesToAttackFrom = [...hackableServerNames, ...ownedServerNames];
-    await this._coordinateAttack(allServerNamesToAttackFrom, eventHandler);
+    const allServerNames = [...hackableServerNames, ...ownedServerNames];
+    const distinctServerNames = [...new Set(allServerNames)];
+    // TODO possibly make hacking from the hacknet servers be an env to toggle
+    // would need to make sure that after toggling off, all scripts on the hacknet servers are killed
+    const nonHacknetServerNames = distinctServerNames.filter(
+      serverName => !serverName.includes('hacknet')
+    );
+    console.log(nonHacknetServerNames);
+    await this._coordinateAttack(nonHacknetServerNames, eventHandler);
   }
 
   /**
