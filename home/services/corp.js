@@ -45,9 +45,8 @@ export class CorpService {
             this.corp.setSmartSupply(divisionName, cityName, true);
           });
 
+          const products = divisionInfo.products;
           if (makesProducts) {
-            const products = divisionInfo.products;
-
             if (products.length === 0 && currentMoney >= 3000000000) {
               const getCity = () =>
                 divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];

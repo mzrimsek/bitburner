@@ -1,13 +1,8 @@
-import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES } from 'utils.js';
+import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES, hasFormulas } from 'utils.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
 export class HacknetService {
-  MAX_LEVEL = 200;
-  MAX_RAM = 64;
-  MAX_CORES = 16;
-  MAX_CACHE = 15;
-
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
@@ -101,7 +96,7 @@ export class HacknetService {
 
     const currentMoney = this.ns.getPlayer().money;
     const potentialUpgrades = nodes.reduce((items, node) => {
-      if (node.level.current < this.MAX_LEVEL) {
+      if (node.level.current < this._getMaxLevel()) {
         if (node.level.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -115,7 +110,7 @@ export class HacknetService {
         }
       }
 
-      if (node.ram.current < this.MAX_RAM) {
+      if (node.ram.current < this._getMaxRam()) {
         if (node.ram.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -129,7 +124,7 @@ export class HacknetService {
         }
       }
 
-      if (node.cores.current < this.MAX_CORES) {
+      if (node.cores.current < this._getMaxCores()) {
         if (node.cores.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -143,7 +138,8 @@ export class HacknetService {
         }
       }
 
-      if (node.cache && node.cache.current < this.MAX_CACHE) {
+      const maxCache = this._getMaxCache();
+      if (node.cache && maxCache && node.cache.current < maxCache) {
         if (node.cache.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -188,6 +184,34 @@ export class HacknetService {
         return false;
       }
     }
+  }
+
+  _getMaxLevel() {
+    return this._getHacknetConstant('MaxLevel', 200);
+  }
+
+  _getMaxRam() {
+    return this._getHacknetConstant('MaxRam', 64);
+  }
+
+  _getMaxCores() {
+    return this._getHacknetConstant('MaxCores', 16);
+  }
+
+  _getMaxCache() {
+    return this._getHacknetConstant('MaxCache', 15);
+  }
+
+  _getHacknetConstant(valueField, noFormulasDefault) {
+    if (!hasFormulas(this.ns)) {
+      return noFormulasDefault;
+    }
+
+    if (this.isHacknetServers()) {
+      return this.ns.formulas.hacknetServers.constants()[valueField];
+    }
+
+    return this.ns.formulas.hacknetNodes.constants()[valueField];
   }
 
   _log(...args) {

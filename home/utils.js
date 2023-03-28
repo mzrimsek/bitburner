@@ -203,3 +203,8 @@ function logEvent(ns, scriptEvent) {
     lastEventMessage = messageWithoutTime;
   }
 }
+
+/** @param { import(".").NS } ns */
+export function hasFormulas(ns) {
+  return ns.fileExists('Formulas.exe', 'home');
+}
