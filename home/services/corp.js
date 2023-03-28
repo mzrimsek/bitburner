@@ -20,30 +20,29 @@ export class CorpService {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
-    // if you do not have smart supply, it should be the first thing you buy with a new corp
-    const hasSmartSupply = this.corp.hasUnlockUpgrade('Smart Supply');
-    if (!hasSmartSupply) {
-      const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
-      if (currentMoney >= costOfSmartSupply) {
-        this.corp.unlockUpgrade('Smart Supply');
+    const currentDivisions = corpInfo.divisions;
+    if (currentDivisions.length === 0) {
+      // create a tobacco division
+      const divisionName =
+        this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
+      this.corp.expandIndustry('Tobacco', divisionName);
+
+      // if you do not have smart supply, it should be the first thing you buy with a new corp
+      const hasSmartSupply = this.corp.hasUnlockUpgrade('Smart Supply');
+      if (!hasSmartSupply) {
+        const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
+        if (currentMoney >= costOfSmartSupply) {
+          this.corp.unlockUpgrade('Smart Supply');
+        }
       }
     } else {
-      const currentDivisions = corpInfo.divisions;
-      if (currentDivisions === 0) {
-        // create a tobacco division
-        const divisionName =
-          this.TOBACCO_DIVISION_NAMES[
-            Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)
-          ];
-        this.corp.expandIndustry('Tobacco', divisionName);
-      } else {
-        currentDivisions.forEach(divisionName => {
-          const divisionInfo = this.corp.getDivision(divisionName);
-          const makesProducts = divisionInfo.makesProducts;
+      currentDivisions.forEach(divisionName => {
+        const divisionInfo = this.corp.getDivision(divisionName);
+        const makesProducts = divisionInfo.makesProducts;
 
-          // enable smart supply in all cities
+        if (this.hasWarehouseApi()) {
           divisionInfo.cities.forEach(cityName => {
-            const info = this.corp.setSmartSupplyUseLeftovers;
+            this.corp.setSmartSupply(divisionName, cityName, true);
           });
 
           if (makesProducts) {
@@ -74,49 +73,46 @@ export class CorpService {
                 250000000,
                 250000000
               );
-            } else {
-              if (this.hasWarehouseApi()) {
-                products.forEach(productName => {
-                  const productInfo = this.corp.getProduct(divisionInfo.name, productName);
-                  if (productInfo.developmentProgress === 100 && !productInfo.sCost) {
-                    divisionInfo.cities.forEach(cityName => {
-                      this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
-                    });
-                  }
+            }
+          } else {
+            products.forEach(productName => {
+              const productInfo = this.corp.getProduct(divisionInfo.name, productName);
+              if (productInfo.developmentProgress === 100 && !productInfo.sCost) {
+                divisionInfo.cities.forEach(cityName => {
+                  this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
                 });
               }
-            }
+            });
           }
-          console.log(divisionInfo);
-        });
+        }
+      });
 
-        // expand division to new city
-        // buy a warehouse
-        // enable smart supply
-        // repeat until have expanded to all cities and have a warehouse in each
+      // expand division to new city
+      // buy a warehouse
+      // enable smart supply
+      // repeat until have expanded to all cities and have a warehouse in each
 
-        // for each product/byproduct in division
-        // if byproduct is produced with no sell price set
-        // set to PROD MP
+      // for each product/byproduct in division
+      // if byproduct is produced with no sell price set
+      // set to PROD MP
 
-        // eventually we want to add logic here to buy products that will boost production
-        // for each division we will want to look at pricing in each city to determine where to buy
-        // only buy up to 80% warehouse capacity
-        // probably want logic to upgrade warehouse size
-        // possibly incorporate bulk buying into this logic?
-      }
-
-      // handle hiring and allocating - we only need to worry about logic for expanding bc there is a research for automatic hiring
-      // I think we should look at all divisions in all cities and evenly build up everything
-      // we should have percentages defined to determine how much to allocate to each type of employee
-
-      // handle research
-
-      // handle repeat upgrades
-
-      // if exporting is available
-      // add logic to export products to and from cities for each division to optimize profit
+      // eventually we want to add logic here to buy products that will boost production
+      // for each division we will want to look at pricing in each city to determine where to buy
+      // only buy up to 80% warehouse capacity
+      // probably want logic to upgrade warehouse size
+      // possibly incorporate bulk buying into this logic?
     }
+
+    // handle hiring and allocating - we only need to worry about logic for expanding bc there is a research for automatic hiring
+    // I think we should look at all divisions in all cities and evenly build up everything
+    // we should have percentages defined to determine how much to allocate to each type of employee
+
+    // handle research
+
+    // handle repeat upgrades
+
+    // if exporting is available
+    // add logic to export products to and from cities for each division to optimize profit
   }
 
   hasCorp() {

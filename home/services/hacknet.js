@@ -20,7 +20,10 @@ export class HacknetService {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
       const currentMoney = this.ns.getPlayer().money;
 
-      if (nodeCost <= currentMoney) {
+      if (
+        nodeCost <= currentMoney &&
+        this.ns.hacknet.numNodes() !== this.ns.hacknet.maxNumNodes()
+      ) {
         this._log(`Buying new node for ${nodeCost}`);
         const newIndex = this.ns.hacknet.purchaseNode();
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
