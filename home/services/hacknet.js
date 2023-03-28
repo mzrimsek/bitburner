@@ -6,6 +6,7 @@ export class HacknetService {
   MAX_LEVEL = 200;
   MAX_RAM = 64;
   MAX_CORES = 16;
+  MAX_CACHE = 15;
 
   /** @param {import("..").NS } ns */
   constructor(ns) {
@@ -49,6 +50,10 @@ export class HacknetService {
     }
   }
 
+  isHacknetServers() {
+    return this.ns.hacknet.numNodes() !== 0 && this.ns.hacknet.getNodeStats(0).cache !== undefined;
+  }
+
   getHacknetIncome() {
     const numHackNetNodes = this.ns.hacknet.numNodes();
     let hacknetProductionRaw = 0;
@@ -75,12 +80,18 @@ export class HacknetService {
         current: nodeInfo.cores,
         upgradeCost: this.ns.hacknet.getCoreUpgradeCost(index, 1)
       };
+      const hasCache = nodeInfo.cache !== undefined;
+      const cache = {
+        current: nodeInfo.cache,
+        upgradeCost: this.ns.hacknet.getCacheUpgradeCost(index, 1)
+      };
 
       return {
         ...nodeInfo,
         level: level,
         ram: ram,
         cores: cores,
+        cache: hasCache ? cache : undefined,
         index
       };
     });
@@ -129,6 +140,20 @@ export class HacknetService {
         }
       }
 
+      if (node.cache && node.cache.current < this.MAX_CACHE) {
+        if (node.cache.upgradeCost <= currentMoney) {
+          items = [
+            ...items,
+            {
+              upgrade: HACKNET_UPGRADE_TYPES.CACHE,
+              index: node.index,
+              cost: node.cache.upgradeCost,
+              name: node.name
+            }
+          ];
+        }
+      }
+
       return items;
     }, []);
 
@@ -152,6 +177,9 @@ export class HacknetService {
       }
       case HACKNET_UPGRADE_TYPES.CORES: {
         return this.ns.hacknet.upgradeCore(next.index, 1);
+      }
+      case HACKNET_UPGRADE_TYPES.CACHE: {
+        return this.ns.hacknet.upgradeCache(next.index, 1);
       }
       default: {
         return false;

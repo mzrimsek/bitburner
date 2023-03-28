@@ -94,8 +94,7 @@ export async function main(ns) {
       var scriptIncome = ns.formatNumber(cumulative, 2); // $/sec
       var scriptXP = ns.formatNumber(ns.getTotalScriptExpGain(), 2); // xp/sec
 
-      const hacknetIncome = new HacknetService(ns).getHacknetIncome();
-
+      const hacknetService = new HacknetService(ns);
       const corpService = new CorpService(ns);
 
       const dividendEarnings = corpService.getDividendEarnings();
@@ -213,17 +212,19 @@ export async function main(ns) {
       );
       colorByClassName('.HUD_ScrExp', theme['hack']);
 
-      // hacknetIncome
-      hook0.insertAdjacentHTML(
-        'beforeend',
-        `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>Hacknet Income &nbsp;&nbsp;&nbsp;</element>`
-      );
-      colorByClassName('.HUD_HNtInc_H', theme['money']);
-      hook1.insertAdjacentHTML(
-        'beforeend',
-        `<element class="HUD_HNtInc HUD_el"><br>${'$' + hacknetIncome + '/sec'}</element>`
-      );
-      colorByClassName('.HUD_HNtInc', theme['money']);
+      if (!hacknetService.isHacknetServers()) {
+        const hacknetIncome = hacknetService.getHacknetIncome();
+        hook0.insertAdjacentHTML(
+          'beforeend',
+          `<element class="HUD_HNtInc_H HUD_el" title="Money Gain from Hacknet per Second."><br>Hacknet Income &nbsp;&nbsp;&nbsp;</element>`
+        );
+        colorByClassName('.HUD_HNtInc_H', theme['money']);
+        hook1.insertAdjacentHTML(
+          'beforeend',
+          `<element class="HUD_HNtInc HUD_el"><br>${'$' + hacknetIncome + '/sec'}</element>`
+        );
+        colorByClassName('.HUD_HNtInc', theme['money']);
+      }
 
       // playerKarma
       hook0.insertAdjacentHTML(
