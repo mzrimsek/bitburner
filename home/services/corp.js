@@ -78,7 +78,7 @@ export class CorpService {
               if (this.hasWarehouseApi()) {
                 products.forEach(productName => {
                   const productInfo = this.corp.getProduct(divisionInfo.name, productName);
-                  if (productInfo.developmentProgress === 100) {
+                  if (productInfo.developmentProgress === 100 && !productInfo.sCost) {
                     divisionInfo.cities.forEach(cityName => {
                       this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
                     });
