@@ -120,11 +120,7 @@ export class CorpService {
   }
 
   hasCorp() {
-    try {
-      return this.corp.getCorporation() != null; // the != is intentional to try and catch more falsy cases
-    } catch {
-      return false;
-    }
+    return this.corp.hasCorporation();
   }
 
   hasWarehouseApi() {
