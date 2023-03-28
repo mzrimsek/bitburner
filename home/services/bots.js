@@ -30,6 +30,10 @@ export class BotService {
     }
   }
 
+  canBuyBots() {
+    return this.ns.getPurchasedServerLimit() !== 0;
+  }
+
   /**
    *  @param {import("..").Server[]} bots
    *  @param {import("..").ScriptHandler?} eventHandler
