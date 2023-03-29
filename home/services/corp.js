@@ -88,12 +88,8 @@ export class CorpService {
           divisionInfo.products.forEach(productName => {
             const productInfo = this.corp.getProduct(divisionInfo.name, productName);
             // set each finished product to sell at market price
-            if (productInfo.developmentProgress === 100 && !productInfo.sCost) {
-              divisionInfo.cities.forEach(cityName => {
-                if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
-                  this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP'); // TODO make this work lol
-                }
-              });
+            if (productInfo.developmentProgress === 100) {
+              this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP', true); // TODO make this work lol
             }
           });
         }
