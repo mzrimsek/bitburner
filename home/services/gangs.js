@@ -36,6 +36,10 @@ export class GangService {
     const gangMembers = this._getGangMembers();
     const memberUpgradeInfo = this._getMemberUpgradeInfo();
 
+    if (gangMembers.length === 0) {
+      this.gang.recruitMember(this._getNextGangMemberName()); // canRecruitMember returns false when you have 0 rep when you first start your gang
+    }
+
     this._handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
 
     const gangInfo = this.gang.getGangInformation();
