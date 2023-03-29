@@ -1,4 +1,5 @@
 import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES, hasFormulas } from 'utils.js';
+import { CorpService } from 'services/corp.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
@@ -6,6 +7,7 @@ export class HacknetService {
   /** @param {import("..").NS } ns */
   constructor(ns) {
     this.ns = ns;
+    this.corpService = new CorpService(ns);
   }
 
   /** @param {import("..").ScriptHandler?} eventHandler */
@@ -83,7 +85,13 @@ export class HacknetService {
         upgradeInfo.name.includes('Reduce') || upgradeInfo.name.includes('Increase');
       const isCodingContract = upgradeInfo.name.includes('Generate');
 
-      return !isBladerunner && !isTraining && !isHackingSkill && !isCodingContract;
+      const isUnconfiguredType = isBladerunner || isTraining || isHackingSkill || isCodingContract;
+
+      const hasCorp = this.corpService.hasCorp();
+      const isCorpUpgrade = upgradeInfo.name.includes('Corporation');
+      const shouldSkipCorpUpgrade = !hasCorp && isCorpUpgrade;
+
+      return !isUnconfiguredType && !shouldSkipCorpUpgrade;
     });
 
     const affordableHashUpgrades = filteredHashUpgrades.filter(
