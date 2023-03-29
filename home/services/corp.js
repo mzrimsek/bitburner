@@ -42,7 +42,9 @@ export class CorpService {
 
         if (this.hasWarehouseApi()) {
           divisionInfo.cities.forEach(cityName => {
-            this.corp.setSmartSupply(divisionName, cityName, true);
+            if (!this.corp.hasWarehouse(divisionName, cityName)) {
+              this.corp.setSmartSupply(divisionName, cityName, true);
+            }
           });
 
           const products = divisionInfo.products;
