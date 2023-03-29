@@ -10,7 +10,7 @@ export class HacknetService {
 
   /** @param {import("..").ScriptHandler?} eventHandler */
   purchaseUpgradeOrNode(eventHandler) {
-    const next = this._getNextUpgrade();
+    const next = this._getNextNodeUpgrade();
     if (!next) {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
       const currentMoney = this.ns.getPlayer().money;
@@ -48,6 +48,64 @@ export class HacknetService {
     }
   }
 
+  spendHashes(eventHandler) {
+    const nextUpgrade = this._getNextHashUpgrade();
+
+    if (nextUpgrade) {
+      // process upgrade
+      this.ns.hacknet.spendHashes(nextUpgrade.name, nextUpgrade.target, 1);
+      eventHandler &&
+        eventHandler({
+          action: ACTIONS.SERVER,
+          type: 'Hash Upgrade',
+          name: nextUpgrade.name,
+          cost: nextUpgrade.cost
+        });
+    }
+  }
+
+  _getNextHashUpgrade() {
+    const currentHashes = this.ns.hacknet.numHashes();
+    const hashUpgradeInfo = this.ns.hacknet.getHashUpgrades().map(upgradeName => {
+      const weight = upgradeName.includes('Corporation') ? 10 : 1;
+      return {
+        name: upgradeName,
+        target: '',
+        cost: this.ns.hacknet.hashCost(upgradeName, 1),
+        weight: weight
+      };
+    });
+    // filtering out some of these for now until I figure out more sophisticated logic or unlock the feature
+    const filteredHashUpgrades = hashUpgradeInfo.filter(upgradeInfo => {
+      const isBladerunner = upgradeInfo.name.includes('Bladeburner');
+      const isTraining = upgradeInfo.name.includes('Improve');
+      const isHackingSkill =
+        upgradeInfo.name.includes('Reduce') || upgradeInfo.name.includes('Increase');
+      const isCodingContract = upgradeInfo.name.includes('Generate');
+
+      return !isBladerunner && !isTraining && !isHackingSkill && !isCodingContract;
+    });
+
+    const affordableHashUpgrades = filteredHashUpgrades.filter(
+      upgrade => upgrade.cost <= currentHashes
+    );
+    this._log(`Found ${affordableHashUpgrades.length} potential upgrades`);
+
+    // first by weight descending, then by cost descending
+    const sortedHashUpgrades = affordableHashUpgrades.sort((a, b) => {
+      if (a.weight === b.weight) {
+        return b.cost - a.cost;
+      }
+      return b.weight - a.weight;
+    });
+
+    if (sortedHashUpgrades.length === 0) {
+      return null;
+    }
+
+    return sortedHashUpgrades[0];
+  }
+
   isHacknetServers() {
     return this.ns.hacknet.numNodes() !== 0 && this.ns.hacknet.getNodeStats(0).cache !== undefined;
   }
@@ -62,7 +120,7 @@ export class HacknetService {
     return this.ns.formatNumber(hacknetProductionRaw, 2);
   }
 
-  _getNextUpgrade() {
+  _getNextNodeUpgrade() {
     const nodeCount = this.ns.hacknet.numNodes();
     const nodes = [...new Array(nodeCount)].map((_, index) => {
       const nodeInfo = this.ns.hacknet.getNodeStats(index);

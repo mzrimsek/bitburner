@@ -78,7 +78,9 @@ export class CorpService {
               const productInfo = this.corp.getProduct(divisionInfo.name, productName);
               if (productInfo.developmentProgress === 100 && !productInfo.sCost) {
                 divisionInfo.cities.forEach(cityName => {
-                  this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
+                  if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
+                    this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP');
+                  }
                 });
               }
             });

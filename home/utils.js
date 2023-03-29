@@ -36,7 +36,8 @@ export const ACTIONS = {
   LONG: '📈',
   SHOCK: '⚡',
   SYNC: '🔄',
-  AUGMENT: '🧬'
+  AUGMENT: '🧬',
+  SERVER: '🖥️'
 };
 
 export const HACKNET_UPGRADE_TYPES = {

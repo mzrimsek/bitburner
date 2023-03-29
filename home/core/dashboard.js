@@ -22,6 +22,10 @@ export async function main(ns) {
       hacknetService.purchaseUpgradeOrNode(eventHandler);
     }
 
+    if (hacknetService.isHacknetServers()) {
+      hacknetService.spendHashes(eventHandler);
+    }
+
     if (envService.getDoBuy() && botService.canBuyBots()) {
       botService.buyOrUpgradeBots(eventHandler);
     }
