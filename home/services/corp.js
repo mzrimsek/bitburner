@@ -1,3 +1,5 @@
+import { log as utilLog, ACTIONS, ALL_CITIES } from 'utils.js';
+
 export class CorpService {
   TOBACCO_DIVISION_NAMES = [
     'Leaf Life',
@@ -25,13 +27,14 @@ export class CorpService {
     if (!hasSmartSupply) {
       const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
       if (currentMoney >= costOfSmartSupply) {
+        this.#log('Unlocking Smart Supply');
         this.corp.unlockUpgrade('Smart Supply');
       }
     }
 
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
-      // create a tobacco division to start with
+      this.#log('Creating Tobacco Division as first division');
       const divisionName =
         this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
       this.corp.expandIndustry('Tobacco', divisionName);
@@ -41,20 +44,8 @@ export class CorpService {
         const makesProducts = divisionInfo.makesProducts;
 
         if (this.#hasWarehouseApi()) {
-          divisionInfo.cities.forEach(cityName => {
-            if (this.corp.hasWarehouse(divisionName, cityName)) {
-              // enable smart supply in each city with a warehouse
-              if (!this.corp.getWarehouse(divisionName, cityName).smartSupplyEnabled) {
-                this.corp.setSmartSupply(divisionName, cityName, true);
-              }
-            } else {
-              // buy a warehouse if we don't have one
-              const warehouseCost = this.corp.getConstants().warehouseInitialCost;
-              if (currentMoney >= warehouseCost) {
-                this.corp.purchaseWarehouse(divisionName, cityName);
-              }
-            }
-          });
+          this.#initWarehouses(divisionInfo, currentMoney);
+          this.#expandCities(divisionInfo, currentMoney);
 
           if (makesProducts) {
             this.#handleProducts(divisionInfo, currentMoney);
@@ -83,6 +74,37 @@ export class CorpService {
 
     // if exporting is available
     // add logic to export products to and from cities for each division to optimize profit
+  }
+
+  #expandCities(divisionInfo, currentMoney) {
+    const citiesWithoutOffice = ALL_CITIES.filter(
+      cityName => !divisionInfo.cities.includes(cityName)
+    );
+    citiesWithoutOffice.forEach(cityName => {
+      const officeCost = this.corp.getConstants().officeInitialCost;
+      if (currentMoney >= officeCost) {
+        this.corp.expandCity(divisionInfo.name, cityName);
+      }
+    });
+  }
+
+  #initWarehouses(divisionInfo, currentMoney) {
+    divisionInfo.cities.forEach(cityName => {
+      if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
+        // enable smart supply in each city with a warehouse
+        if (!this.corp.getWarehouse(divisionInfo.name, cityName).smartSupplyEnabled) {
+          this.#log(`Enabling smart supply for ${divisionInfo.name} in ${cityName}`);
+          this.corp.setSmartSupply(divisionInfo.name, cityName, true);
+        }
+      } else {
+        // buy a warehouse if we don't have one
+        const warehouseCost = this.corp.getConstants().warehouseInitialCost;
+        if (currentMoney >= warehouseCost) {
+          this.#log(`Purchasing warehouse for ${divisionInfo.name} in ${cityName}`);
+          this.corp.purchaseWarehouse(divisionInfo.name, cityName);
+        }
+      }
+    });
   }
 
   #handleProducts(divisionInfo, currentMoney) {
@@ -140,5 +162,9 @@ export class CorpService {
   getDividendEarnings() {
     const corpInfo = this.corp.getCorporation();
     return this.ns.formatNumber(corpInfo.dividendEarnings);
+  }
+
+  #log(...args) {
+    utilLog('corp', ...args);
   }
 }

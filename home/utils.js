@@ -48,6 +48,8 @@ export const HACKNET_UPGRADE_TYPES = {
   CACHE: 'cache'
 };
 
+export const ALL_CITIES = ['Aevum', 'Chongqing', 'Sector-12', 'New Tokyo', 'Ishima', 'Volhaven'];
+
 export function padString(str, targetLength, padStr = ' ') {
   let strCopy = str;
 
