@@ -12,7 +12,7 @@ export class SleeveService {
 
   /** @param {import("..").ScriptHandler?} eventHandler */
   handleSleeves(eventHandler) {
-    const sleeves = this._getSleeves();
+    const sleeves = this.#getSleeves();
     sleeves.forEach((sleeve, index) => {
       if (sleeve.shock !== this.SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
@@ -52,7 +52,7 @@ export class SleeveService {
     return this.sleeve.getNumSleeves() > 0;
   }
 
-  _getSleeves() {
+  #getSleeves() {
     const numSleeves = this.sleeve.getNumSleeves();
     return new Array(numSleeves).map((_, i) => this.sleeve.getSleeve(i));
   }

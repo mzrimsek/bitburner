@@ -40,7 +40,7 @@ export class CorpService {
         const divisionInfo = this.corp.getDivision(divisionName);
         const makesProducts = divisionInfo.makesProducts;
 
-        if (this.hasWarehouseApi()) {
+        if (this.#hasWarehouseApi()) {
           // enable smart supply in each city with a warehouse
           divisionInfo.cities.forEach(cityName => {
             if (
@@ -125,7 +125,7 @@ export class CorpService {
     return this.corp.hasCorporation();
   }
 
-  hasWarehouseApi() {
+  #hasWarehouseApi() {
     try {
       const corpInfo = this.corp.getCorporation();
       const testDivision = this.corp.getDivision(corpInfo.divisions[0]);

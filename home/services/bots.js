@@ -11,11 +11,11 @@ export class BotService {
     const maxBots = this.ns.getPurchasedServerLimit();
     const bots = this.ns.getPurchasedServers().map(server => this.ns.getServer(server));
     if (bots.length === 0) {
-      this._buyBot(bots, eventHandler);
+      this.#buyBot(bots, eventHandler);
     } else {
-      const botToUpgrade = this._getBotToUpgrade(bots);
+      const botToUpgrade = this.#getBotToUpgrade(bots);
       if (botToUpgrade) {
-        this._log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
+        this.#log(`upgrading ${botToUpgrade.hostname} for ${botToUpgrade.costToUpgrade}`);
         this.ns.upgradePurchasedServer(botToUpgrade.hostname, botToUpgrade.targetRam);
         const currentAction = {
           action: ACTIONS.UPGRADE,
@@ -25,7 +25,7 @@ export class BotService {
         };
         eventHandler && eventHandler(currentAction);
       } else if (bots.length < maxBots) {
-        this._buyBot(bots, eventHandler);
+        this.#buyBot(bots, eventHandler);
       }
     }
   }
@@ -38,15 +38,15 @@ export class BotService {
    *  @param {import("..").Server[]} bots
    *  @param {import("..").ScriptHandler?} eventHandler
    */
-  _buyBot(bots, eventHandler) {
-    const nextIndex = this._getNextIndex(bots);
+  #buyBot(bots, eventHandler) {
+    const nextIndex = this.#getNextIndex(bots);
     const nextBotName = `bot-${nextIndex}`;
 
     const money = this.ns.getPlayer().money;
     const cost = this.ns.getPurchasedServerCost(2);
 
     if (money >= cost) {
-      this._log(`buying ${nextBotName}`);
+      this.#log(`buying ${nextBotName}`);
       this.ns.purchaseServer(nextBotName, 2);
       const currentAction = {
         action: ACTIONS.BUY,
@@ -55,14 +55,14 @@ export class BotService {
       };
       eventHandler && eventHandler(currentAction);
     } else {
-      this._log('cannot buy bot at this time');
+      this.#log('cannot buy bot at this time');
     }
   }
 
   /**
    *  @param {import("..").Server[]} bots
    */
-  _getBotToUpgrade(bots) {
+  #getBotToUpgrade(bots) {
     const mapped = bots
       .map(bot => {
         return {
@@ -86,7 +86,7 @@ export class BotService {
   /**
    *  @param {import("..").Server[]} bots
    */
-  _getNextIndex(bots) {
+  #getNextIndex(bots) {
     if (bots.length === 0) {
       return 1;
     }
@@ -98,7 +98,7 @@ export class BotService {
     return indices.sort((a, b) => b - a)[0] + 1;
   }
 
-  _log(...args) {
+  #log(...args) {
     utilLog('bots', ...args);
   }
 }

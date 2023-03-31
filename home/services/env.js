@@ -7,26 +7,26 @@ export class EnvService {
   }
 
   getDoGang() {
-    return this._getBooleanEnvVal('DO_GANG');
+    return this.#getBooleanEnvVal('DO_GANG');
   }
 
   getShouldAscendGangMembers() {
-    return this._getBooleanEnvVal('DO_GANG_ASCEND');
+    return this.#getBooleanEnvVal('DO_GANG_ASCEND');
   }
 
   getDoBuy() {
-    return this._getBooleanEnvVal('DO_BUY');
+    return this.#getBooleanEnvVal('DO_BUY');
   }
 
   getDoStonks() {
-    return this._getBooleanEnvVal('DO_STONKS');
+    return this.#getBooleanEnvVal('DO_STONKS');
   }
 
   getMillionsToKeepLiquid() {
     return this.ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   }
 
-  _getBooleanEnvVal(name) {
+  #getBooleanEnvVal(name) {
     return this.ns.peek(PORT_MAPPING[name]) === 1;
   }
 }

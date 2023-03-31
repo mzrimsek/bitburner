@@ -12,7 +12,7 @@ export class HacknetService {
 
   /** @param {import("..").ScriptHandler?} eventHandler */
   purchaseUpgradeOrNode(eventHandler) {
-    const next = this._getNextNodeUpgrade();
+    const next = this.#getNextNodeUpgrade();
     if (!next) {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
       const currentMoney = this.ns.getPlayer().money;
@@ -21,7 +21,7 @@ export class HacknetService {
         nodeCost <= currentMoney &&
         this.ns.hacknet.numNodes() !== this.ns.hacknet.maxNumNodes()
       ) {
-        this._log(`Buying new node for ${nodeCost}`);
+        this.#log(`Buying new node for ${nodeCost}`);
         const newIndex = this.ns.hacknet.purchaseNode();
         const newStats = this.ns.hacknet.getNodeStats(newIndex);
         const currentAction = {
@@ -33,8 +33,8 @@ export class HacknetService {
         eventHandler && eventHandler(currentAction);
       }
     } else {
-      this._log(`(${next.name}) Upgrading ${next.upgrade}`);
-      const success = this._processUpgrade(next);
+      this.#log(`(${next.name}) Upgrading ${next.upgrade}`);
+      const success = this.#processUpgrade(next);
       if (success) {
         const currentAction = {
           action: ACTIONS.UPGRADE,
@@ -43,15 +43,15 @@ export class HacknetService {
           cost: next.cost
         };
         eventHandler && eventHandler(currentAction);
-        this._log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
+        this.#log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
       } else {
-        this._log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
+        this.#log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
       }
     }
   }
 
   spendHashes(eventHandler) {
-    const nextUpgrade = this._getNextHashUpgrade();
+    const nextUpgrade = this.#getNextHashUpgrade();
 
     if (nextUpgrade) {
       // process upgrade
@@ -66,7 +66,7 @@ export class HacknetService {
     }
   }
 
-  _getNextHashUpgrade() {
+  #getNextHashUpgrade() {
     const currentHashes = this.ns.hacknet.numHashes();
     const hashUpgradeInfo = this.ns.hacknet.getHashUpgrades().map(upgradeName => {
       const weight = upgradeName.includes('Corporation') ? 10 : 1;
@@ -97,7 +97,7 @@ export class HacknetService {
     const affordableHashUpgrades = filteredHashUpgrades.filter(
       upgrade => upgrade.cost <= currentHashes
     );
-    this._log(`Found ${affordableHashUpgrades.length} potential upgrades`);
+    this.#log(`Found ${affordableHashUpgrades.length} potential upgrades`);
 
     // first by weight descending, then by cost descending
     const sortedHashUpgrades = affordableHashUpgrades.sort((a, b) => {
@@ -128,7 +128,7 @@ export class HacknetService {
     return this.ns.formatNumber(hacknetProductionRaw, 2);
   }
 
-  _getNextNodeUpgrade() {
+  #getNextNodeUpgrade() {
     const nodeCount = this.ns.hacknet.numNodes();
     const nodes = [...new Array(nodeCount)].map((_, index) => {
       const nodeInfo = this.ns.hacknet.getNodeStats(index);
@@ -162,7 +162,7 @@ export class HacknetService {
 
     const currentMoney = this.ns.getPlayer().money;
     const potentialUpgrades = nodes.reduce((items, node) => {
-      if (node.level.current < this._getMaxLevel()) {
+      if (node.level.current < this.#getMaxLevel()) {
         if (node.level.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -176,7 +176,7 @@ export class HacknetService {
         }
       }
 
-      if (node.ram.current < this._getMaxRam()) {
+      if (node.ram.current < this.#getMaxRam()) {
         if (node.ram.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -190,7 +190,7 @@ export class HacknetService {
         }
       }
 
-      if (node.cores.current < this._getMaxCores()) {
+      if (node.cores.current < this.#getMaxCores()) {
         if (node.cores.upgradeCost <= currentMoney) {
           items = [
             ...items,
@@ -204,7 +204,7 @@ export class HacknetService {
         }
       }
 
-      const maxCache = this._getMaxCache();
+      const maxCache = this.#getMaxCache();
       if (node.cache && maxCache && node.cache.current < maxCache) {
         if (node.cache.upgradeCost <= currentMoney) {
           items = [
@@ -226,13 +226,13 @@ export class HacknetService {
       return null;
     }
 
-    this._log(`Found ${potentialUpgrades.length} potential upgrades`);
+    this.#log(`Found ${potentialUpgrades.length} potential upgrades`);
     const sortedPotentialUpgrades = potentialUpgrades.sort((a, b) => a.cost - b.cost);
 
     return sortedPotentialUpgrades[0];
   }
 
-  _processUpgrade(next) {
+  #processUpgrade(next) {
     switch (next.upgrade) {
       case HACKNET_UPGRADE_TYPES.LEVEL: {
         return this.ns.hacknet.upgradeLevel(next.index, 1);
@@ -252,23 +252,23 @@ export class HacknetService {
     }
   }
 
-  _getMaxLevel() {
-    return this._getHacknetConstant('MaxLevel', 200);
+  #getMaxLevel() {
+    return this.#getHacknetConstant('MaxLevel', 200);
   }
 
-  _getMaxRam() {
-    return this._getHacknetConstant('MaxRam', 64);
+  #getMaxRam() {
+    return this.#getHacknetConstant('MaxRam', 64);
   }
 
-  _getMaxCores() {
-    return this._getHacknetConstant('MaxCores', 16);
+  #getMaxCores() {
+    return this.#getHacknetConstant('MaxCores', 16);
   }
 
-  _getMaxCache() {
-    return this._getHacknetConstant('MaxCache', 15);
+  #getMaxCache() {
+    return this.#getHacknetConstant('MaxCache', 15);
   }
 
-  _getHacknetConstant(valueField, noFormulasDefault) {
+  #getHacknetConstant(valueField, noFormulasDefault) {
     if (!hasFormulas(this.ns)) {
       return noFormulasDefault;
     }
@@ -280,7 +280,7 @@ export class HacknetService {
     return this.ns.formulas.hacknetNodes.constants()[valueField];
   }
 
-  _log(...args) {
+  #log(...args) {
     utilLog('hacknet', ...args);
   }
 }

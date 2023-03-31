@@ -32,15 +32,15 @@ export class GangService {
 
   /** @param {import("..").ScriptHandler?} eventHandler */
   handleGang(eventHandler) {
-    const taskInfo = this._getTaskInfo();
-    const gangMembers = this._getGangMembers();
-    const memberUpgradeInfo = this._getMemberUpgradeInfo();
+    const taskInfo = this.#getTaskInfo();
+    const gangMembers = this.#getGangMembers();
+    const memberUpgradeInfo = this.#getMemberUpgradeInfo();
 
     if (gangMembers.length === 0) {
-      this.gang.recruitMember(this._getNextGangMemberName()); // canRecruitMember returns false when you have 0 rep when you first start your gang
+      this.gang.recruitMember(this.#getNextGangMemberName()); // canRecruitMember returns false when you have 0 rep when you first start your gang
     }
 
-    this._handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
+    this.#handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
 
     const gangInfo = this.gang.getGangInformation();
     gangMembers.forEach(gangMember => {
@@ -76,9 +76,9 @@ export class GangService {
     return this.gang.inGang();
   }
 
-  _handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
+  #handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
     if (this.gang.canRecruitMember()) {
-      this.gang.recruitMember(this._getNextGangMemberName());
+      this.gang.recruitMember(this.#getNextGangMemberName());
     }
 
     if (this.envService.getShouldAscendGangMembers()) {
@@ -93,7 +93,7 @@ export class GangService {
       });
     }
 
-    let nextUpgrade = this._getNextUpgrade(gangMembers, memberUpgradeInfo);
+    let nextUpgrade = this.#getNextUpgrade(gangMembers, memberUpgradeInfo);
     if (nextUpgrade) {
       this.gang.purchaseEquipment(nextUpgrade.memberName, nextUpgrade.name);
       const currentAction = {
@@ -106,7 +106,7 @@ export class GangService {
     }
   }
 
-  _getNextUpgrade(gangMembers, memberUpgradeInfo) {
+  #getNextUpgrade(gangMembers, memberUpgradeInfo) {
     const availableGangMemberUpgrades = gangMembers
       .reduce((upgrades, gangMember) => {
         const memberUpgrades = gangMember.memberInfo.upgrades.concat(
@@ -138,7 +138,7 @@ export class GangService {
     return availableGangMemberUpgrades[0];
   }
 
-  _getGangMembers() {
+  #getGangMembers() {
     return this.gang.getMemberNames().map(name => {
       const memberInfo = this.gang.getMemberInformation(name);
       const canAscend = this.gang.getAscensionResult(name) !== undefined;
@@ -151,7 +151,7 @@ export class GangService {
     });
   }
 
-  _getNextGangMemberName() {
+  #getNextGangMemberName() {
     const gangMemberNames = this.gang.getMemberNames();
 
     const randomName =
@@ -161,13 +161,13 @@ export class GangService {
     const newName = `${randomName} ${randomName2}`;
 
     if (gangMemberNames.includes(newName) || randomName === randomName2) {
-      return this._getNextGangMemberName();
+      return this.#getNextGangMemberName();
     }
 
     return newName;
   }
 
-  _getMemberUpgradeInfo() {
+  #getMemberUpgradeInfo() {
     return this.gang.getEquipmentNames().map(name => {
       const cost = this.gang.getEquipmentCost(name);
       const stats = this.gang.getEquipmentStats(name);
@@ -182,7 +182,7 @@ export class GangService {
     });
   }
 
-  _getTaskInfo() {
+  #getTaskInfo() {
     return this.gang.getTaskNames().map(name => {
       const stats = this.gang.getTaskStats(name);
 
