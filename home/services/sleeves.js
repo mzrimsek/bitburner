@@ -1,8 +1,8 @@
 import { ACTIONS, logEventHandler } from 'utils.js';
 
 export class SleeveService {
-  SHOCK_MIN = 0;
-  SYNC_MAX = 100;
+  #SHOCK_MIN = 0;
+  #SYNC_MAX = 100;
 
   /**
    * @param {import("..").NS } ns
@@ -18,13 +18,13 @@ export class SleeveService {
   handleSleeves() {
     const sleeves = this.#getSleeves();
     sleeves.forEach((sleeve, index) => {
-      if (sleeve.shock !== this.SHOCK_MIN) {
+      if (sleeve.shock !== this.#SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
         this.eventHandler({
           action: ACTIONS.SHOCK,
           name: `Sleeve ${index}`
         });
-      } else if (sleeve.sync !== this.SYNC_MAX) {
+      } else if (sleeve.sync !== this.#SYNC_MAX) {
         this.sleeve.setToSynchronize(index);
         this.eventHandler({
           action: ACTIONS.SYNC,

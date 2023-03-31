@@ -1,7 +1,7 @@
-import { log as utilLog, ACTIONS, ALL_CITIES, logEventHandler } from 'utils.js';
+import { log as utilLog, ACTIONS, ALL_CITIES, logEventHandler, CORP_OFFICE_UNITS } from 'utils.js';
 
 export class CorpService {
-  TOBACCO_DIVISION_NAMES = [
+  #TOBACCO_DIVISION_NAMES = [
     'Leaf Life',
     'Smokes Unlimited Inc.',
     'Cigarette Corp.',
@@ -22,26 +22,28 @@ export class CorpService {
     this.eventHandler = eventHandler;
   }
 
-  handleCorporation() {
+  async handleCorporation() {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
-    this.#unlockUpgrade('Smart Supply');
-    this.#unlockUpgrade('Warehouse API');
-    this.#unlockUpgrade('Office API');
+    const hasSmartSupply = this.#unlockUpgrade('Smart Supply');
+    const hasWarehouseApi = this.#unlockUpgrade('Warehouse API');
+    const hasOfficeApi = this.#unlockUpgrade('Office API');
 
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
       this.#log('Creating Tobacco Division as first division');
       const divisionName =
-        this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
+        this.#TOBACCO_DIVISION_NAMES[
+          Math.floor(Math.random() * this.#TOBACCO_DIVISION_NAMES.length)
+        ];
       this.corp.expandIndustry('Tobacco', divisionName);
     } else {
       currentDivisions.forEach(divisionName => {
         const divisionInfo = this.corp.getDivision(divisionName);
         const makesProducts = divisionInfo.makesProducts;
 
-        if (this.#hasWarehouseApi()) {
+        if (hasWarehouseApi) {
           this.#initWarehouses(divisionInfo, currentMoney);
           this.#expandCities(divisionInfo, currentMoney);
 
@@ -50,8 +52,55 @@ export class CorpService {
           }
         }
 
-        if (this.#hasOfficeApi()) {
+        if (hasOfficeApi) {
           this.#handleResearch(divisionInfo);
+
+          const maxNumDivisions = this.corp.getConstants().industryNames.length;
+          const numCitiesUniqueDivisionsCanBeIn = ALL_CITIES.length * maxNumDivisions;
+
+          const numCitiesUnqiueDivisionsAreIn = corpInfo.divisions.reduce((acc, divisionName) => {
+            const divisionInfo = this.corp.getDivision(divisionName);
+            return acc + divisionInfo.cities.length;
+          }, 0);
+
+          const hasMaxExpandedDivisions =
+            numCitiesUnqiueDivisionsAreIn === numCitiesUniqueDivisionsCanBeIn;
+
+          if (hasOfficeApi && hasWarehouseApi && hasSmartSupply && hasMaxExpandedDivisions) {
+            divisionInfo.cities.forEach(async cityName => {
+              const costToExpand = this.corp.getOfficeSizeUpgradeCost(
+                divisionInfo.name,
+                cityName,
+                3
+              );
+              if (currentMoney >= costToExpand) {
+                this.corp.upgradeOfficeSize(divisionInfo.name, cityName, 3);
+
+                // get all employees in training or unallocated
+                // add them to a unit
+
+                const officeInfo = this.corp.getOffice(divisionInfo.name, cityName);
+                const employees = officeInfo.employees;
+
+                // hire new employees if we have any room
+                const openSpaces = officeInfo.size - officeInfo.employees;
+                for (let i = 0; i < openSpaces; i++) {
+                  this.corp.hireEmployee(divisionInfo.name, cityName);
+                }
+
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.OPERATIONS, Math.ceil(employees / 5) * 0);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.ENGINEERING, Math.ceil(employees / 5) * 0);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.BUSINESS, Math.ceil(employees / 5) * 0);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.MANAGEMENT, Math.ceil(employees / 10) * 0);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.TRAINING, 0);
+
+                // const remainingEmployees = employees - (3 * Math.ceil(employees / 5) + Math.ceil(employees / 10));
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.RESEARCH, Math.ceil(remainingEmployees) * 0);
+
+                // if has all research don't assign anyone to research
+              }
+            });
+          }
         }
       });
 
@@ -73,11 +122,6 @@ export class CorpService {
     // figure out logic for Market-TA.I or Market-TA.II
 
     // handle repeat upgrades
-
-    // if exporting is available
-    // add logic to export products to and from cities for each division to optimize profit
-
-    // need to add logic to handle buying the items that boost production
   }
 
   /** @param {import("..").Division} divisionInfo */
@@ -105,6 +149,10 @@ export class CorpService {
     }
   }
 
+  /**
+   * @description Attempts to unlock the upgrade if necessary and possibly
+   * @param {string} upgradeName
+   * @returns bool Returns if the upgrade is owned */
   #unlockUpgrade(upgradeName) {
     const hasUpgrade = this.corp.hasUnlockUpgrade(upgradeName);
     if (!hasUpgrade) {
@@ -112,8 +160,10 @@ export class CorpService {
       if (currentMoney >= costOfUpgrade) {
         this.#log(`Unlocking ${upgradeName}`);
         this.corp.unlockUpgrade(upgradeName);
+        return true;
       }
     }
+    return hasUpgrade;
   }
 
   /**
@@ -197,14 +247,6 @@ export class CorpService {
 
   hasCorp() {
     return this.corp.hasCorporation();
-  }
-
-  #hasWarehouseApi() {
-    return this.corp.hasUnlockUpgrade('Warehouse API');
-  }
-
-  #hasOfficeApi() {
-    return this.corp.hasUnlockUpgrade('Office API');
   }
 
   getDividendEarnings() {

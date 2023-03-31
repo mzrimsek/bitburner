@@ -39,7 +39,7 @@ export async function main(ns) {
     }
 
     if (corpService.hasCorp()) {
-      corpService.handleCorporation();
+      await corpService.handleCorporation();
     }
 
     await ns.sleep(100);

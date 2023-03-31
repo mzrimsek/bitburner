@@ -1,11 +1,11 @@
 import { log as utilLog, STARTUP_SCRIPTS, ACTIONS, logEventHandler } from 'utils.js';
 
 export class AttackService {
-  hackSource = 'home';
-  excludedServers = [this.hackSource];
-  hackFile = '/basic/hack.js';
-  weakenFile = '/basic/weaken.js';
-  growFile = '/basic/grow.js';
+  #hackSource = 'home';
+  #excludedServers = [this.#hackSource];
+  #hackFile = '/basic/hack.js';
+  #weakenFile = '/basic/weaken.js';
+  #growFile = '/basic/grow.js';
 
   /**
    * @param {import("..").NS } ns
@@ -17,9 +17,9 @@ export class AttackService {
   }
 
   async initiateAttack() {
-    const children = this.#getChildren(this.hackSource);
-    const serverNames = this.#getServerNames(this.hackSource, children).filter(
-      serverName => !this.excludedServers.includes(serverName)
+    const children = this.#getChildren(this.#hackSource);
+    const serverNames = this.#getServerNames(this.#hackSource, children).filter(
+      serverName => !this.#excludedServers.includes(serverName)
     );
 
     await this.#openServers(serverNames);
@@ -54,13 +54,13 @@ export class AttackService {
       for (const serverName of hackableServerNames) {
         this.#killScripts(serverName);
         const freeRam = this.#getFreeRam(serverName);
-        const ramToWeaken = this.ns.getScriptRam(this.weakenFile, this.hackSource);
+        const ramToWeaken = this.ns.getScriptRam(this.#weakenFile, this.#hackSource);
         const numThreads = Math.floor(freeRam / ramToWeaken);
         if (numThreads > 0) {
-          if (!this.ns.fileExists(this.weakenFile, serverName)) {
-            this.ns.scp(this.weakenFile, serverName, this.hackSource);
+          if (!this.ns.fileExists(this.#weakenFile, serverName)) {
+            this.ns.scp(this.#weakenFile, serverName, this.#hackSource);
           }
-          this.ns.exec(this.weakenFile, serverName, numThreads, target);
+          this.ns.exec(this.#weakenFile, serverName, numThreads, target);
         }
       }
       const duration = numTimesToHack * this.ns.getWeakenTime(target) + 300;
@@ -79,13 +79,13 @@ export class AttackService {
       for (const serverName of hackableServerNames) {
         this.#killScripts(serverName);
         const freeRam = this.#getFreeRam(serverName);
-        const ramToGrow = this.ns.getScriptRam(this.growFile, this.hackSource);
+        const ramToGrow = this.ns.getScriptRam(this.#growFile, this.#hackSource);
         const numThreads = Math.floor(freeRam / ramToGrow);
         if (numThreads > 0) {
-          if (!this.ns.fileExists(this.growFile, serverName)) {
-            this.ns.scp(this.growFile, serverName, this.hackSource);
+          if (!this.ns.fileExists(this.#growFile, serverName)) {
+            this.ns.scp(this.#growFile, serverName, this.#hackSource);
           }
-          this.ns.exec(this.growFile, serverName, numThreads, target);
+          this.ns.exec(this.#growFile, serverName, numThreads, target);
         }
       }
       const duration = numTimesToHack * this.ns.getGrowTime(target) + 300;
@@ -104,13 +104,13 @@ export class AttackService {
       for (const serverName of hackableServerNames) {
         this.#killScripts(serverName);
         const freeRam = this.#getFreeRam(serverName);
-        const ramToHack = this.ns.getScriptRam(this.hackFile, this.hackSource);
+        const ramToHack = this.ns.getScriptRam(this.#hackFile, this.#hackSource);
         const numThreads = Math.floor(freeRam / ramToHack);
         if (numThreads > 0) {
-          if (!this.ns.fileExists(this.hackFile, serverName)) {
-            this.ns.scp(this.hackFile, serverName, this.hackSource);
+          if (!this.ns.fileExists(this.#hackFile, serverName)) {
+            this.ns.scp(this.#hackFile, serverName, this.#hackSource);
           }
-          this.ns.exec(this.hackFile, serverName, numThreads, target);
+          this.ns.exec(this.#hackFile, serverName, numThreads, target);
         }
       }
       const duration = numTimesToHack * this.ns.getHackTime(target) + 300;
@@ -168,12 +168,12 @@ export class AttackService {
         );
       })
       .map(server => server.hostname);
-    const allNames = [this.hackSource, ...hackableServerNames];
+    const allNames = [this.#hackSource, ...hackableServerNames];
     return [...new Set(allNames)];
   }
 
   async #getOwnedServerNames() {
-    const local = this.ns.scan(this.hackSource);
+    const local = this.ns.scan(this.#hackSource);
     const servers = await this.#getServers(local);
     return servers.filter(server => server.purchasedByPlayer).map(server => server.hostname);
   }
@@ -191,38 +191,38 @@ export class AttackService {
    *  @param {Server} server
    */
   async #openServer(server) {
-    const hasSshHack = this.ns.fileExists('BruteSSH.exe', this.hackSource);
+    const hasSshHack = this.ns.fileExists('BruteSSH.exe', this.#hackSource);
     if (!server.sshPortOpen && hasSshHack) {
       this.#log(server.hostname, 'Opening SSH port');
       this.ns.brutessh(server.hostname);
     }
 
-    const hasFtpHack = this.ns.fileExists('FTPCrack.exe', this.hackSource);
+    const hasFtpHack = this.ns.fileExists('FTPCrack.exe', this.#hackSource);
     if (!server.ftpPortOpen && hasFtpHack) {
       this.#log(server.hostname, 'Opening FTP port');
       this.ns.ftpcrack(server.hostname);
     }
 
-    const hasSmtpHack = this.ns.fileExists('relaySMTP.exe', this.hackSource);
+    const hasSmtpHack = this.ns.fileExists('relaySMTP.exe', this.#hackSource);
     if (!server.smtpPortOpen && hasSmtpHack) {
       this.#log(server.hostname, 'Opening SMTP port');
       this.ns.relaysmtp(server.hostname);
     }
 
-    const hasHttpHack = this.ns.fileExists('HTTPWorm.exe', this.hackSource);
+    const hasHttpHack = this.ns.fileExists('HTTPWorm.exe', this.#hackSource);
     if (!server.httpPortOpen && hasHttpHack) {
       this.#log(server.hostname, 'Opening HTTP port');
       this.ns.httpworm(server.hostname);
     }
 
-    const hasSqlHack = this.ns.fileExists('SQLInject.exe', this.hackSource);
+    const hasSqlHack = this.ns.fileExists('SQLInject.exe', this.#hackSource);
     if (!server.sqlPortOpen && hasSqlHack) {
       this.#log(server.hostname, 'Opening SQL port');
       this.ns.sqlinject(server.hostname);
     }
 
     // get admin access
-    const hasNukeHack = this.ns.fileExists('NUKE.exe', this.hackSource);
+    const hasNukeHack = this.ns.fileExists('NUKE.exe', this.#hackSource);
     if (
       !server.hasAdminRights &&
       hasNukeHack &&
@@ -259,7 +259,7 @@ export class AttackService {
    */
   #getChildren(host, parent) {
     return this.ns.scan(host).filter(child => {
-      const isExcluded = this.excludedServers.includes(child);
+      const isExcluded = this.#excludedServers.includes(child);
       const isParent = parent && child === parent;
       return !isExcluded && !isParent;
     });
@@ -276,7 +276,7 @@ export class AttackService {
    *  @param {string} serverName
    */
   #getFreeRam(serverName) {
-    return serverName === this.hackSource
+    return serverName === this.#hackSource
       ? this.#getHackSourceFreeRam()
       : this.#getServerFreeRam(serverName);
   }
@@ -289,9 +289,9 @@ export class AttackService {
   }
 
   #getHackSourceFreeRam() {
-    const freeRam = this.#getServerFreeRam(this.hackSource);
+    const freeRam = this.#getServerFreeRam(this.#hackSource);
     const specialRam = STARTUP_SCRIPTS.reduce((totalRam, script) => {
-      const cost = this.ns.getScriptRam(script, this.hackSource);
+      const cost = this.ns.getScriptRam(script, this.#hackSource);
       return totalRam + cost;
     }, 0);
     return freeRam - specialRam;
@@ -301,7 +301,7 @@ export class AttackService {
    *  @param {string} serverName
    */
   #killScripts(serverName) {
-    if (serverName !== this.hackSource) {
+    if (serverName !== this.#hackSource) {
       this.ns.killall(serverName, true);
     } else {
       const runningScripts = this.ns.ps(serverName).map(process => process.filename);

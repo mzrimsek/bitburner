@@ -48,6 +48,15 @@ export const HACKNET_UPGRADE_TYPES = {
   CACHE: 'cache'
 };
 
+export const CORP_OFFICE_UNITS = {
+  OPERATIONS: 'Operations', //3
+  ENGINEERING: 'Engineer', // 2
+  BUSINESS: 'Business', // 2
+  MANAGEMENT: 'Management', // 1
+  RESEARCH: 'Research & Development', // 1
+  TRAINING: 'Training' // 0
+};
+
 export const ALL_CITIES = ['Aevum', 'Chongqing', 'Sector-12', 'New Tokyo', 'Ishima', 'Volhaven'];
 
 export function padString(str, targetLength, padStr = ' ') {

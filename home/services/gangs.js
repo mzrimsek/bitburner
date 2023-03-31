@@ -3,7 +3,7 @@ import { ACTIONS, logEventHandler } from 'utils.js';
 import { EnvService } from 'services/env.js';
 
 export class GangService {
-  GANG_MEMBER_NAMES = [
+  #GANG_MEMBER_NAMES = [
     'Razor',
     'Vandal',
     'Spike',
@@ -20,7 +20,7 @@ export class GangService {
     'Bullet',
     'Storm'
   ];
-  WANTED_LEVEL_PENALTY_THRESHOLD = 25;
+  #WANTED_LEVEL_PENALTY_THRESHOLD = 25;
 
   /**
    * @param {import("..").NS } ns
@@ -54,7 +54,7 @@ export class GangService {
         // const hasTask = currentTask && currentTask.name !== '' && currentTask.name !== 'Unassigned';
         // const isDoingEthicalHacking = hasTask && currentTask.name === 'Ethical Hacking';
         // const isPhishing = hasTask && currentTask.name === 'Phishing';
-        // if (gangInfo.wantedPenalty > this.WANTED_LEVEL_PENALTY_THRESHOLD && !isDoingEthicalHacking) {
+        // if (gangInfo.wantedPenalty > this.#WANTED_LEVEL_PENALTY_THRESHOLD && !isDoingEthicalHacking) {
         //   this.gang.setMemberTask(gangMember.name, 'Ethical Hacking');
         //   const currentAction = {
         //     action: ACTIONS.TASK,
@@ -160,9 +160,9 @@ export class GangService {
     const gangMemberNames = this.gang.getMemberNames();
 
     const randomName =
-      this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
+      this.#GANG_MEMBER_NAMES[Math.floor(Math.random() * this.#GANG_MEMBER_NAMES.length)];
     const randomName2 =
-      this.GANG_MEMBER_NAMES[Math.floor(Math.random() * this.GANG_MEMBER_NAMES.length)];
+      this.#GANG_MEMBER_NAMES[Math.floor(Math.random() * this.#GANG_MEMBER_NAMES.length)];
     const newName = `${randomName} ${randomName2}`;
 
     if (gangMemberNames.includes(newName) || randomName === randomName2) {
