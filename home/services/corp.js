@@ -20,34 +20,39 @@ export class CorpService {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
+    // if you do not have smart supply, it should be the first thing you buy with a new corp
+    const hasSmartSupply = this.corp.hasUnlockUpgrade('Smart Supply');
+    if (!hasSmartSupply) {
+      const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
+      if (currentMoney >= costOfSmartSupply) {
+        this.corp.unlockUpgrade('Smart Supply');
+      }
+    }
+
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
-      // create a tobacco division
+      // create a tobacco division to start with
       const divisionName =
         this.TOBACCO_DIVISION_NAMES[Math.floor(Math.random() * this.TOBACCO_DIVISION_NAMES.length)];
       this.corp.expandIndustry('Tobacco', divisionName);
-
-      // if you do not have smart supply, it should be the first thing you buy with a new corp
-      const hasSmartSupply = this.corp.hasUnlockUpgrade('Smart Supply');
-      if (!hasSmartSupply) {
-        const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
-        if (currentMoney >= costOfSmartSupply) {
-          this.corp.unlockUpgrade('Smart Supply');
-        }
-      }
     } else {
       currentDivisions.forEach(divisionName => {
         const divisionInfo = this.corp.getDivision(divisionName);
         const makesProducts = divisionInfo.makesProducts;
 
         if (this.#hasWarehouseApi()) {
-          // enable smart supply in each city with a warehouse
           divisionInfo.cities.forEach(cityName => {
-            if (
-              this.corp.hasWarehouse(divisionName, cityName) &&
-              !this.corp.getWarehouse(divisionName, cityName).smartSupplyEnabled
-            ) {
-              this.corp.setSmartSupply(divisionName, cityName, true);
+            if (this.corp.hasWarehouse(divisionName, cityName)) {
+              // enable smart supply in each city with a warehouse
+              if (!this.corp.getWarehouse(divisionName, cityName).smartSupplyEnabled) {
+                this.corp.setSmartSupply(divisionName, cityName, true);
+              }
+            } else {
+              // buy a warehouse if we don't have one
+              const warehouseCost = this.corp.getConstants().warehouseInitialCost;
+              if (currentMoney >= warehouseCost) {
+                this.corp.purchaseWarehouse(divisionName, cityName);
+              }
             }
           });
 
@@ -56,11 +61,6 @@ export class CorpService {
           }
         }
       });
-
-      // expand division to new city
-      // buy a warehouse
-      // enable smart supply
-      // repeat until have expanded to all cities and have a warehouse in each
 
       // for each product/byproduct in division
       // if byproduct is produced with no sell price set

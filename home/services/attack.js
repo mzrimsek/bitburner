@@ -28,7 +28,6 @@ export class AttackService {
     const nonHacknetServerNames = distinctServerNames.filter(
       serverName => !serverName.includes('hacknet')
     );
-    console.log(nonHacknetServerNames);
     await this.#coordinateAttack(nonHacknetServerNames, eventHandler);
   }
 
