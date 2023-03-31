@@ -88,16 +88,12 @@ export class CorpService {
                   this.corp.hireEmployee(divisionInfo.name, cityName);
                 }
 
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.OPERATIONS, Math.ceil(employees / 5) * 0);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.ENGINEERING, Math.ceil(employees / 5) * 0);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.BUSINESS, Math.ceil(employees / 5) * 0);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.MANAGEMENT, Math.ceil(employees / 10) * 0);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.OPERATIONS, Math.floor((employees - 2) / 2));
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.ENGINEERING, Math.ceil((employees - 2) / 2));
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.MANAGEMENT, 2);
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.BUSINESS, 0);
                 // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.TRAINING, 0);
-
-                // const remainingEmployees = employees - (3 * Math.ceil(employees / 5) + Math.ceil(employees / 10));
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.RESEARCH, Math.ceil(remainingEmployees) * 0);
-
-                // if has all research don't assign anyone to research
+                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.RESEARCH, 0);
               }
             });
           }

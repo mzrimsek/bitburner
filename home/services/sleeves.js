@@ -1,4 +1,4 @@
-import { ACTIONS, logEventHandler } from 'utils.js';
+import { log as utilLog, ACTIONS, logEventHandler } from 'utils.js';
 
 export class SleeveService {
   #SHOCK_MIN = 0;
@@ -17,6 +17,7 @@ export class SleeveService {
 
   handleSleeves() {
     const sleeves = this.#getSleeves();
+    console.log(sleeves);
     sleeves.forEach((sleeve, index) => {
       if (sleeve.shock !== this.#SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
@@ -31,22 +32,27 @@ export class SleeveService {
           name: `Sleeve ${index}`
         });
       } else {
-        const augmentsForSale = this.sleeve.getSleevePurchasableAugs(index);
-        const affordableAugments = augmentsForSale.filter(augment => {
-          return this.ns.getPlayer().money >= augment.cost;
-        });
-        const augmentsByCost = affordableAugments.sort((a, b) => a.cost - b.cost);
-        if (augmentsByCost.length > 0) {
-          const augment = augmentsByCost[0];
-          this.sleeve.purchaseSleeveAug(index, augment.name);
-          this.eventHandler({
-            action: ACTIONS.AUGMENT,
-            name: `Sleeve ${index}`,
-            type: augment.name
-          });
-        }
+        this.#handleSleeveAugments(index);
       }
     });
+  }
+
+  #handleSleeveAugments(index) {
+    const augmentsForSale = this.sleeve.getSleevePurchasableAugs(index);
+    const affordableAugments = augmentsForSale.filter(augment => {
+      return this.ns.getPlayer().money >= augment.cost;
+    });
+    const augmentsByCost = affordableAugments.sort((a, b) => a.cost - b.cost);
+    this.#log(`Found ${augmentsByCost.length} augments for Sleeve ${index}`);
+    if (augmentsByCost.length > 0) {
+      const augment = augmentsByCost[0];
+      this.sleeve.purchaseSleeveAug(index, augment.name);
+      this.eventHandler({
+        action: ACTIONS.AUGMENT,
+        name: `Sleeve ${index}`,
+        type: augment.name
+      });
+    }
   }
 
   hasSleeves() {
@@ -55,6 +61,14 @@ export class SleeveService {
 
   #getSleeves() {
     const numSleeves = this.sleeve.getNumSleeves();
-    return new Array(numSleeves).map((_, i) => this.sleeve.getSleeve(i));
+    const sleeves = [];
+    for (let i = 0; i < numSleeves; i++) {
+      sleeves.push(this.sleeve.getSleeve(i));
+    }
+    return sleeves;
+  }
+
+  #log(...args) {
+    utilLog('hacknet', ...args);
   }
 }
