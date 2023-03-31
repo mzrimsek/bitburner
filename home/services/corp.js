@@ -110,9 +110,9 @@ export class CorpService {
       this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 5', 250000000, 250000000);
     } else {
       divisionInfo.products.forEach(productName => {
-        if (this.corp.hasWarehouse(divisionInfo.name, getCity())) {
+        const cityName = getCity();
+        if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
           const productInfo = this.corp.getProduct(divisionInfo.name, productName);
-          // set each finished product to sell at market price
           if (productInfo.developmentProgress === 100 && productInfo.sCost !== 'MP') {
             this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP', true);
           }
