@@ -1,17 +1,28 @@
-import { log as utilLog, ACTIONS, HACKNET_UPGRADE_TYPES, hasFormulas } from 'utils.js';
+import {
+  log as utilLog,
+  ACTIONS,
+  HACKNET_UPGRADE_TYPES,
+  hasFormulas,
+  logEventHandler
+} from 'utils.js';
 import { CorpService } from 'services/corp.js';
 
 // TODO make this factor in not only which is cheaper but which upgrade gives the most increase in money
 
 export class HacknetService {
-  /** @param {import("..").NS } ns */
-  constructor(ns) {
+  /**
+   * @param {import("..").NS } ns
+   * @param {import("..").ScriptHandler} eventHandler
+   */
+  constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
+
+    this.eventHandler = eventHandler;
+
     this.corpService = new CorpService(ns);
   }
 
-  /** @param {import("..").ScriptHandler?} eventHandler */
-  purchaseUpgradeOrNode(eventHandler) {
+  purchaseUpgradeOrNode() {
     const next = this.#getNextNodeUpgrade();
     if (!next) {
       const nodeCost = this.ns.hacknet.getPurchaseNodeCost();
@@ -30,7 +41,7 @@ export class HacknetService {
           name: newStats.name,
           cost: nodeCost
         };
-        eventHandler && eventHandler(currentAction);
+        this.eventHandler(currentAction);
       }
     } else {
       this.#log(`(${next.name}) Upgrading ${next.upgrade}`);
@@ -42,7 +53,7 @@ export class HacknetService {
           name: next.name,
           cost: next.cost
         };
-        eventHandler && eventHandler(currentAction);
+        this.eventHandler(currentAction);
         this.#log(`(${next.name}) Successfully upgraded ${next.upgrade}`);
       } else {
         this.#log(`(${next.name}) Failed to upgrade ${next.upgrade}`);
@@ -50,19 +61,18 @@ export class HacknetService {
     }
   }
 
-  spendHashes(eventHandler) {
+  spendHashes() {
     const nextUpgrade = this.#getNextHashUpgrade();
 
     if (nextUpgrade) {
       // process upgrade
       this.ns.hacknet.spendHashes(nextUpgrade.name, nextUpgrade.target, 1);
-      eventHandler &&
-        eventHandler({
-          action: ACTIONS.SERVER,
-          type: 'Hash Upgrade',
-          name: nextUpgrade.name,
-          cost: nextUpgrade.cost
-        });
+      this.eventHandler({
+        action: ACTIONS.SERVER,
+        type: 'Hash Upgrade',
+        name: nextUpgrade.name,
+        cost: nextUpgrade.cost
+      });
     }
   }
 

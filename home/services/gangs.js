@@ -1,4 +1,4 @@
-import { ACTIONS } from 'utils.js';
+import { ACTIONS, logEventHandler } from 'utils.js';
 // import the env service
 import { EnvService } from 'services/env.js';
 
@@ -22,16 +22,21 @@ export class GangService {
   ];
   WANTED_LEVEL_PENALTY_THRESHOLD = 25;
 
-  /** @param {import("..").NS } ns */
-  constructor(ns) {
+  /**
+   * @param {import("..").NS } ns
+   * @param {import("..").ScriptHandler} eventHandler
+   */
+  constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
     this.gang = this.ns.gang;
+
+    this.eventHandler = eventHandler;
 
     this.envService = new EnvService(ns);
   }
 
   /** @param {import("..").ScriptHandler?} eventHandler */
-  handleGang(eventHandler) {
+  handleGang() {
     const taskInfo = this.#getTaskInfo();
     const gangMembers = this.#getGangMembers();
     const memberUpgradeInfo = this.#getMemberUpgradeInfo();
@@ -40,7 +45,7 @@ export class GangService {
       this.gang.recruitMember(this.#getNextGangMemberName()); // canRecruitMember returns false when you have 0 rep when you first start your gang
     }
 
-    this.#handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo);
+    this.#handleAddUpgradeGangMembers(gangMembers, memberUpgradeInfo);
 
     const gangInfo = this.gang.getGangInformation();
     gangMembers.forEach(gangMember => {
@@ -76,7 +81,7 @@ export class GangService {
     return this.gang.inGang();
   }
 
-  #handleAddUpgradeGangMembers(eventHandler, gangMembers, memberUpgradeInfo) {
+  #handleAddUpgradeGangMembers(gangMembers, memberUpgradeInfo) {
     if (this.gang.canRecruitMember()) {
       this.gang.recruitMember(this.#getNextGangMemberName());
     }
@@ -89,7 +94,7 @@ export class GangService {
           action: ACTIONS.ASCEND,
           name: gangMember.name
         };
-        eventHandler && eventHandler(currentAction);
+        this.eventHandler(currentAction);
       });
     }
 
@@ -102,7 +107,7 @@ export class GangService {
         name: nextUpgrade.memberName,
         cost: nextUpgrade.cost
       };
-      eventHandler && eventHandler(currentAction);
+      this.eventHandler(currentAction);
     }
   }
 

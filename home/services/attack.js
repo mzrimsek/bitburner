@@ -1,4 +1,4 @@
-import { log as utilLog, STARTUP_SCRIPTS, ACTIONS } from 'utils.js';
+import { log as utilLog, STARTUP_SCRIPTS, ACTIONS, logEventHandler } from 'utils.js';
 
 export class AttackService {
   hackSource = 'home';
@@ -7,12 +7,16 @@ export class AttackService {
   weakenFile = '/basic/weaken.js';
   growFile = '/basic/grow.js';
 
-  /** @param {import("..").NS } ns */
-  constructor(ns) {
+  /**
+   * @param {import("..").NS } ns
+   * @param {import("..").ScriptHandler} eventHandler
+   */
+  constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
+    this.eventHandler = eventHandler;
   }
 
-  async initiateAttack(eventHandler) {
+  async initiateAttack() {
     const children = this.#getChildren(this.hackSource);
     const serverNames = this.#getServerNames(this.hackSource, children).filter(
       serverName => !this.excludedServers.includes(serverName)
@@ -28,13 +32,13 @@ export class AttackService {
     const nonHacknetServerNames = distinctServerNames.filter(
       serverName => !serverName.includes('hacknet')
     );
-    await this.#coordinateAttack(nonHacknetServerNames, eventHandler);
+    await this.#coordinateAttack(nonHacknetServerNames);
   }
 
   /**
    *  @param {string[]} hackableServerNames
    */
-  async #coordinateAttack(hackableServerNames, eventHandler) {
+  async #coordinateAttack(hackableServerNames) {
     const target = this.#getTargetServer(hackableServerNames);
     this.#log(`${target} identified`);
 
@@ -68,7 +72,7 @@ export class AttackService {
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
-      eventHandler && eventHandler(currentAction);
+      this.eventHandler(currentAction);
       await this.ns.sleep(duration);
     } else if (availableMoney < moneyThreshhold) {
       this.#log(`${target} growing`);
@@ -93,7 +97,7 @@ export class AttackService {
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
-      eventHandler && eventHandler(currentAction);
+      this.eventHandler(currentAction);
       await this.ns.sleep(duration);
     } else {
       this.#log(`${target} hacking`);
@@ -118,7 +122,7 @@ export class AttackService {
         amount: numTimesToHack,
         duration: Math.floor(duration / 1000)
       };
-      eventHandler && eventHandler(currentAction);
+      this.eventHandler(currentAction);
       await this.ns.sleep(duration);
     }
   }

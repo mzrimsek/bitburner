@@ -105,6 +105,10 @@ export function getCycles(rawCycles) {
   return 0;
 }
 
+export function logEventHandler(scriptEvent, ...args) {
+  log('logEventHandler', JSON.stringify(scriptEvent), JSON.stringify(args));
+}
+
 let lastAttackMessage = '';
 /**
  * @param {import(".").NS } ns

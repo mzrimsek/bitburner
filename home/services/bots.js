@@ -1,17 +1,20 @@
-import { log as utilLog, ACTIONS } from 'utils.js';
+import { log as utilLog, ACTIONS, logEventHandler } from 'utils.js';
 
 export class BotService {
-  /** @param {import("..").NS } ns */
-  constructor(ns) {
+  /**
+   * @param {import("..").NS } ns
+   * @param {import("..").ScriptHandler} eventHandler
+   */
+  constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
+    this.eventHandler = eventHandler;
   }
 
-  /** @param {import("..").ScriptHandler?} eventHandler */
-  buyOrUpgradeBots(eventHandler) {
+  buyOrUpgradeBots() {
     const maxBots = this.ns.getPurchasedServerLimit();
     const bots = this.ns.getPurchasedServers().map(server => this.ns.getServer(server));
     if (bots.length === 0) {
-      this.#buyBot(bots, eventHandler);
+      this.#buyBot(bots);
     } else {
       const botToUpgrade = this.#getBotToUpgrade(bots);
       if (botToUpgrade) {
@@ -23,9 +26,9 @@ export class BotService {
           cost: botToUpgrade.costToUpgrade,
           type: 'ram'
         };
-        eventHandler && eventHandler(currentAction);
+        this.eventHandler(currentAction);
       } else if (bots.length < maxBots) {
-        this.#buyBot(bots, eventHandler);
+        this.#buyBot(bots);
       }
     }
   }
@@ -36,9 +39,8 @@ export class BotService {
 
   /**
    *  @param {import("..").Server[]} bots
-   *  @param {import("..").ScriptHandler?} eventHandler
    */
-  #buyBot(bots, eventHandler) {
+  #buyBot(bots) {
     const nextIndex = this.#getNextIndex(bots);
     const nextBotName = `bot-${nextIndex}`;
 
@@ -53,7 +55,7 @@ export class BotService {
         name: nextBotName,
         cost: cost
       };
-      eventHandler && eventHandler(currentAction);
+      this.eventHandler(currentAction);
     } else {
       this.#log('cannot buy bot at this time');
     }

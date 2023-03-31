@@ -1,4 +1,4 @@
-import { log as utilLog, ACTIONS, ALL_CITIES } from 'utils.js';
+import { log as utilLog, ACTIONS, ALL_CITIES, logEventHandler } from 'utils.js';
 
 export class CorpService {
   TOBACCO_DIVISION_NAMES = [
@@ -11,14 +11,18 @@ export class CorpService {
     'Cloud Chasers Corp.'
   ];
 
-  /** @param {import("..").NS } ns */
-  constructor(ns) {
+  /**
+   * @param {import("..").NS } ns
+   * @param {import("..").ScriptHandler} eventHandler
+   */
+  constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
     this.corp = this.ns.corporation;
+
+    this.eventHandler = eventHandler;
   }
 
-  /** @param {import("..").ScriptHandler?} eventHandler */
-  handleCorporation(eventHandler) {
+  handleCorporation() {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
