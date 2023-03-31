@@ -22,15 +22,9 @@ export class CorpService {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
-    // if you do not have smart supply, it should be the first thing you buy with a new corp
-    const hasSmartSupply = this.corp.hasUnlockUpgrade('Smart Supply');
-    if (!hasSmartSupply) {
-      const costOfSmartSupply = this.corp.getUnlockUpgradeCost('Smart Supply');
-      if (currentMoney >= costOfSmartSupply) {
-        this.#log('Unlocking Smart Supply');
-        this.corp.unlockUpgrade('Smart Supply');
-      }
-    }
+    this.#unlockUpgrade('Smart Supply');
+    this.#unlockUpgrade('Warehouse API');
+    this.#unlockUpgrade('Office API');
 
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
@@ -51,6 +45,10 @@ export class CorpService {
             this.#handleProducts(divisionInfo, currentMoney);
           }
         }
+
+        if (this.#hasOfficeApi()) {
+          this.#handleResearch(divisionInfo);
+        }
       });
 
       // for each product/byproduct in division
@@ -68,14 +66,56 @@ export class CorpService {
     // I think we should look at all divisions in all cities and evenly build up everything
     // we should have percentages defined to determine how much to allocate to each type of employee
 
-    // handle research
+    // figure out logic for Market-TA.I or Market-TA.II
 
     // handle repeat upgrades
 
     // if exporting is available
     // add logic to export products to and from cities for each division to optimize profit
+
+    // need to add logic to handle buying the items that boost production
   }
 
+  /** @param {import("..").Division} divisionInfo */
+  #handleResearch(divisionInfo) {
+    const currentResearch = divisionInfo.research;
+    const researchesToTestCost = this.corp.getConstants().researchNames.filter(researchName => {
+      if (!divisionInfo.makesProducts && researchName.includes('uPgrade:')) {
+        return false;
+      }
+      return !this.corp.hasResearched(divisionInfo.name, researchName);
+    });
+    const researchToTestInfo = researchesToTestCost.map(researchName => {
+      const cost = this.corp.getResearchCost(divisionInfo.name, researchName);
+      return { name: researchName, cost };
+    });
+    const researchesToBuy = researchToTestInfo.filter(researchInfo => {
+      return researchInfo.cost <= currentResearch;
+    });
+    const sortedResearchesToBuy = researchesToBuy.sort((a, b) => a.cost - b.cost);
+
+    if (sortedResearchesToBuy.length > 0) {
+      const researchToBuy = sortedResearchesToBuy[0];
+      this.#log(`Buying research ${researchToBuy.name}`);
+      this.corp.research(divisionInfo.name, researchToBuy.name);
+    }
+  }
+
+  #unlockUpgrade(upgradeName) {
+    const hasUpgrade = this.corp.hasUnlockUpgrade(upgradeName);
+    if (!hasUpgrade) {
+      const costOfUpgrade = this.corp.getUnlockUpgradeCost(upgradeName);
+      if (currentMoney >= costOfUpgrade) {
+        this.#log(`Unlocking ${upgradeName}`);
+        this.corp.unlockUpgrade(upgradeName);
+      }
+    }
+  }
+
+  /**
+   * @param {import("..").Division} divisionInfo
+   * @param {number} currentMoney
+   */
   #expandCities(divisionInfo, currentMoney) {
     const citiesWithoutOffice = ALL_CITIES.filter(
       cityName => !divisionInfo.cities.includes(cityName)
@@ -88,6 +128,10 @@ export class CorpService {
     });
   }
 
+  /**
+   * @param {import("..").Division} divisionInfo
+   * @param {number} currentMoney
+   */
   #initWarehouses(divisionInfo, currentMoney) {
     divisionInfo.cities.forEach(cityName => {
       if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
@@ -107,6 +151,10 @@ export class CorpService {
     });
   }
 
+  /**
+   * @param {import("..").Division} divisionInfo
+   * @param {number} currentMoney
+   */
   #handleProducts(divisionInfo, currentMoney) {
     const has4thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.I');
     const has5thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.II');
@@ -148,15 +196,11 @@ export class CorpService {
   }
 
   #hasWarehouseApi() {
-    try {
-      const corpInfo = this.corp.getCorporation();
-      const testDivision = this.corp.getDivision(corpInfo.divisions[0]);
-      const testCity = testDivision.cities[0];
-      this.corp.getUpgradeWarehouseCost(testDivision.name, testCity);
-      return true;
-    } catch {
-      return false;
-    }
+    return this.corp.hasUnlockUpgrade('Warehouse API');
+  }
+
+  #hasOfficeApi() {
+    return this.corp.hasUnlockUpgrade('Office API');
   }
 
   getDividendEarnings() {
