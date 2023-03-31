@@ -39,17 +39,6 @@ export class CorpService {
       currentDivisions.forEach(divisionName => {
         const divisionInfo = this.corp.getDivision(divisionName);
         const makesProducts = divisionInfo.makesProducts;
-        const has4thProductUnlock = this.corp.hasResearched(
-          divisionInfo.name,
-          'uPgrade: Capacity.I'
-        );
-        const has5thProductUnlock = this.corp.hasResearched(
-          divisionInfo.name,
-          'uPgrade: Capacity.II'
-        );
-
-        const getCity = () =>
-          divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
 
         if (this.hasWarehouseApi()) {
           // enable smart supply in each city with a warehouse
@@ -63,70 +52,7 @@ export class CorpService {
           });
 
           if (makesProducts) {
-            if (divisionInfo.products.length === 0 && currentMoney >= 3000000000) {
-              this.corp.makeProduct(
-                divisionInfo.name,
-                getCity(),
-                'Product 1',
-                1000000000,
-                1000000000
-              );
-              this.corp.makeProduct(
-                divisionInfo.name,
-                getCity(),
-                'Product 2',
-                250000000,
-                250000000
-              );
-              this.corp.makeProduct(
-                divisionInfo.name,
-                getCity(),
-                'Product 3',
-                250000000,
-                250000000
-              );
-            } else if (
-              divisionInfo.products.length === 3 &&
-              currentMoney >= 500000000 &&
-              has4thProductUnlock
-            ) {
-              this.corp.makeProduct(
-                divisionInfo.name,
-                getCity(),
-                'Product 4',
-                250000000,
-                250000000
-              );
-            } else if (
-              divisionInfo.products.length === 4 &&
-              currentMoney >= 500000000 &&
-              has5thProductUnlock
-            ) {
-              this.corp.makeProduct(
-                divisionInfo.name,
-                getCity(),
-                'Product 5',
-                250000000,
-                250000000
-              );
-            } else {
-              divisionInfo.products.forEach(productName => {
-                if (this.corp.hasWarehouse(divisionInfo.name, getCity())) {
-                  const productInfo = this.corp.getProduct(divisionInfo.name, productName);
-                  // set each finished product to sell at market price
-                  if (productInfo.developmentProgress === 100 && productInfo.sCost !== 'MP') {
-                    this.corp.sellProduct(
-                      divisionInfo.name,
-                      cityName,
-                      productName,
-                      'MAX',
-                      'MP',
-                      true
-                    );
-                  }
-                }
-              });
-            }
+            this.#handleProducts(divisionInfo, currentMoney);
           }
         }
       });
@@ -157,6 +83,42 @@ export class CorpService {
 
     // if exporting is available
     // add logic to export products to and from cities for each division to optimize profit
+  }
+
+  #handleProducts(divisionInfo, currentMoney) {
+    const has4thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.I');
+    const has5thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.II');
+
+    const getCity = () =>
+      divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
+
+    if (divisionInfo.products.length === 0 && currentMoney >= 3000000000) {
+      this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 1', 1000000000, 1000000000);
+      this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 2', 250000000, 250000000);
+      this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 3', 250000000, 250000000);
+    } else if (
+      divisionInfo.products.length === 3 &&
+      currentMoney >= 500000000 &&
+      has4thProductUnlock
+    ) {
+      this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 4', 250000000, 250000000);
+    } else if (
+      divisionInfo.products.length === 4 &&
+      currentMoney >= 500000000 &&
+      has5thProductUnlock
+    ) {
+      this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 5', 250000000, 250000000);
+    } else {
+      divisionInfo.products.forEach(productName => {
+        if (this.corp.hasWarehouse(divisionInfo.name, getCity())) {
+          const productInfo = this.corp.getProduct(divisionInfo.name, productName);
+          // set each finished product to sell at market price
+          if (productInfo.developmentProgress === 100 && productInfo.sCost !== 'MP') {
+            this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP', true);
+          }
+        }
+      });
+    }
   }
 
   hasCorp() {
