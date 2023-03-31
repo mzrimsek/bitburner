@@ -29,9 +29,9 @@ export class CorpService {
     const corpInfo = this.corp.getCorporation();
     const currentMoney = corpInfo.funds;
 
-    const hasSmartSupply = this.#unlockUpgrade('Smart Supply');
-    const hasWarehouseApi = this.#unlockUpgrade('Warehouse API');
-    const hasOfficeApi = this.#unlockUpgrade('Office API');
+    const hasSmartSupply = this.#unlockUpgrade('Smart Supply', corpInfo);
+    const hasWarehouseApi = this.#unlockUpgrade('Warehouse API', corpInfo);
+    const hasOfficeApi = this.#unlockUpgrade('Office API', corpInfo);
 
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
@@ -152,20 +152,33 @@ export class CorpService {
       const researchToBuy = sortedResearchesToBuy[0];
       this.#log(`Buying research ${researchToBuy.name}`);
       this.corp.research(divisionInfo.name, researchToBuy.name);
+      this.eventHandler({
+        action: ACTIONS.RESEARCH,
+        name: divisionInfo.name,
+        cost: researchToBuy.cost,
+        type: researchToBuy.name
+      });
     }
   }
 
   /**
    * @description Attempts to unlock the upgrade if necessary and possibly
    * @param {string} upgradeName
+   * @param {import("..").CorporationInfo} corpInfo
    * @returns bool Returns if the upgrade is owned */
-  #unlockUpgrade(upgradeName) {
+  #unlockUpgrade(upgradeName, corpInfo) {
     const hasUpgrade = this.corp.hasUnlockUpgrade(upgradeName);
     if (!hasUpgrade) {
       const costOfUpgrade = this.corp.getUnlockUpgradeCost(upgradeName);
       if (currentMoney >= costOfUpgrade) {
         this.#log(`Unlocking ${upgradeName}`);
         this.corp.unlockUpgrade(upgradeName);
+        this.eventHandler({
+          action: ACTIONS.UPGRADE,
+          name: corpInfo.name,
+          cost: costOfUpgrade,
+          type: upgradeName
+        });
         return true;
       }
     }
@@ -184,6 +197,12 @@ export class CorpService {
       const officeCost = this.corp.getConstants().officeInitialCost;
       if (currentMoney >= officeCost) {
         this.corp.expandCity(divisionInfo.name, cityName);
+        this.eventHandler({
+          action: ACTIONS.EXPAND,
+          name: divisionInfo.name,
+          cost: officeCost,
+          type: cityName
+        });
       }
     });
   }
@@ -206,6 +225,12 @@ export class CorpService {
         if (currentMoney >= warehouseCost) {
           this.#log(`Purchasing warehouse for ${divisionInfo.name} in ${cityName}`);
           this.corp.purchaseWarehouse(divisionInfo.name, cityName);
+          this.eventHandler({
+            action: ACTIONS.EXPAND,
+            name: divisionInfo.name,
+            cost: warehouseCost,
+            type: cityName
+          });
         }
       }
     });

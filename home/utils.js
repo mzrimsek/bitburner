@@ -38,7 +38,10 @@ export const ACTIONS = {
   SHOCK: '⚡',
   SYNC: '🔄',
   AUGMENT: '🧬',
-  SERVER: '🖥️'
+  SERVER: '🖥️',
+  CRIME: '🔫',
+  RESEARCH: '🔬',
+  EXPAND: '🏗️'
 };
 
 export const HACKNET_UPGRADE_TYPES = {
@@ -145,11 +148,19 @@ export function logCustomScriptEvent(ns, scriptEvent) {
       break;
     }
     case ACTIONS.UPGRADE: {
-      logUpgrade(ns, scriptEvent);
+      logCashUpgrade(ns, scriptEvent);
       break;
     }
     case ACTIONS.TASK: {
       logTask(ns, scriptEvent);
+      break;
+    }
+    case ACTIONS.RESEARCH: {
+      logNonCashUpgrade(ns, scriptEvent);
+      break;
+    }
+    case ACTIONS.EXPAND: {
+      logCashUpgrade(ns, scriptEvent);
       break;
     }
     default: {
@@ -180,7 +191,7 @@ let lastUpgradeMessage = '';
 /**
  * @param {import(".").NS } ns
  * @param {import(".").ScriptUpgradeEvent } scriptEvent */
-function logUpgrade(ns, scriptEvent) {
+function logCashUpgrade(ns, scriptEvent) {
   const time = scriptEvent?.time || new Date();
   const cost = scriptEvent?.cost || 0;
   const messageWithoutTime = `($${ns.formatNumber(cost)}) ${scriptEvent.action} ${
@@ -190,6 +201,21 @@ function logUpgrade(ns, scriptEvent) {
   if (messageWithoutTime !== lastUpgradeMessage) {
     ns.writePort(PORT_MAPPING.LOG_FEED, message);
     lastUpgradeMessage = messageWithoutTime;
+  }
+}
+
+let lastResearchMessage = '';
+/**
+ * @param {import(".").NS } ns
+ * @param {import(".").ScriptUpgradeEvent } scriptEvent */
+function logNonCashUpgrade(ns, scriptEvent) {
+  const time = scriptEvent?.time || new Date();
+  const cost = scriptEvent?.cost || 0;
+  const messageWithoutTime = `(${cost}) ${scriptEvent.action} ${scriptEvent.type} ${scriptEvent.name}`;
+  const message = `[${getFormattedTime(time)}] ${messageWithoutTime}`;
+  if (messageWithoutTime !== lastResearchMessage) {
+    ns.writePort(PORT_MAPPING.LOG_FEED, message);
+    lastResearchMessage = messageWithoutTime;
   }
 }
 

@@ -33,6 +33,11 @@ export class SleeveService {
         });
       } else {
         this.#handleSleeveAugments(index);
+        this.sleeve.setToCommitCrime(index, 'Homicide');
+        this.eventHandler({
+          action: ACTIONS.CRIME,
+          name: `Sleeve ${index}`
+        });
       }
     });
   }
