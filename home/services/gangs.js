@@ -1,5 +1,4 @@
 import { ACTIONS, logEventHandler } from 'utils.js';
-// import the env service
 import { EnvService } from 'services/env.js';
 
 export class GangService {

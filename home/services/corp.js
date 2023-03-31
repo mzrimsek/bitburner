@@ -1,4 +1,5 @@
 import { log as utilLog, ACTIONS, ALL_CITIES, logEventHandler, CORP_OFFICE_UNITS } from 'utils.js';
+import { EnvService } from 'services/env.js';
 
 export class CorpService {
   #TOBACCO_DIVISION_NAMES = [
@@ -20,6 +21,8 @@ export class CorpService {
     this.corp = this.ns.corporation;
 
     this.eventHandler = eventHandler;
+
+    this.envService = new EnvService(ns);
   }
 
   async handleCorporation() {
@@ -65,8 +68,15 @@ export class CorpService {
 
           const hasMaxExpandedDivisions =
             numCitiesUnqiueDivisionsAreIn === numCitiesUniqueDivisionsCanBeIn;
+          const shouldAutoHire = this.envService.getDoCorpAutoHire();
 
-          if (hasOfficeApi && hasWarehouseApi && hasSmartSupply && hasMaxExpandedDivisions) {
+          if (
+            hasOfficeApi &&
+            hasWarehouseApi &&
+            hasSmartSupply &&
+            hasMaxExpandedDivisions &&
+            shouldAutoHire
+          ) {
             divisionInfo.cities.forEach(async cityName => {
               const costToExpand = this.corp.getOfficeSizeUpgradeCost(
                 divisionInfo.name,

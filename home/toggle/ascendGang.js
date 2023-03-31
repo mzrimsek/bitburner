@@ -9,6 +9,6 @@ export async function main(ns) {
     const nextData = currentData === 0 ? 1 : 0;
     ns.writePort(PORT_MAPPING.DO_GANG_ASCEND, nextData);
   } else {
-    ns.writePort(PORT_MAPPING.DO_GANG, 0); // default to off
+    ns.writePort(PORT_MAPPING.DO_GANG_ASCEND, 0); // default to off
   }
 }
