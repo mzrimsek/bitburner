@@ -62,6 +62,12 @@ export class SleeveService {
         type: augment.name
       });
     }
+
+    // public function that appends buttons to the factions UI
+    // when you click that button is sets an override in the service
+    // that sets the sleeves to all do work for that faction
+    // if the faction offers field work or security work, take it
+    // otherwise do hacking contracts
   }
 
   hasSleeves() {
