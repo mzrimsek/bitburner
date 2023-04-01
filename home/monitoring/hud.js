@@ -71,7 +71,7 @@ export async function main(ns) {
         gangInfo = ns.gang.getGangInformation();
         gangFaction = gangInfo.faction;
         gangIncome = ns.formatNumber(ns.gang.getGangInformation().moneyGainRate * 5, 2); // A tick is every 200ms. To get the actual money/sec, multiple moneyGainRate by 5.
-        gangRespect = ns.formatNumber(ns.gang.getGangInformation().respect, 5);
+        gangRespect = ns.formatNumber(ns.gang.getGangInformation().respect, 2);
       }
 
       var playerCity = player.city; // city
@@ -153,9 +153,7 @@ export async function main(ns) {
         colorByClassName('.HUD_GN_R', theme['int']);
         hook1.insertAdjacentHTML(
           'beforeend',
-          `<element class="HUD_GN_R HUD_el">${
-            Math.floor(gangRespect) + '<br class="HUD_el">'
-          }</element>`
+          `<element class="HUD_GN_R HUD_el">${gangRespect + '<br class="HUD_el">'}</element>`
         );
         colorByClassName('.HUD_GN_R', theme['int']);
 

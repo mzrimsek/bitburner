@@ -215,9 +215,22 @@ export class CorpService {
     divisionInfo.cities.forEach(cityName => {
       if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
         // enable smart supply in each city with a warehouse
-        if (!this.corp.getWarehouse(divisionInfo.name, cityName).smartSupplyEnabled) {
+        const warehouse = this.corp.getWarehouse(divisionInfo.name, cityName);
+        if (!warehouse.smartSupplyEnabled) {
           this.#log(`Enabling smart supply for ${divisionInfo.name} in ${cityName}`);
           this.corp.setSmartSupply(divisionInfo.name, cityName, true);
+        }
+
+        const costToUpgrade = this.corp.getUpgradeWarehouseCost(divisionInfo.name, cityName, 5);
+        if (currentMoney >= costToUpgrade && warehouse.level < 5) {
+          this.#log(`Upgrading warehouse for ${divisionInfo.name} in ${cityName}`);
+          this.corp.upgradeWarehouse(divisionInfo.name, cityName, 5);
+          this.eventHandler({
+            action: ACTIONS.EXPAND,
+            name: divisionInfo.name,
+            cost: costToUpgrade,
+            type: cityName
+          });
         }
       } else {
         // buy a warehouse if we don't have one
