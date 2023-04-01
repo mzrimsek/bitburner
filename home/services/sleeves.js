@@ -17,7 +17,6 @@ export class SleeveService {
 
   handleSleeves() {
     const sleeves = this.#getSleeves();
-    console.log(sleeves);
     sleeves.forEach((sleeve, index) => {
       if (sleeve.shock !== this.#SHOCK_MIN) {
         this.sleeve.setToShockRecovery(index);
@@ -33,11 +32,16 @@ export class SleeveService {
         });
       } else {
         this.#handleSleeveAugments(index);
-        this.sleeve.setToCommitCrime(index, 'Homicide');
-        this.eventHandler({
-          action: ACTIONS.CRIME,
-          name: `Sleeve ${index}`
-        });
+        const sleeveTask = this.sleeve.getTask(index);
+        const isHomicide =
+          sleeveTask && sleeveTask.type === 'CRIME' && sleeveTask.crimeType === 'Homicide';
+        if (!isHomicide) {
+          this.sleeve.setToCommitCrime(index, 'Homicide');
+          this.eventHandler({
+            action: ACTIONS.CRIME,
+            name: `Sleeve ${index}`
+          });
+        }
       }
     });
   }
@@ -74,6 +78,6 @@ export class SleeveService {
   }
 
   #log(...args) {
-    utilLog('hacknet', ...args);
+    utilLog('sleeve', ...args);
   }
 }
