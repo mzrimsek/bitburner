@@ -47,11 +47,11 @@ export class CorpService {
         const makesProducts = divisionInfo.makesProducts;
 
         if (hasWarehouseApi) {
-          this.#initWarehouses(divisionInfo, currentMoney);
-          this.#expandCities(divisionInfo, currentMoney);
+          this.#initWarehouses(divisionInfo);
+          this.#expandCities(divisionInfo);
 
           if (makesProducts) {
-            this.#handleProducts(divisionInfo, currentMoney);
+            this.#handleProducts(divisionInfo);
           }
         }
 
@@ -123,6 +123,10 @@ export class CorpService {
     // automate advertising - should only really prioritize this in divisions where advertising has a tangible benefit
     // we should probably have a list of divisions that we want to prioritize advertising in
     // probably need an env like stonks limit to limit how much corp money we spend on ads, expanding, etc
+  }
+
+  #getCurrentMoney() {
+    return this.corp.getCorporation().funds;
   }
 
   hasAllResearch() {
@@ -205,6 +209,7 @@ export class CorpService {
   #unlockUpgrade(upgradeName, corpInfo) {
     const hasUpgrade = this.corp.hasUnlockUpgrade(upgradeName);
     if (!hasUpgrade) {
+      const currentMoney = this.#getCurrentMoney();
       const costOfUpgrade = this.corp.getUnlockUpgradeCost(upgradeName);
       if (currentMoney >= costOfUpgrade) {
         this.#log(`Unlocking ${upgradeName}`);
@@ -223,13 +228,13 @@ export class CorpService {
 
   /**
    * @param {import("..").Division} divisionInfo
-   * @param {number} currentMoney
    */
-  #expandCities(divisionInfo, currentMoney) {
+  #expandCities(divisionInfo) {
     const citiesWithoutOffice = ALL_CITIES.filter(
       cityName => !divisionInfo.cities.includes(cityName)
     );
     citiesWithoutOffice.forEach(cityName => {
+      const currentMoney = this.#getCurrentMoney();
       const officeCost = this.corp.getConstants().officeInitialCost;
       if (currentMoney >= officeCost) {
         this.corp.expandCity(divisionInfo.name, cityName);
@@ -245,9 +250,8 @@ export class CorpService {
 
   /**
    * @param {import("..").Division} divisionInfo
-   * @param {number} currentMoney
    */
-  #initWarehouses(divisionInfo, currentMoney) {
+  #initWarehouses(divisionInfo) {
     divisionInfo.cities.forEach(cityName => {
       if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
         // enable smart supply in each city with a warehouse
@@ -257,6 +261,7 @@ export class CorpService {
           this.corp.setSmartSupply(divisionInfo.name, cityName, true);
         }
 
+        const currentMoney = this.#getCurrentMoney();
         const costToUpgrade = this.corp.getUpgradeWarehouseCost(divisionInfo.name, cityName, 5);
         if (currentMoney >= costToUpgrade && warehouse.level < 5) {
           this.#log(`Upgrading warehouse for ${divisionInfo.name} in ${cityName}`);
@@ -287,15 +292,15 @@ export class CorpService {
 
   /**
    * @param {import("..").Division} divisionInfo
-   * @param {number} currentMoney
    */
-  #handleProducts(divisionInfo, currentMoney) {
+  #handleProducts(divisionInfo) {
     const has4thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.I');
     const has5thProductUnlock = this.corp.hasResearched(divisionInfo.name, 'uPgrade: Capacity.II');
 
     const getCity = () =>
       divisionInfo.cities[Math.floor(Math.random() * divisionInfo.cities.length)];
 
+    const currentMoney = this.#getCurrentMoney();
     if (divisionInfo.products.length === 0 && currentMoney >= 3000000000) {
       this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 1', 1000000000, 1000000000);
       this.corp.makeProduct(divisionInfo.name, getCity(), 'Product 2', 250000000, 250000000);
