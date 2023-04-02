@@ -58,16 +58,7 @@ export class CorpService {
         if (hasOfficeApi) {
           this.#handleResearch(divisionInfo);
 
-          const maxNumDivisions = this.corp.getConstants().industryNames.length;
-          const numCitiesUniqueDivisionsCanBeIn = ALL_CITIES.length * maxNumDivisions;
-
-          const numCitiesUnqiueDivisionsAreIn = corpInfo.divisions.reduce((acc, divisionName) => {
-            const divisionInfo = this.corp.getDivision(divisionName);
-            return acc + divisionInfo.cities.length;
-          }, 0);
-
-          const hasMaxExpandedDivisions =
-            numCitiesUnqiueDivisionsAreIn === numCitiesUniqueDivisionsCanBeIn;
+          const hasMaxExpandedDivisions = this.#hasCorpFullyExpanded(corpInfo);
           const shouldAutoHire = this.envService.getDoCorpAutoHire();
 
           if (
@@ -134,15 +125,41 @@ export class CorpService {
     // probably need an env like stonks limit to limit how much corp money we spend on ads, expanding, etc
   }
 
+  hasAllResearch() {
+    const corpInfo = this.corp.getCorporation();
+    // if you haven't fully expanded, there are still divisions with research
+    if (!this.#hasCorpFullyExpanded(corpInfo)) {
+      return false;
+    }
+
+    const hasAllResearch = corpInfo.divisions.every(
+      divisionName => this.#getAvailableResearchForDivision(divisionName).length === 0
+    );
+    return hasAllResearch;
+  }
+
+  /**
+   * @return {bool} True if corporation has all divisions with offices in all cities
+   * @param {import("..").CorporationInfo} divisionInfo
+   * */
+  #hasCorpFullyExpanded(corpInfo) {
+    const maxNumDivisions = this.corp.getConstants().industryNames.length;
+    const numCitiesUniqueDivisionsCanBeIn = ALL_CITIES.length * maxNumDivisions;
+
+    const numCitiesUnqiueDivisionsAreIn = corpInfo.divisions.reduce((acc, divisionName) => {
+      const divisionInfo = this.corp.getDivision(divisionName);
+      return acc + divisionInfo.cities.length;
+    }, 0);
+
+    const hasMaxExpandedDivisions =
+      numCitiesUnqiueDivisionsAreIn === numCitiesUniqueDivisionsCanBeIn;
+    return hasMaxExpandedDivisions;
+  }
+
   /** @param {import("..").Division} divisionInfo */
   #handleResearch(divisionInfo) {
     const currentResearch = divisionInfo.research;
-    const researchesToTestCost = this.corp.getConstants().researchNames.filter(researchName => {
-      if (!divisionInfo.makesProducts && researchName.includes('uPgrade:')) {
-        return false;
-      }
-      return !this.corp.hasResearched(divisionInfo.name, researchName);
-    });
+    const researchesToTestCost = this.#getAvailableResearchForDivision(divisionInfo);
     const researchToTestInfo = researchesToTestCost.map(researchName => {
       const cost = this.corp.getResearchCost(divisionInfo.name, researchName);
       return { name: researchName, cost };
@@ -163,6 +180,16 @@ export class CorpService {
         type: researchToBuy.name
       });
     }
+  }
+
+  /** @param {import("..").Division} divisionInfo */
+  #getAvailableResearchForDivision(divisionInfo) {
+    return this.corp.getConstants().researchNames.filter(researchName => {
+      if (!divisionInfo.makesProducts && researchName.includes('uPgrade:')) {
+        return false;
+      }
+      return !this.corp.hasResearched(divisionInfo.name, researchName);
+    });
   }
 
   /**

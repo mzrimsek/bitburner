@@ -98,10 +98,19 @@ export class HacknetService {
       const isUnconfiguredType = isBladerunner || isTraining || isHackingSkill || isCodingContract;
 
       const hasCorp = this.corpService.hasCorp();
+      const hasAllResearch = this.corpService.hasAllResearch();
       const isCorpUpgrade = upgradeInfo.name.includes('Corporation');
-      const shouldSkipCorpUpgrade = !hasCorp && isCorpUpgrade;
 
-      return !isUnconfiguredType && !shouldSkipCorpUpgrade;
+      if (isCorpUpgrade && !hasCorp) {
+        return false;
+      }
+
+      // if we have all the research, we don't need to exchange for more corp research anymore
+      if (isCorpUpgrade && hasAllResearch && upgradeInfo.name.includes('Research')) {
+        return false;
+      }
+
+      return !isUnconfiguredType;
     });
 
     const affordableHashUpgrades = filteredHashUpgrades.filter(
