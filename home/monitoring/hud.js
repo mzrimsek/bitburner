@@ -97,8 +97,6 @@ export async function main(ns) {
       const hacknetService = new HacknetService(ns);
       const corpService = new CorpService(ns);
 
-      const dividendEarnings = corpService.getDividendEarnings();
-
       // End paramaters, begin CSS:
 
       removeByClassName('.HUD_el');
@@ -171,7 +169,7 @@ export async function main(ns) {
       }
 
       if (corpService.hasCorp()) {
-        // corpDividends
+        const dividendEarnings = corpService.getDividendEarnings();
         hook0.insertAdjacentHTML(
           'beforeend',
           `<element class="HUD_Corp_D HUD_el" title="The dividends of your corporation.">Corp Dividends</element><br class="HUD_el">`
