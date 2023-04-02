@@ -126,6 +126,10 @@ export class CorpService {
   }
 
   hasAllResearch() {
+    if (!this.hasCorp()) {
+      return false;
+    }
+
     const corpInfo = this.corp.getCorporation();
     // if you haven't fully expanded, there are still divisions with research
     if (!this.#hasCorpFullyExpanded(corpInfo)) {

@@ -18,21 +18,29 @@ export class SleeveService {
   handleSleeves() {
     const sleeves = this.#getSleeves();
     sleeves.forEach((sleeve, index) => {
+      const sleeveTask = this.sleeve.getTask(index);
+
       if (sleeve.shock !== this.#SHOCK_MIN) {
-        this.sleeve.setToShockRecovery(index);
-        this.eventHandler({
-          action: ACTIONS.SHOCK,
-          name: `Sleeve ${index}`
-        });
-      } else if (sleeve.sync !== this.#SYNC_MAX) {
-        this.sleeve.setToSynchronize(index);
-        this.eventHandler({
-          action: ACTIONS.SYNC,
-          name: `Sleeve ${index}`
-        });
+        const currentTaskIsShockRecovery = sleeveTask.type === 'RECOVERY';
+        if (!currentTaskIsShockRecovery) {
+          this.#log(`Sleeve ${index} is in shock, recovering...`);
+          this.sleeve.setToShockRecovery(index);
+          this.eventHandler({
+            action: ACTIONS.SHOCK,
+            name: `Sleeve ${index}`
+          });
+        }
+      } else if (sleeve.sync !== this.#SYNC_MAX && !isSync) {
+        const currentTaskIsSynchronize = sleeveTask.type === 'SYNCHRO';
+        if (!currentTaskIsSynchronize) {
+          this.sleeve.setToSynchronize(index);
+          this.eventHandler({
+            action: ACTIONS.SYNC,
+            name: `Sleeve ${index}`
+          });
+        }
       } else {
         this.#handleSleeveAugments(index);
-        const sleeveTask = this.sleeve.getTask(index);
         const isHomicide =
           sleeveTask && sleeveTask.type === 'CRIME' && sleeveTask.crimeType === 'Homicide';
         if (!isHomicide) {
