@@ -132,9 +132,10 @@ export class CorpService {
       return false;
     }
 
-    const hasAllResearch = corpInfo.divisions.every(
-      divisionName => this.#getAvailableResearchForDivision(divisionName).length === 0
-    );
+    const hasAllResearch = corpInfo.divisions.every(divisionName => {
+      const divisionInfo = this.corp.getDivision(divisionName);
+      return this.#getAvailableResearchForDivision(divisionInfo).length === 0;
+    });
     return hasAllResearch;
   }
 
