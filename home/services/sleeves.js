@@ -65,7 +65,7 @@ export class SleeveService {
 
     // public function that appends buttons to the factions UI
     // when you click that button is sets an override in the service
-    // that sets the sleeves to all do work for that faction
+    // that sets a sleeve to work for that faction for a certain amount of time
     // if the faction offers field work or security work, take it
     // otherwise do hacking contracts
   }

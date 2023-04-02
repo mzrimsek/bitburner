@@ -128,6 +128,10 @@ export class CorpService {
     // figure out logic for Market-TA.I or Market-TA.II
 
     // handle repeat upgrades
+
+    // automate advertising - should only really prioritize this in divisions where advertising has a tangible benefit
+    // we should probably have a list of divisions that we want to prioritize advertising in
+    // probably need an env like stonks limit to limit how much corp money we spend on ads, expanding, etc
   }
 
   /** @param {import("..").Division} divisionInfo */
