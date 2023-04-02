@@ -251,3 +251,13 @@ function logEvent(ns, scriptEvent) {
 export function hasFormulas(ns) {
   return ns.fileExists('Formulas.exe', 'home');
 }
+
+/** @param { import(".").NS } ns */
+export function hasSingularity(ns) {
+  try {
+    ns.singularity.applyToCompany('foodnstuff', 'Employee');
+    return true;
+  } catch {
+    return false;
+  }
+}
