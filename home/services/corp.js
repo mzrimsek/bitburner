@@ -48,17 +48,7 @@ export class CorpService {
       this.#initWarehouses(divisionInfo);
 
       // hire first 3 employees so we can start making products
-      this.corp.hireEmployee(
-        divisionInfo.name,
-        divisionInfo.cities[0],
-        CORP_OFFICE_UNITS.OPERATIONS
-      );
-      this.corp.hireEmployee(
-        divisionInfo.name,
-        divisionInfo.cities[0],
-        CORP_OFFICE_UNITS.ENGINEERING
-      );
-      this.corp.hireEmployee(divisionInfo.name, divisionInfo.cities[0], CORP_OFFICE_UNITS.BUSINESS);
+      this.#hireFirstCityEmployees(divisionInfo);
 
       // set up products
       this.#handleProducts(divisionInfo);
@@ -144,6 +134,22 @@ export class CorpService {
     // automate advertising - should only really prioritize this in divisions where advertising has a tangible benefit
     // we should probably have a list of divisions that we want to prioritize advertising in
     // probably need an env like stonks limit to limit how much corp money we spend on ads, expanding, etc
+  }
+
+  /**
+   * @param {import("..").Division} divisionInfo
+   * @param {string} cityName
+   */
+  #hireFirstCityEmployees(divisionInfo, cityName) {
+    if (!cityName) {
+      cityName = divisionInfo.cities[0];
+    }
+
+    this.#log(`Hiring first employees for ${divisionInfo.name} in ${cityName}`);
+
+    this.corp.hireEmployee(divisionInfo.name, cityName, CORP_OFFICE_UNITS.OPERATIONS);
+    this.corp.hireEmployee(divisionInfo.name, cityName, CORP_OFFICE_UNITS.ENGINEERING);
+    this.corp.hireEmployee(divisionInfo.name, cityName, CORP_OFFICE_UNITS.BUSINESS);
   }
 
   #getCurrentMoney() {
@@ -259,6 +265,7 @@ export class CorpService {
       const officeCost = this.corp.getConstants().officeInitialCost;
       if (currentMoney >= officeCost) {
         this.corp.expandCity(divisionInfo.name, cityName);
+        this.#hireFirstCityEmployees(divisionInfo, cityName);
         this.eventHandler({
           action: ACTIONS.EXPAND,
           name: divisionInfo.name,
