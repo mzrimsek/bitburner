@@ -35,12 +35,33 @@ export class CorpService {
 
     const currentDivisions = corpInfo.divisions;
     if (currentDivisions.length === 0) {
+      // set up first division
       this.#log('Creating Tobacco Division as first division');
       const divisionName =
         this.#TOBACCO_DIVISION_NAMES[
           Math.floor(Math.random() * this.#TOBACCO_DIVISION_NAMES.length)
         ];
       this.corp.expandIndustry('Tobacco', divisionName);
+      const divisionInfo = this.corp.getDivision(divisionName);
+
+      // set up warehouses
+      this.#initWarehouses(divisionInfo);
+
+      // hire first 3 employees so we can start making products
+      this.corp.hireEmployee(
+        divisionInfo.name,
+        divisionInfo.cities[0],
+        CORP_OFFICE_UNITS.OPERATIONS
+      );
+      this.corp.hireEmployee(
+        divisionInfo.name,
+        divisionInfo.cities[0],
+        CORP_OFFICE_UNITS.ENGINEERING
+      );
+      this.corp.hireEmployee(divisionInfo.name, divisionInfo.cities[0], CORP_OFFICE_UNITS.BUSINESS);
+
+      // set up products
+      this.#handleProducts(divisionInfo);
     } else {
       currentDivisions.forEach(divisionName => {
         const divisionInfo = this.corp.getDivision(divisionName);
@@ -275,6 +296,7 @@ export class CorpService {
         }
       } else {
         // buy a warehouse if we don't have one
+        const currentMoney = this.#getCurrentMoney();
         const warehouseCost = this.corp.getConstants().warehouseInitialCost;
         if (currentMoney >= warehouseCost) {
           this.#log(`Purchasing warehouse for ${divisionInfo.name} in ${cityName}`);
