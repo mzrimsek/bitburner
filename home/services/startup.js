@@ -1,3 +1,5 @@
+import { log as utilLog, ACTIONS, logEventHandler, hasFileOnHome } from 'utils.js';
+
 export class StartupService {
   /**
    * @param {import("..").NS } ns
@@ -20,24 +22,42 @@ export class StartupService {
   }
 
   #setupDarkweb() {
+    const hasTor = this.ns.hasTorRouter();
     const darkWebCost = 200000; // 200k
-    if (this.#getCurrentMoney() >= darkWebCost) {
+    if (!hasTor && this.#getCurrentMoney() >= darkWebCost) {
       this.sing.purchaseTor();
     }
 
-    const darkWebProgramNames = this.sing.getDarkwebPrograms();
-    darkWebProgramNames.forEach(programName => {
-      if (this.#getCurrentMoney() >= this.sing.getDarkwebProgramCost(programName)) {
-        this.sing.purchaseProgram(programName);
-      }
-    });
+    if (hasTor) {
+      const darkWebProgramNames = this.sing.getDarkwebPrograms();
+      const unownedDarkWebProgramNames = darkWebProgramNames.filter(
+        programName => !hasFileOnHome(this.ns, programName)
+      );
+      unownedDarkWebProgramNames.forEach(programName => {
+        if (this.#getCurrentMoney() >= this.sing.getDarkwebProgramCost(programName)) {
+          this.sing.purchaseProgram(programName);
+        }
+      });
+    }
   }
 
   #setupStonks() {
-    this.stock.purchaseWseAccount();
-    this.stock.purchaseTixApi();
-    this.stock.purchase4SMarketData();
-    this.stock.purchase4SMarketDataTixApi();
+    // need to have a WSE account before doing anything else
+    if (!this.stock.hasWSEAccount()) {
+      this.stock.purchaseWseAccount();
+    } else {
+      if (!this.stock.hasTIXAPIAccess()) {
+        this.stock.purchaseTixApi();
+      }
+
+      if (!this.stock.has4SData()) {
+        this.stock.purchase4SMarketData();
+      }
+
+      if (!this.stock.has4SDataTIXAPI()) {
+        this.stock.purchase4SMarketDataTixApi();
+      }
+    }
   }
 
   #setupHome() {
@@ -60,4 +80,8 @@ export class StartupService {
   }
 
   #getCurrentMoney = () => this.ns.getPlayer().money;
+
+  #log(...args) {
+    utilLog('startup', ...args);
+  }
 }

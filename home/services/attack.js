@@ -1,4 +1,4 @@
-import { log as utilLog, STARTUP_SCRIPTS, ACTIONS, logEventHandler } from 'utils.js';
+import { log as utilLog, STARTUP_SCRIPTS, ACTIONS, logEventHandler, hasFileOnHome } from 'utils.js';
 
 export class AttackService {
   #hackSource = 'home';
@@ -191,38 +191,38 @@ export class AttackService {
    *  @param {Server} server
    */
   async #openServer(server) {
-    const hasSshHack = this.ns.fileExists('BruteSSH.exe', this.#hackSource);
+    const hasSshHack = hasFileOnHome(this.ns, 'BruteSSH.exe');
     if (!server.sshPortOpen && hasSshHack) {
       this.#log(server.hostname, 'Opening SSH port');
       this.ns.brutessh(server.hostname);
     }
 
-    const hasFtpHack = this.ns.fileExists('FTPCrack.exe', this.#hackSource);
+    const hasFtpHack = hasFileOnHome(this.ns, 'FTPCrack.exe');
     if (!server.ftpPortOpen && hasFtpHack) {
       this.#log(server.hostname, 'Opening FTP port');
       this.ns.ftpcrack(server.hostname);
     }
 
-    const hasSmtpHack = this.ns.fileExists('relaySMTP.exe', this.#hackSource);
+    const hasSmtpHack = hasFileOnHome(this.ns, 'relaySMTP.exe');
     if (!server.smtpPortOpen && hasSmtpHack) {
       this.#log(server.hostname, 'Opening SMTP port');
       this.ns.relaysmtp(server.hostname);
     }
 
-    const hasHttpHack = this.ns.fileExists('HTTPWorm.exe', this.#hackSource);
+    const hasHttpHack = hasFileOnHome(this.ns, 'HTTPWorm.exe');
     if (!server.httpPortOpen && hasHttpHack) {
       this.#log(server.hostname, 'Opening HTTP port');
       this.ns.httpworm(server.hostname);
     }
 
-    const hasSqlHack = this.ns.fileExists('SQLInject.exe', this.#hackSource);
+    const hasSqlHack = hasFileOnHome(this.ns, 'SQLInject.exe');
     if (!server.sqlPortOpen && hasSqlHack) {
       this.#log(server.hostname, 'Opening SQL port');
       this.ns.sqlinject(server.hostname);
     }
 
     // get admin access
-    const hasNukeHack = this.ns.fileExists('NUKE.exe', this.#hackSource);
+    const hasNukeHack = hasFileOnHome(this.ns, 'NUKE.exe');
     if (
       !server.hasAdminRights &&
       hasNukeHack &&

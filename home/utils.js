@@ -249,7 +249,11 @@ function logEvent(ns, scriptEvent) {
 
 /** @param { import(".").NS } ns */
 export function hasFormulas(ns) {
-  return ns.fileExists('Formulas.exe', 'home');
+  return hasFileOnHome(ns, 'Formulas.exe');
+}
+
+export function hasFileOnHome(ns, upgradeName) {
+  return ns.fileExists(upgradeName, 'home');
 }
 
 /** @param { import(".").NS } ns */
