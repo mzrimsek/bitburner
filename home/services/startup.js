@@ -12,7 +12,14 @@ export class StartupService {
     this.eventHandler = eventHandler;
   }
 
-  setupDarkweb() {
+  setup() {
+    this.#setupHome();
+    this.#setupDarkweb();
+    this.#setupStonks();
+    this.#setupCorp();
+  }
+
+  #setupDarkweb() {
     const darkWebCost = 200000; // 200k
     if (this.#getCurrentMoney() >= darkWebCost) {
       this.sing.purchaseTor();
@@ -26,14 +33,14 @@ export class StartupService {
     });
   }
 
-  setupStonks() {
+  #setupStonks() {
     this.stock.purchaseWseAccount();
     this.stock.purchaseTixApi();
     this.stock.purchase4SMarketData();
     this.stock.purchase4SMarketDataTixApi();
   }
 
-  setupHome() {
+  #setupHome() {
     const ramCost = this.sing.getUpgradeHomeRamCost();
     if (this.#getCurrentMoney() >= ramCost) {
       this.sing.upgradeHomeRam();
@@ -45,7 +52,7 @@ export class StartupService {
     }
   }
 
-  setupCorp() {
+  #setupCorp() {
     const corpCost = 150000000000; // 150 billion
     if (!this.corp.hasCorporation() && this.#getCurrentMoney() >= corpCost) {
       this.corp.createCorporation('Nova Corp', true);
