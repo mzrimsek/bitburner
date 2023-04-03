@@ -244,6 +244,7 @@ export class AttackService {
     if (server.hasAdminRights && !server.backdoorInstalled) {
       this.#connectTo(server.hostname);
       // await this.ns.singularity.installBackdoor();
+      this.#connectTo(this.#hackSource);
     }
   }
 
