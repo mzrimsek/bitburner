@@ -156,17 +156,15 @@ export class CorpService {
     return this.corp.getCorporation().funds;
   }
 
+  /**
+   * @returns {bool} True if corporation has all research for all current divisions
+   */
   hasAllResearch() {
     if (!this.hasCorp()) {
       return false;
     }
 
     const corpInfo = this.corp.getCorporation();
-    // if you haven't fully expanded, there are still divisions with research
-    if (!this.#hasCorpFullyExpanded(corpInfo)) {
-      return false;
-    }
-
     const hasAllResearch = corpInfo.divisions.every(divisionName => {
       const divisionInfo = this.corp.getDivision(divisionName);
       return this.#getAvailableResearchForDivision(divisionInfo).length === 0;
