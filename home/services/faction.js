@@ -7,6 +7,7 @@ export class FactionService {
    */
   constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
+    this.sing = ns.singularity;
 
     this.eventHandler = eventHandler;
 
