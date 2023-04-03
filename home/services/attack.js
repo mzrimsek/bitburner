@@ -1,4 +1,11 @@
-import { log as utilLog, STARTUP_SCRIPTS, ACTIONS, logEventHandler, hasFileOnHome } from 'utils.js';
+import {
+  log as utilLog,
+  STARTUP_SCRIPTS,
+  ACTIONS,
+  logEventHandler,
+  hasFileOnHome,
+  getPathFromHomeToTarget
+} from 'utils.js';
 
 export class AttackService {
   #hackSource = 'home';
@@ -233,9 +240,19 @@ export class AttackService {
     }
 
     // install backdoor
+    // TODO check for singularity
     if (server.hasAdminRights && !server.backdoorInstalled) {
-      // install backdoor later
+      this.#connectTo(server.hostname);
+      // await this.ns.singularity.installBackdoor();
     }
+  }
+
+  /**
+   * @param {string} target
+   */
+  #connectTo(target) {
+    const path = getPathFromHomeToTarget(this.ns, target);
+    path.forEach(serverName => this.ns.singularity.connect(serverName));
   }
 
   /**

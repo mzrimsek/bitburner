@@ -268,7 +268,7 @@ export function hasSingularity(ns) {
 }
 
 /**
- * @param {import("..").NS } ns
+ * @param {import(".").NS } ns
  * @param {string} target
  * @returns {string[]} Order of servers to connect to, with the first item being home, and the last item being the target
  */
