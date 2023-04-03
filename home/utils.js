@@ -256,6 +256,7 @@ export function hasFileOnHome(ns, upgradeName) {
   return ns.fileExists(upgradeName, 'home');
 }
 
+// TODO - THIS DOES NOT WORK
 /** @param { import(".").NS } ns */
 export function hasSingularity(ns) {
   try {
@@ -264,4 +265,22 @@ export function hasSingularity(ns) {
   } catch {
     return false;
   }
+}
+
+/**
+ * @param {import("..").NS } ns
+ * @param {string} target
+ * @returns {string[]} Order of servers to connect to, with the first item being home, and the last item being the target
+ */
+export function getPathFromHomeToTarget(ns, target) {
+  const scanResults = ns.scan(target);
+  const path = [];
+  let parent = scanResults[0];
+  do {
+    path.push(parent);
+    const parentScanResults = ns.scan(parent);
+    parent = parentScanResults[0];
+  } while (parent !== 'home');
+  const reversed = path.reverse();
+  return ['home', ...reversed, target];
 }

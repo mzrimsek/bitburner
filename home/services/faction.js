@@ -1,4 +1,5 @@
 import { log as utilLog, logEventHandler } from 'utils.js';
+import { EnvService } from 'services/env.js';
 
 export class FactionService {
   /**
@@ -12,6 +13,11 @@ export class FactionService {
     this.eventHandler = eventHandler;
 
     this.envService = new EnvService(ns);
+  }
+
+  handleCurrentFactionAugments() {
+    const currentJob = this.sing.getCurrentWork();
+    this.#log(`Current job: ${currentJob}`);
   }
 
   // if working for a faction
