@@ -42,21 +42,14 @@ export class StartupService {
   }
 
   #setupStonks() {
-    // need to have a WSE account before doing anything else
     if (!this.stock.hasWSEAccount()) {
       this.stock.purchaseWseAccount();
-    } else {
-      if (!this.stock.hasTIXAPIAccess()) {
-        this.stock.purchaseTixApi();
-      }
-
-      if (!this.stock.has4SData()) {
-        this.stock.purchase4SMarketData();
-      }
-
-      if (!this.stock.has4SDataTIXAPI()) {
-        this.stock.purchase4SMarketDataTixApi();
-      }
+    } else if (!this.stock.hasTIXAPIAccess()) {
+      this.stock.purchaseTixApi();
+    } else if (!this.stock.has4SData()) {
+      this.stock.purchase4SMarketData();
+    } else if (!this.stock.has4SDataTIXAPI()) {
+      this.stock.purchase4SMarketDataTixApi();
     }
   }
 
