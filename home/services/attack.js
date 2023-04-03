@@ -4,7 +4,7 @@ import {
   ACTIONS,
   logEventHandler,
   hasFileOnHome,
-  getPathFromHomeToTarget
+  connectTo
 } from 'utils.js';
 
 export class AttackService {
@@ -242,18 +242,10 @@ export class AttackService {
     // install backdoor
     // TODO check for singularity
     if (server.hasAdminRights && !server.backdoorInstalled) {
-      this.#connectTo(server.hostname);
+      //connectTo(server.hostname);
       // await this.ns.singularity.installBackdoor();
-      this.#connectTo(this.#hackSource);
+      //connectTo(this.#hackSource);
     }
-  }
-
-  /**
-   * @param {string} target
-   */
-  #connectTo(target) {
-    const path = getPathFromHomeToTarget(this.ns, target);
-    path.forEach(serverName => this.ns.singularity.connect(serverName));
   }
 
   /**

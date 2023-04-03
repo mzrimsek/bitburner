@@ -284,3 +284,12 @@ export function getPathFromHomeToTarget(ns, target) {
   const reversed = path.reverse();
   return ['home', ...reversed, target];
 }
+
+/**
+ * @param {import(".").NS } ns
+ * @param {string} target
+ */
+export function connectTo(ns, target) {
+  const path = getPathFromHomeToTarget(ns, target);
+  path.forEach(serverName => ns.singularity.connect(serverName));
+}
