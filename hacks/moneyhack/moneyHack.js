@@ -22,7 +22,11 @@ if (mostRecentSave) {
   const saveBase64 = readFileSync(path.join(saveBackupDirectory, mostRecentSave.file), 'utf8');
   const encoded = atob(saveBase64);
   const saveData = JSON.parse(encoded);
-  const playerSave = JSON.parse(saveData.data.PlayerSave);
+
+  const isArcadeSave = saveData.data.PlayerSave === undefined;
+  const dataToParse = isArcadeSave ? saveData.data : saveData.data.PlayerSave;
+
+  const playerSave = JSON.parse(dataToParse);
 
   console.log(playerSave);
 

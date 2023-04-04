@@ -23,6 +23,7 @@ export class FactionService {
   // if working for a faction
   // and that faction has available augments that are affordable
   // buy the cheapest augment until all available augments are bought
+  // maybe should also check any augments for current factions, but weight the ones for the current faction higher
 
   #log(...args) {
     utilLog('faction', ...args);
