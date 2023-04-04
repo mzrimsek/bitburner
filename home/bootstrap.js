@@ -39,6 +39,7 @@ export async function main(ns) {
   initPort(ns, PORT_MAPPING.DO_GANG_ASCEND, 0);
 
   initPort(ns, PORT_MAPPING.DO_CORP_AUTOHIRE, 0);
+  initPort(ns, PORT_MAPPING.DO_CORP_AUTOAD, 0);
 
   const currentLiquidCash = ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   const initLiquidCash = currentLiquidCash !== DEFAULT_PORT_VALUE ? currentLiquidCash : 5;
@@ -72,6 +73,7 @@ function printHelpMessage(ns) {
   ns.tprint('  tgang\t\t\t\tToggle gang monitoring');
   ns.tprint('  tgasc\t\t\t\tToggle automatic gang member ascension');
   ns.tprint('  tcah\t\t\t\tToggle automatic corp office expansion and hiring');
+  ns.tprint('  tcaa\t\t\t\tToggle automatic corp office advertising');
   ns.tprint('  slimit\t\t\t\tSet the limit for how much liquid cash to keep out of stonks');
 }
 /* bots printout

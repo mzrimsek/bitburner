@@ -26,6 +26,10 @@ export class EnvService {
     return this.#getBooleanEnvVal('DO_CORP_AUTOHIRE');
   }
 
+  getDoCorpAutoAds() {
+    return this.#getBooleanEnvVal('DO_CORP_AUTOAD');
+  }
+
   getMillionsToKeepLiquid() {
     return this.ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   }

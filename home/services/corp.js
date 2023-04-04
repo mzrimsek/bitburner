@@ -67,7 +67,10 @@ export class CorpService {
 
           this.#handleMaterials(divisionInfo);
 
-          this.#handleAds();
+          const shouldDoAutoAds = this.envService.getDoCorpAutoAds();
+          if (shouldDoAutoAds) {
+            this.#handleAds();
+          }
         }
 
         if (hasOfficeApi) {
@@ -378,7 +381,6 @@ export class CorpService {
     }
   }
 
-  // TODO add a threshhold similar to stonks to prevent this from killing all the money
   #handleAds() {
     const divisions = this.#getDivisions();
     const divisionsWhereAdsAreAffordable = divisions
