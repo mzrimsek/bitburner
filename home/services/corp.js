@@ -114,10 +114,6 @@ export class CorpService {
         }
       });
 
-      // for each product/byproduct in division
-      // if byproduct is produced with no sell price set
-      // set to PROD MP
-
       // eventually we want to add logic here to buy products that will boost production
       // for each division we will want to look at pricing in each city to determine where to buy
       // only buy up to 80% warehouse capacity
@@ -371,7 +367,10 @@ export class CorpService {
     if (industryData.producedMaterials && industryData.producedMaterials.length > 0) {
       divisionInfo.cities.forEach(cityName => {
         industryData.producedMaterials.forEach(materialName => {
-          this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
+          const materialInfo = this.corp.getMaterial(divisionInfo.name, materialName);
+          if (materialInfo.sCost !== 'MP') {
+            this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
+          }
         });
       });
     }
