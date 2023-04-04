@@ -257,21 +257,26 @@ export class CorpService {
    * @param {import("..").Division} divisionInfo
    */
   #expandCities(divisionInfo) {
-    const citiesWithoutOffice = ALL_CITIES.filter(
-      cityName => !divisionInfo.cities.includes(cityName)
-    );
-    citiesWithoutOffice.forEach(cityName => {
-      const currentMoney = this.#getCurrentMoney();
-      const officeCost = this.corp.getConstants().officeInitialCost;
-      if (currentMoney >= officeCost) {
-        this.corp.expandCity(divisionInfo.name, cityName);
-        this.#hireFirstCityEmployees(divisionInfo, cityName); // sector 12 always gets skipped (first citi)
-        this.eventHandler({
-          action: ACTIONS.EXPAND,
-          name: divisionInfo.name,
-          cost: officeCost,
-          type: cityName
-        });
+    ALL_CITIES.forEach(cityName => {
+      const divisionHasCityOffice = divisionInfo.cities.includes(cityName);
+      if (!divisionHasCityOffice) {
+        const currentMoney = this.#getCurrentMoney();
+        const officeCost = this.corp.getConstants().officeInitialCost;
+        const canAffordOffice = currentMoney >= officeCost;
+        if (canAffordOffice) {
+          this.corp.expandCity(divisionInfo.name, cityName);
+          this.eventHandler({
+            action: ACTIONS.EXPAND,
+            name: divisionInfo.name,
+            cost: officeCost,
+            type: cityName
+          });
+        }
+      } else {
+        const officeInfo = this.corp.getOffice(divisionInfo.name, cityName);
+        if (officeInfo.employees === 0) {
+          this.#hireFirstCityEmployees(divisionInfo, cityName);
+        }
       }
     });
   }
