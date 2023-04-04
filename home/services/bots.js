@@ -53,7 +53,7 @@ export class BotService {
       const currentAction = {
         action: ACTIONS.BUY,
         name: nextBotName,
-        cost: cost
+        cost
       };
       this.eventHandler(currentAction);
     } else {

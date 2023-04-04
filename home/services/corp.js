@@ -66,6 +66,8 @@ export class CorpService {
           }
 
           this.#handleMaterials(divisionInfo);
+
+          this.#handleAds();
         }
 
         if (hasOfficeApi) {
@@ -367,13 +369,38 @@ export class CorpService {
     if (industryData.producedMaterials && industryData.producedMaterials.length > 0) {
       divisionInfo.cities.forEach(cityName => {
         industryData.producedMaterials.forEach(materialName => {
-          const materialInfo = this.corp.getMaterial(divisionInfo.name, materialName);
+          const materialInfo = this.corp.getMaterial(divisionInfo.name, cityName, materialName);
           if (materialInfo.sCost !== 'MP') {
             this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
           }
         });
       });
     }
+  }
+
+  #handleAds() {
+    const divisions = this.#getDivisions();
+    divisions.forEach(divisionInfo => {
+      this.#log(`${divisionInfo.name} ${divisionInfo.industry.advertisingFactor}`);
+    });
+
+    // determine how effective ads are for this industry
+    // if the multiplier is good
+    // if we can afford an ad, buy one until we get to a desired awareness level
+    // should do this at a corp wide level to advertise in each division equally, but weight to which has the highest multiplier to awareness
+  }
+
+  #getDivisions() {
+    return this.corp.getCorporation().divisions.map(divisionName => {
+      const divisionInfo = this.corp.getDivision(divisionName);
+      const industry = this.corp.getIndustryData(divisionInfo.type);
+      const adCost = this.corp.getHireAdVertCost(divisionInfo.name);
+      return {
+        ...divisionInfo,
+        industry,
+        adCost
+      };
+    });
   }
 
   hasCorp() {

@@ -171,9 +171,9 @@ export class HacknetService {
 
       return {
         ...nodeInfo,
-        level: level,
-        ram: ram,
-        cores: cores,
+        level,
+        ram,
+        cores,
         cache: hasCache ? cache : undefined,
         index
       };
