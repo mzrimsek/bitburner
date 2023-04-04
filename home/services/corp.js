@@ -386,7 +386,12 @@ export class CorpService {
         return divisionInfo.adCost <= this.#getCurrentMoney();
       })
       .sort((a, b) => b.industry.advertisingFactor - a.industry.advertisingFactor);
-    const nextDivisionToAdvertiseIn = divisionsWhereAdsAreAffordable[0];
+    const affordableDivisionsWorthAdvertisingIn = divisionsWhereAdsAreAffordable.filter(
+      divisionInfo => {
+        return divisionInfo.industry.advertisingFactor >= 0.1;
+      }
+    );
+    const nextDivisionToAdvertiseIn = affordableDivisionsWorthAdvertisingIn[0];
     if (nextDivisionToAdvertiseIn) {
       this.#log(`Buying ad for ${nextDivisionToAdvertiseIn.name}`);
       this.corp.hireAdVert(nextDivisionToAdvertiseIn.name);
