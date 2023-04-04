@@ -263,7 +263,7 @@ export class CorpService {
       const officeCost = this.corp.getConstants().officeInitialCost;
       if (currentMoney >= officeCost) {
         this.corp.expandCity(divisionInfo.name, cityName);
-        this.#hireFirstCityEmployees(divisionInfo, cityName);
+        this.#hireFirstCityEmployees(divisionInfo, cityName); // sector 12 always gets skipped (first citi)
         this.eventHandler({
           action: ACTIONS.EXPAND,
           name: divisionInfo.name,
