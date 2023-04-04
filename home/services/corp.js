@@ -378,16 +378,25 @@ export class CorpService {
     }
   }
 
+  // TODO add a threshhold similar to stonks to prevent this from killing all the money
   #handleAds() {
     const divisions = this.#getDivisions();
-    divisions.forEach(divisionInfo => {
-      this.#log(`${divisionInfo.name} ${divisionInfo.industry.advertisingFactor}`);
-    });
-
-    // determine how effective ads are for this industry
-    // if the multiplier is good
-    // if we can afford an ad, buy one until we get to a desired awareness level
-    // should do this at a corp wide level to advertise in each division equally, but weight to which has the highest multiplier to awareness
+    const divisionsWhereAdsAreAffordable = divisions
+      .filter(divisionInfo => {
+        return divisionInfo.adCost <= this.#getCurrentMoney();
+      })
+      .sort((a, b) => b.industry.advertisingFactor - a.industry.advertisingFactor);
+    const nextDivisionToAdvertiseIn = divisionsWhereAdsAreAffordable[0];
+    if (nextDivisionToAdvertiseIn) {
+      this.#log(`Buying ad for ${nextDivisionToAdvertiseIn.name}`);
+      this.corp.hireAdVert(nextDivisionToAdvertiseIn.name);
+      this.eventHandler({
+        action: ACTIONS.AD,
+        name: nextDivisionToAdvertiseIn.name,
+        cost: nextDivisionToAdvertiseIn.adCost,
+        type: nextDivisionToAdvertiseIn.type
+      });
+    }
   }
 
   #getDivisions() {

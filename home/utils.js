@@ -41,7 +41,8 @@ export const ACTIONS = {
   SERVER: '🖥️',
   CRIME: '🔫',
   RESEARCH: '🔬',
-  EXPAND: '🏗️'
+  EXPAND: '🏗️',
+  AD: '📰'
 };
 
 export const HACKNET_UPGRADE_TYPES = {
@@ -160,6 +161,10 @@ export function logCustomScriptEvent(ns, scriptEvent) {
       break;
     }
     case ACTIONS.EXPAND: {
+      logCashUpgrade(ns, scriptEvent);
+      break;
+    }
+    case ACTIONS.AD: {
       logCashUpgrade(ns, scriptEvent);
       break;
     }
