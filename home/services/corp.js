@@ -64,6 +64,8 @@ export class CorpService {
           if (makesProducts) {
             this.#handleProducts(divisionInfo);
           }
+
+          this.#handleMaterials(divisionInfo);
         }
 
         if (hasOfficeApi) {
@@ -350,9 +352,22 @@ export class CorpService {
         if (this.corp.hasWarehouse(divisionInfo.name, cityName)) {
           const productInfo = this.corp.getProduct(divisionInfo.name, productName);
           if (productInfo.developmentProgress === 100 && productInfo.sCost !== 'MP') {
-            this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP', true);
+            this.corp.sellProduct(divisionInfo.name, cityName, productName, 'MAX', 'MP', true); // just sell all the prooducts we can every cycle
           }
         }
+      });
+    }
+  }
+
+  // TODO add smarter logic to handle manging buying/selling production boosting materials
+  /** @param {import("..").Division} divisionInfo */
+  #handleMaterials(divisionInfo) {
+    const industryData = this.corp.getIndustryData(divisionInfo.type);
+    if (industryData.producedMaterials && industryData.producedMaterials.length > 0) {
+      divisionInfo.cities.forEach(cityName => {
+        industryData.producedMaterials.forEach(materialName => {
+          this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
+        });
       });
     }
   }
