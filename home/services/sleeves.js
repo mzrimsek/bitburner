@@ -60,10 +60,10 @@ export class SleeveService {
       return this.ns.getPlayer().money >= augment.cost;
     });
     const augmentsByCost = affordableAugments.sort((a, b) => a.cost - b.cost);
-    this.#log(`Found ${augmentsByCost.length} augments for Sleeve ${index}`);
     if (augmentsByCost.length > 0) {
       const augment = augmentsByCost[0];
       this.sleeve.purchaseSleeveAug(index, augment.name);
+      this.#log(`Sleeve ${index} purchased ${augment.name} for ${augment.cost}`);
       this.eventHandler({
         action: ACTIONS.AUGMENT,
         name: `Sleeve ${index}`,
