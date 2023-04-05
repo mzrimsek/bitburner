@@ -116,7 +116,7 @@ export class HacknetService {
     const affordableHashUpgrades = filteredHashUpgrades.filter(
       upgrade => upgrade.cost <= currentHashes
     );
-    this.#log(`Found ${affordableHashUpgrades.length} potential upgrades`);
+    // this.#log(`Found ${affordableHashUpgrades.length} potential upgrades`);
 
     // first by weight descending, then by cost descending
     const sortedHashUpgrades = affordableHashUpgrades.sort((a, b) => {
