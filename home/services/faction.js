@@ -8,6 +8,8 @@ export class FactionService {
 
   #EXIT_FACTION = 'Daedalus';
 
+  #MAX_COMPANY_RANKS = ['CTO', 'CFO', 'CEO'];
+
   /**
    * @param {import("..").NS } ns
    * @param {import("..").ScriptHandler} eventHandler
@@ -118,8 +120,25 @@ export class FactionService {
     }
   }
 
+  // TODO make this work
   handleCompanyPromotions() {
     const company = this.#getCurrentActivity();
+    if (company) {
+      const currentRoleAtCompany = this.ns.getPlayer().jobs[company];
+      const wasPromoted = this.sing.applyToCompany(company, currentRoleAtCompany);
+      if (wasPromoted) {
+        this.eventHandler({
+          action: ACTIONS.HIRE,
+          name: company,
+          type: this.ns.getPlayer().jobs[company]
+        });
+      }
+    }
+  }
+
+  handleSwitchCompanies() {
+    // basically if the current company you're at you're one of the top jobs
+    // then see if there are another other companies we have a job at that we can switch to
   }
 
   isWorkingForFaction() {

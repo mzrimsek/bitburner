@@ -18,6 +18,8 @@ export class LocationService {
     // otherwise return null;
   }
 
+  // idea with this is to detect where you are in the game to make UI changes we can hook into
+
   #log(...args) {
     utilLog('location', ...args);
   }
