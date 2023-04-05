@@ -177,7 +177,7 @@ export class CorpService {
         }
       });
 
-      // eventually we want to add logic here to buy products that will boost production
+      //TODO eventually we want to add logic here to buy products that will boost production
       // for each division we will want to look at pricing in each city to determine where to buy
       // only buy up to 80% warehouse capacity
       // probably want logic to upgrade warehouse size
@@ -187,6 +187,31 @@ export class CorpService {
     // figure out logic for Market-TA.I or Market-TA.II
 
     // handle repeat upgrades
+  }
+
+  hasCorp() {
+    return this.corp.hasCorporation();
+  }
+
+  getDividendEarnings() {
+    const corpInfo = this.corp.getCorporation();
+    return this.ns.formatNumber(corpInfo.dividendEarnings);
+  }
+
+  /**
+   * @returns {bool} True if corporation has all research for all current divisions
+   */
+  hasAllResearch() {
+    if (!this.hasCorp()) {
+      return false;
+    }
+
+    const corpInfo = this.corp.getCorporation();
+    const hasAllResearch = corpInfo.divisions.every(divisionName => {
+      const divisionInfo = this.corp.getDivision(divisionName);
+      return this.#getAvailableResearchForDivision(divisionInfo).length === 0;
+    });
+    return hasAllResearch;
   }
 
   #unassignAllEmployees(divisionInfo, cityName) {
@@ -213,22 +238,6 @@ export class CorpService {
 
   #getCurrentMoney() {
     return this.corp.getCorporation().funds;
-  }
-
-  /**
-   * @returns {bool} True if corporation has all research for all current divisions
-   */
-  hasAllResearch() {
-    if (!this.hasCorp()) {
-      return false;
-    }
-
-    const corpInfo = this.corp.getCorporation();
-    const hasAllResearch = corpInfo.divisions.every(divisionName => {
-      const divisionInfo = this.corp.getDivision(divisionName);
-      return this.#getAvailableResearchForDivision(divisionInfo).length === 0;
-    });
-    return hasAllResearch;
   }
 
   /**
@@ -473,15 +482,6 @@ export class CorpService {
         adCost
       };
     });
-  }
-
-  hasCorp() {
-    return this.corp.hasCorporation();
-  }
-
-  getDividendEarnings() {
-    const corpInfo = this.corp.getCorporation();
-    return this.ns.formatNumber(corpInfo.dividendEarnings);
   }
 
   #log(...args) {
