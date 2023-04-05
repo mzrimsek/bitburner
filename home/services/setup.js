@@ -27,6 +27,15 @@ export class SetupService {
     return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
   }
 
+  #setupFactions() {
+    const factions = this.ns.getPlayer().factions;
+    const factionInvites = this.sing.checkFactionInvitations();
+    if (factions.length === 0 && factionInvites.length > 0) {
+      // and that faction doesn't impact joining another faction
+      // then join that faction and start doing hacking contracts
+    }
+  }
+
   #setupDarkweb() {
     const hasTor = this.ns.hasTorRouter();
     const darkWebCost = 200000; // 200k
