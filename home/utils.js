@@ -43,7 +43,8 @@ export const ACTIONS = {
   CRIME: '🔫',
   RESEARCH: '🔬',
   EXPAND: '🏗️',
-  AD: '📰'
+  AD: '📰',
+  HIRE: '👨‍💼'
 };
 
 export const HACKNET_UPGRADE_TYPES = {

@@ -14,10 +14,18 @@ export async function main(ns) {
   const navToBlackHand = ns.args.includes('--blackhand') || ns.args.includes('-b');
   const navToBitrunners = ns.args.includes('--bitrunners') || ns.args.includes('-r');
   const navToCave = ns.args.includes('--cave') || ns.args.includes('-e');
+  const navToWorldDaemon = ns.args.includes('--worlddaemon') || ns.args.includes('-w');
 
   const tryToBackdoor = ns.args.includes('--backdoor') || ns.args.includes('-d');
 
-  const flags = [navToCSEC, navToNiteSec, navToBlackHand, navToBitrunners, navToCave];
+  const flags = [
+    navToCSEC,
+    navToNiteSec,
+    navToBlackHand,
+    navToBitrunners,
+    navToCave,
+    navToWorldDaemon
+  ];
 
   let target = ns.args.filter(arg => !arg.startsWith('-') && !arg.startsWith('--'))[0];
 
@@ -46,6 +54,10 @@ export async function main(ns) {
 
   if (navToCave) {
     target = 'The-Cave';
+  }
+
+  if (navToWorldDaemon) {
+    target = 'w0r1d_d43m0n';
   }
 
   if (!target) {

@@ -27,7 +27,6 @@ export class CorpService {
 
   async handleCorporation() {
     const corpInfo = this.corp.getCorporation();
-    const currentMoney = corpInfo.funds;
 
     const hasSmartSupply = this.#unlockUpgrade('Smart Supply', corpInfo);
     const hasWarehouseApi = this.#unlockUpgrade('Warehouse API', corpInfo);
@@ -86,35 +85,94 @@ export class CorpService {
             hasMaxExpandedDivisions &&
             shouldAutoHire
           ) {
-            divisionInfo.cities.forEach(async cityName => {
-              const costToExpand = this.corp.getOfficeSizeUpgradeCost(
-                divisionInfo.name,
-                cityName,
-                3
-              );
-              if (currentMoney >= costToExpand) {
-                this.corp.upgradeOfficeSize(divisionInfo.name, cityName, 3);
+            const numToExpand = 3;
+            const divisionList = currentDivisions.map(divisionName => {
+              const divisionInfo = this.corp.getDivision(divisionName);
+              return divisionInfo.cities.map(cityName => {
+                const costToExpand = this.corp.getOfficeSizeUpgradeCost(
+                  divisionName,
+                  cityName,
+                  numToExpand
+                );
+                return {
+                  divisionName,
+                  cityName,
+                  costToExpand
+                };
+              });
+            });
 
-                // get all employees in training or unallocated
-                // add them to a unit
+            const cheapestCityToExpand = divisionList
+              .flat()
+              .filter(city => city.costToExpand <= this.#getCurrentMoney())
+              .sort((a, b) => a.costToExpand - b.costToExpand)[0];
+
+            if (cheapestCityToExpand) {
+              this.corp.upgradeOfficeSize(
+                cheapestCityToExpand.divisionName,
+                cheapestCityToExpand.cityName,
+                numToExpand
+              );
+              this.eventHandler({
+                action: ACTIONS.EXPAND,
+                name: cheapestCityToExpand.divisionName,
+                type: cheapestCityToExpand.cityName,
+                cost: cheapestCityToExpand.costToExpand
+              });
+
+              for (let i = 0; i < numToExpand; i++) {
+                this.corp.hireEmployee(
+                  cheapestCityToExpand.divisionName,
+                  cheapestCityToExpand.cityName
+                );
+                this.eventHandler({
+                  action: ACTIONS.HIRE,
+                  name: cheapestCityToExpand.divisionName,
+                  type: cheapestCityToExpand.cityName
+                });
+              }
+            }
+
+            try {
+              divisionInfo.cities.forEach(async cityName => {
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.TRAINING,
+                  0
+                );
 
                 const officeInfo = this.corp.getOffice(divisionInfo.name, cityName);
                 const employees = officeInfo.employees;
 
-                // hire new employees if we have any room
-                const openSpaces = officeInfo.size - officeInfo.employees;
-                for (let i = 0; i < openSpaces; i++) {
-                  this.corp.hireEmployee(divisionInfo.name, cityName);
-                }
-
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.OPERATIONS, Math.floor((employees - 2) / 2));
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.ENGINEERING, Math.ceil((employees - 2) / 2));
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.MANAGEMENT, 2);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.BUSINESS, 0);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.TRAINING, 0);
-                // await this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS.RESEARCH, 0);
-              }
-            });
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.OPERATIONS,
+                  Math.floor(employees * 0.5)
+                );
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.ENGINEERING,
+                  Math.floor(employees * 0.3)
+                );
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.MANAGEMENT,
+                  Math.floor(employees * 0.1)
+                );
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.BUSINESS,
+                  Math.floor(employees * 0.1)
+                );
+              });
+            } catch (e) {
+              this.#log(`Error setting auto job assignments: ${e}`);
+            }
           }
         }
       });
@@ -126,17 +184,15 @@ export class CorpService {
       // possibly incorporate bulk buying into this logic?
     }
 
-    // handle hiring and allocating - we only need to worry about logic for expanding bc there is a research for automatic hiring
-    // I think we should look at all divisions in all cities and evenly build up everything
-    // we should have percentages defined to determine how much to allocate to each type of employee
-
     // figure out logic for Market-TA.I or Market-TA.II
 
     // handle repeat upgrades
+  }
 
-    // automate advertising - should only really prioritize this in divisions where advertising has a tangible benefit
-    // we should probably have a list of divisions that we want to prioritize advertising in
-    // probably need an env like stonks limit to limit how much corp money we spend on ads, expanding, etc
+  #unassignAllEmployees(divisionInfo, cityName) {
+    Object.keys(CORP_OFFICE_UNITS).forEach(unit => {
+      this.corp.setAutoJobAssignment(divisionInfo.name, cityName, CORP_OFFICE_UNITS[unit], 0);
+    });
   }
 
   /**
