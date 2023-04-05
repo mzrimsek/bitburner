@@ -1,5 +1,6 @@
 import { log as utilLog, ACTIONS, logEventHandler, hasFileOnHome } from 'utils.js';
 
+// TODO add some event logging
 export class SetupService {
   /**
    * @param {import("..").NS } ns

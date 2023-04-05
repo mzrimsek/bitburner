@@ -1,6 +1,7 @@
 import { log as utilLog, logEventHandler } from 'utils.js';
 import { EnvService } from 'services/env.js';
 
+// TODO add some event logging
 export class FactionService {
   #SPECIAL_FACTIONS = ['CSEC', 'NiteSec', 'The Black Hand', 'BitRunners'];
 
