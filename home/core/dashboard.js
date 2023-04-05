@@ -28,6 +28,10 @@ export async function main(ns) {
       factionService.handleCurrentFactionAugments();
     }
 
+    if (factionService.isWorkingForFaction()) {
+      factionService.handleSwitchingFactions();
+    }
+
     if (envService.getDoBuy()) {
       hacknetService.purchaseUpgradeOrNode();
     }

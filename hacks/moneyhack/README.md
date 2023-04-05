@@ -12,3 +12,7 @@ Finds the most recent file in your save backup directory, base64 decodes it into
 
 - You can always just reimport your backup if something goes wrong
 - Sometimes it seems like it takes two tries to get a save to import? I may just be dumb.
+
+### Ideas
+
+If this was an API with an endpoint that would do this automatically, I could probably make a request to it from inside the game, then possibly manipulate the UI to automatically import? It's possible to export a save from the game with the singularity API
