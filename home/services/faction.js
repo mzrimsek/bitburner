@@ -111,7 +111,14 @@ export class FactionService {
         if (nextFaction) {
           const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
           if (!tryToDoFieldWork) {
-            this.sing.workForFaction(nextFaction.faction, 'hacking', false);
+            const tryToDoSecurityWork = this.sing.workForFaction(
+              nextFaction.faction,
+              'security',
+              false
+            );
+            if (!tryToDoSecurityWork) {
+              this.sing.workForFaction(nextFaction.faction, 'hacking', false);
+            }
           }
         } else {
           this.sing.commitCrime('Homicide');
