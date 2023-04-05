@@ -76,6 +76,20 @@ export class HacknetService {
     }
   }
 
+  isHacknetServers() {
+    return this.ns.hacknet.numNodes() !== 0 && this.ns.hacknet.getNodeStats(0).cache !== undefined;
+  }
+
+  getHacknetIncome() {
+    const numHackNetNodes = this.ns.hacknet.numNodes();
+    let hacknetProductionRaw = 0;
+    for (let i = 0; i < numHackNetNodes; i++) {
+      const node = this.ns.hacknet.getNodeStats(i);
+      hacknetProductionRaw += node.production;
+    }
+    return this.ns.formatNumber(hacknetProductionRaw, 2);
+  }
+
   #getNextHashUpgrade() {
     const currentHashes = this.ns.hacknet.numHashes();
     const hashUpgradeInfo = this.ns.hacknet.getHashUpgrades().map(upgradeName => {
@@ -130,20 +144,6 @@ export class HacknetService {
     }
 
     return sortedHashUpgrades[0];
-  }
-
-  isHacknetServers() {
-    return this.ns.hacknet.numNodes() !== 0 && this.ns.hacknet.getNodeStats(0).cache !== undefined;
-  }
-
-  getHacknetIncome() {
-    const numHackNetNodes = this.ns.hacknet.numNodes();
-    let hacknetProductionRaw = 0;
-    for (let i = 0; i < numHackNetNodes; i++) {
-      const node = this.ns.hacknet.getNodeStats(i);
-      hacknetProductionRaw += node.production;
-    }
-    return this.ns.formatNumber(hacknetProductionRaw, 2);
   }
 
   #getNextNodeUpgrade() {

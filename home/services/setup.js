@@ -21,6 +21,12 @@ export class SetupService {
     this.#setupCorp();
   }
 
+  canSetup() {
+    // singularity is source file 4
+    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
+    return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
+  }
+
   #setupDarkweb() {
     const hasTor = this.ns.hasTorRouter();
     const darkWebCost = 200000; // 200k
@@ -70,12 +76,6 @@ export class SetupService {
     if (!this.corp.hasCorporation() && this.#getCurrentMoney() >= corpCost) {
       this.corp.createCorporation('Nova Corp', true);
     }
-  }
-
-  canSetup() {
-    // singularity is source file 4
-    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
-    return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
   }
 
   #getCurrentMoney = () => this.ns.getPlayer().money;

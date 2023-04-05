@@ -54,6 +54,10 @@ export class SleeveService {
     });
   }
 
+  hasSleeves() {
+    return this.sleeve.getNumSleeves() > 0;
+  }
+
   #handleSleeveAugments(index) {
     const augmentsForSale = this.sleeve.getSleevePurchasableAugs(index);
     const affordableAugments = augmentsForSale.filter(augment => {
@@ -76,10 +80,6 @@ export class SleeveService {
     // that sets a sleeve to work for that faction for a certain amount of time
     // if the faction offers field work or security work, take it
     // otherwise do hacking contracts
-  }
-
-  hasSleeves() {
-    return this.sleeve.getNumSleeves() > 0;
   }
 
   #getSleeves() {
