@@ -1,11 +1,11 @@
-import { logCustomScriptEvent, hasSingularity } from 'utils.js';
+import { logCustomScriptEvent } from 'utils.js';
 import { BotService } from 'services/bots.js';
 import { EnvService } from 'services/env.js';
 import { HacknetService } from 'services/hacknet.js';
 import { GangService } from 'services/gangs.js';
 import { SleeveService } from 'services/sleeves.js';
 import { CorpService } from 'services/corp.js';
-import { StartupService } from 'services/startup.js';
+import { SetupService } from 'services/setup.js';
 import { FactionService } from 'services/faction.js';
 
 /** @param {import("..").NS } ns */
@@ -18,13 +18,13 @@ export async function main(ns) {
   const gangService = new GangService(ns, eventHandler);
   const sleeveService = new SleeveService(ns, eventHandler);
   const corpService = new CorpService(ns, eventHandler);
-  const startupService = new StartupService(ns, eventHandler);
+  const setupService = new SetupService(ns, eventHandler);
   const factionService = new FactionService(ns, eventHandler);
 
   while (true) {
-    if (hasSingularity(ns)) {
-      console.log('Singularity detected, running singularity scripts...');
-      startupService.setup();
+    const canSetup = setupService.canSetup();
+    if (canSetup) {
+      setupService.setup();
       factionService.handleCurrentFactionAugments();
     }
 

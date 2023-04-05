@@ -56,12 +56,12 @@ export const HACKNET_UPGRADE_TYPES = {
 };
 
 export const CORP_OFFICE_UNITS = {
-  OPERATIONS: 'Operations', //3
-  ENGINEERING: 'Engineer', // 2
-  BUSINESS: 'Business', // 2
-  MANAGEMENT: 'Management', // 1
-  RESEARCH: 'Research & Development', // 1
-  TRAINING: 'Training' // 0
+  OPERATIONS: 'Operations',
+  ENGINEERING: 'Engineer',
+  BUSINESS: 'Business',
+  MANAGEMENT: 'Management',
+  RESEARCH: 'Research & Development',
+  TRAINING: 'Training'
 };
 
 export const ALL_CITIES = ['Aevum', 'Chongqing', 'Sector-12', 'New Tokyo', 'Ishima', 'Volhaven'];
@@ -261,17 +261,6 @@ export function hasFormulas(ns) {
 
 export function hasFileOnHome(ns, upgradeName) {
   return ns.fileExists(upgradeName, 'home');
-}
-
-// TODO - THIS DOES NOT WORK
-/** @param { import(".").NS } ns */
-export function hasSingularity(ns) {
-  try {
-    ns.singularity.applyToCompany('foodnstuff', 'Employee');
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 /**

@@ -1,6 +1,6 @@
 import { log as utilLog, ACTIONS, logEventHandler, hasFileOnHome } from 'utils.js';
 
-export class StartupService {
+export class SetupService {
   /**
    * @param {import("..").NS } ns
    * @param {import("..").ScriptHandler} eventHandler
@@ -72,9 +72,15 @@ export class StartupService {
     }
   }
 
+  canSetup() {
+    // singularity is source file 4
+    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
+    return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
+  }
+
   #getCurrentMoney = () => this.ns.getPlayer().money;
 
   #log(...args) {
-    utilLog('startup', ...args);
+    utilLog('setup', ...args);
   }
 }
