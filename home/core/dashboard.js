@@ -31,6 +31,10 @@ export async function main(ns) {
         currentActivityService.handleSwitchingFactions();
       }
 
+      if (currentActivityService.isCommittingHomicide()) {
+        currentActivityService.handleDoingHomicide();
+      }
+
       // if (currentActivityService.isWorkingForCompany()) {
       //   currentActivityService.handleCompanyPromotions();
       // }

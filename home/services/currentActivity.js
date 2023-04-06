@@ -76,24 +76,20 @@ export class CurrentActivityService {
     if (factionAugmentsNotPurchased.length === 0) {
       const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
       if (nextFaction) {
-        const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
-        if (!tryToDoFieldWork) {
-          const tryToDoSecurityWork = this.sing.workForFaction(
-            nextFaction.faction,
-            'security',
-            false
-          );
-          if (!tryToDoSecurityWork) {
-            this.sing.workForFaction(nextFaction.faction, 'hacking', false);
-          }
-        }
+        this.#workForFaction(nextFaction);
       } else {
         this.sing.commitCrime('Homicide');
       }
     }
   }
 
-  // if doiung homicide need to check if there are any factions with augments we don't hvae yet and switch to one
+  handleDoingHomicide() {
+    const purchasedAugments = this.sing.getOwnedAugmentations(true);
+    const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
+    if (nextFaction) {
+      this.#workForFaction(nextFaction);
+    }
+  }
 
   // TODO make this work
   handleCompanyPromotions() {
@@ -142,6 +138,16 @@ export class CurrentActivityService {
     return isCommittingCrime && currentJob.crimeType === 'Homicide';
   }
 
+  #workForFaction(nextFaction) {
+    const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
+    if (!tryToDoFieldWork) {
+      const tryToDoSecurityWork = this.sing.workForFaction(nextFaction.faction, 'security', false);
+      if (!tryToDoSecurityWork) {
+        this.sing.workForFaction(nextFaction.faction, 'hacking', false);
+      }
+    }
+  }
+
   /**
    *
    * @param {string[]} purchasedAugments
@@ -166,6 +172,11 @@ export class CurrentActivityService {
     // if a special faction has available augments, prioritize it over other factions, from there just pick the one with the least rep
     const sortedFactionsWithAugmentsNotPurchasedWithRep =
       factionsWithAugmentsNotPurchasedWithRep.sort((a, b) => b.weight - a.weight || a.rep - b.rep);
+
+    if (sortedFactionsWithAugmentsNotPurchasedWithRep.length === 0) {
+      return null;
+    }
+
     const nextFaction = sortedFactionsWithAugmentsNotPurchasedWithRep[0];
     return nextFaction;
   }

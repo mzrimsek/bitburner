@@ -34,9 +34,11 @@ export class EnvService {
     return this.ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   }
 
+  // TODO fix this
   hasSingularity() {
     // singularity is source file 4
-    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
+    // wait...im using singularity to determine if i have singularity?
+    const ownedSourceFiles = this.ns.singularity.getOwnedSourceFiles();
     return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
   }
 
