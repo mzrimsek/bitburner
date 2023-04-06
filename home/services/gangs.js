@@ -41,7 +41,9 @@ export class GangService {
     const memberUpgradeInfo = this.#getMemberUpgradeInfo();
 
     if (gangMembers.length === 0) {
-      this.gang.recruitMember(this.#getNextGangMemberName()); // canRecruitMember returns false when you have 0 rep when you first start your gang
+      const gangMemberName = this.#getNextGangMemberName();
+      this.gang.recruitMember(gangMemberName); // canRecruitMember returns false when you have 0 rep when you first start your gang
+      this.#setInitialTask(gangMemberName);
     }
 
     this.#handleAddUpgradeGangMembers(gangMembers, memberUpgradeInfo);
@@ -80,10 +82,27 @@ export class GangService {
     return this.gang.inGang();
   }
 
+  #setInitialTask(gangMemberName) {
+    if (this.gang.getGangInformation().isHacking) {
+      this.gang.setMemberTask(gangMemberName, 'Phishing');
+    } else {
+      this.gang.setMemberTask(gangMemberName, 'Mug People');
+    }
+  }
+
   #handleAddUpgradeGangMembers(gangMembers, memberUpgradeInfo) {
     if (this.gang.canRecruitMember()) {
-      this.gang.recruitMember(this.#getNextGangMemberName());
+      const gangMemberName = this.#getNextGangMemberName();
+      this.gang.recruitMember(gangMemberName);
+      this.#setInitialTask(gangMemberName);
     }
+
+    gangMembers.forEach(gangMember => {
+      const task = this.gang.getMemberInformation(gangMember.name).task;
+      if (task === 'Unassigned') {
+        this.#setInitialTask(gangMember.name);
+      }
+    });
 
     if (this.envService.getShouldAscendGangMembers()) {
       const gangMembersWhoCanAscend = gangMembers.filter(gangMember => gangMember.canAscend);
