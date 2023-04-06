@@ -74,28 +74,7 @@ export class CurrentActivityService {
     );
 
     if (factionAugmentsNotPurchased.length === 0) {
-      const factions = this.ns.getPlayer().factions;
-      const factionsWithAugmentsNotPurchased = factions.filter(faction => {
-        const factionAugments = this.sing.getAugmentationsFromFaction(faction);
-        const factionAugmentsNotPurchased = factionAugments.filter(
-          augmentName => !purchasedAugments.includes(augmentName)
-        );
-        return factionAugmentsNotPurchased.length > 0;
-      });
-
-      const factionsWithAugmentsNotPurchasedWithRep = factionsWithAugmentsNotPurchased.map(
-        faction => {
-          const rep = this.sing.getFactionRep(faction);
-          const weight = this.#getFactionWeight(faction);
-          return { faction, rep, weight };
-        }
-      );
-      // if a special faction has available augments, prioritize it over other factions, from there just pick the one with the least rep
-      const sortedFactionsWithAugmentsNotPurchasedWithRep =
-        factionsWithAugmentsNotPurchasedWithRep.sort(
-          (a, b) => b.weight - a.weight || a.rep - b.rep
-        );
-      const nextFaction = sortedFactionsWithAugmentsNotPurchasedWithRep[0];
+      const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
       if (nextFaction) {
         const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
         if (!tryToDoFieldWork) {
@@ -113,6 +92,8 @@ export class CurrentActivityService {
       }
     }
   }
+
+  // if doiung homicide need to check if there are any factions with augments we don't hvae yet and switch to one
 
   // TODO make this work
   handleCompanyPromotions() {
@@ -159,6 +140,34 @@ export class CurrentActivityService {
     const isCommittingCrime = this.isCommittingCrime();
     const currentJob = this.sing.getCurrentWork();
     return isCommittingCrime && currentJob.crimeType === 'Homicide';
+  }
+
+  /**
+   *
+   * @param {string[]} purchasedAugments
+   */
+  #getNextFactionToWorkFor(purchasedAugments) {
+    const factions = this.ns.getPlayer().factions;
+    const factionsWithAugmentsNotPurchased = factions.filter(faction => {
+      const factionAugments = this.sing.getAugmentationsFromFaction(faction);
+      const factionAugmentsNotPurchased = factionAugments.filter(
+        augmentName => !purchasedAugments.includes(augmentName)
+      );
+      return factionAugmentsNotPurchased.length > 0;
+    });
+
+    const factionsWithAugmentsNotPurchasedWithRep = factionsWithAugmentsNotPurchased.map(
+      faction => {
+        const rep = this.sing.getFactionRep(faction);
+        const weight = this.#getFactionWeight(faction);
+        return { faction, rep, weight };
+      }
+    );
+    // if a special faction has available augments, prioritize it over other factions, from there just pick the one with the least rep
+    const sortedFactionsWithAugmentsNotPurchasedWithRep =
+      factionsWithAugmentsNotPurchasedWithRep.sort((a, b) => b.weight - a.weight || a.rep - b.rep);
+    const nextFaction = sortedFactionsWithAugmentsNotPurchasedWithRep[0];
+    return nextFaction;
   }
 
   /**
