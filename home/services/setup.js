@@ -22,12 +22,6 @@ export class SetupService {
     this.#setupCorp();
   }
 
-  canSetup() {
-    // singularity is source file 4
-    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
-    return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
-  }
-
   #setupFactions() {
     const factions = this.ns.getPlayer().factions;
     const factionInvites = this.sing.checkFactionInvitations();

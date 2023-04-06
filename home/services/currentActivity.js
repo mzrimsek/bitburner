@@ -2,7 +2,7 @@ import { log as utilLog, logEventHandler } from 'utils.js';
 import { EnvService } from 'services/env.js';
 
 // TODO add some event logging
-export class FactionService {
+export class CurrentActivityService {
   #SPECIAL_FACTIONS = ['CSEC', 'NiteSec', 'The Black Hand', 'BitRunners'];
 
   #EXTRA_SPECIAL_FACTIONS = ['Illuminati', 'The Covenant'];
@@ -66,53 +66,50 @@ export class FactionService {
 
   handleSwitchingFactions() {
     const currentJob = this.sing.getCurrentWork();
-    if (currentJob.type === 'FACTION') {
-      const factionName = currentJob.factionName;
-      const purchasedAugments = this.sing.getOwnedAugmentations(true);
-      const factionAugments = this.sing.getAugmentationsFromFaction(factionName);
-      const factionAugmentsNotPurchased = factionAugments.filter(
-        augmentName => !purchasedAugments.includes(augmentName)
-      );
+    const factionName = currentJob.factionName;
+    const purchasedAugments = this.sing.getOwnedAugmentations(true);
+    const factionAugments = this.sing.getAugmentationsFromFaction(factionName);
+    const factionAugmentsNotPurchased = factionAugments.filter(
+      augmentName => !purchasedAugments.includes(augmentName)
+    );
 
-      if (factionAugmentsNotPurchased.length === 0) {
-        const factions = this.ns.getPlayer().factions;
-        const factionsWithAugmentsNotPurchased = factions.filter(faction => {
-          const factionAugments = this.sing.getAugmentationsFromFaction(faction);
-          const factionAugmentsNotPurchased = factionAugments.filter(
-            augmentName => !purchasedAugments.includes(augmentName)
-          );
-          return factionAugmentsNotPurchased.length > 0;
-        });
-
-        const factionsWithAugmentsNotPurchasedWithRep = factionsWithAugmentsNotPurchased.map(
-          faction => {
-            const rep = this.sing.getFactionRep(faction);
-            const weight = this.#getFactionWeight(faction);
-            return { faction, rep, weight };
-          }
+    if (factionAugmentsNotPurchased.length === 0) {
+      const factions = this.ns.getPlayer().factions;
+      const factionsWithAugmentsNotPurchased = factions.filter(faction => {
+        const factionAugments = this.sing.getAugmentationsFromFaction(faction);
+        const factionAugmentsNotPurchased = factionAugments.filter(
+          augmentName => !purchasedAugments.includes(augmentName)
         );
-        // if a special faction has available augments, prioritize it over other factions, from there just pick the one with the least rep
-        const sortedFactionsWithAugmentsNotPurchasedWithRep =
-          factionsWithAugmentsNotPurchasedWithRep.sort(
-            (a, b) => b.weight - a.weight || a.rep - b.rep
-          );
-        const nextFaction = sortedFactionsWithAugmentsNotPurchasedWithRep[0];
+        return factionAugmentsNotPurchased.length > 0;
+      });
 
-        if (nextFaction) {
-          const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
-          if (!tryToDoFieldWork) {
-            const tryToDoSecurityWork = this.sing.workForFaction(
-              nextFaction.faction,
-              'security',
-              false
-            );
-            if (!tryToDoSecurityWork) {
-              this.sing.workForFaction(nextFaction.faction, 'hacking', false);
-            }
-          }
-        } else {
-          this.sing.commitCrime('Homicide');
+      const factionsWithAugmentsNotPurchasedWithRep = factionsWithAugmentsNotPurchased.map(
+        faction => {
+          const rep = this.sing.getFactionRep(faction);
+          const weight = this.#getFactionWeight(faction);
+          return { faction, rep, weight };
         }
+      );
+      // if a special faction has available augments, prioritize it over other factions, from there just pick the one with the least rep
+      const sortedFactionsWithAugmentsNotPurchasedWithRep =
+        factionsWithAugmentsNotPurchasedWithRep.sort(
+          (a, b) => b.weight - a.weight || a.rep - b.rep
+        );
+      const nextFaction = sortedFactionsWithAugmentsNotPurchasedWithRep[0];
+      if (nextFaction) {
+        const tryToDoFieldWork = this.sing.workForFaction(nextFaction.faction, 'field', false);
+        if (!tryToDoFieldWork) {
+          const tryToDoSecurityWork = this.sing.workForFaction(
+            nextFaction.faction,
+            'security',
+            false
+          );
+          if (!tryToDoSecurityWork) {
+            this.sing.workForFaction(nextFaction.faction, 'hacking', false);
+          }
+        }
+      } else {
+        this.sing.commitCrime('Homicide');
       }
     }
   }
@@ -153,6 +150,17 @@ export class FactionService {
     return currentJob && currentJob.type === 'GRAFTING';
   }
 
+  isCommittingCrime() {
+    const currentJob = this.sing.getCurrentWork();
+    return currentJob && currentJob.type === 'CRIME';
+  }
+
+  isCommittingHomicide() {
+    const isCommittingCrime = this.isCommittingCrime();
+    const currentJob = this.sing.getCurrentWork();
+    return isCommittingCrime && currentJob.crimeType === 'Homicide';
+  }
+
   /**
    *
    * @returns {string | null} Returns string if working for a faction or company or grafting, null otherwise
@@ -169,6 +177,10 @@ export class FactionService {
 
     if (this.isGrafting()) {
       return currentJob.augmentation;
+    }
+
+    if (this.isCommittingCrime()) {
+      return currentJob.crimeType;
     }
 
     return null;

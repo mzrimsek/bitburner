@@ -34,6 +34,12 @@ export class EnvService {
     return this.ns.peek(PORT_MAPPING.STONKS_LIQUID_CASH_M);
   }
 
+  hasSingularity() {
+    // singularity is source file 4
+    const ownedSourceFiles = this.sing.getOwnedSourceFiles();
+    return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
+  }
+
   #getBooleanEnvVal(name) {
     return this.ns.peek(PORT_MAPPING[name]) === 1;
   }

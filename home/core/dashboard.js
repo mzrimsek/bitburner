@@ -6,7 +6,7 @@ import { GangService } from 'services/gangs.js';
 import { SleeveService } from 'services/sleeves.js';
 import { CorpService } from 'services/corp.js';
 import { SetupService } from 'services/setup.js';
-import { FactionService } from 'services/faction.js';
+import { CurrentActivityService } from 'services/currentActivity.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -19,22 +19,22 @@ export async function main(ns) {
   const sleeveService = new SleeveService(ns, eventHandler);
   const corpService = new CorpService(ns, eventHandler);
   const setupService = new SetupService(ns, eventHandler);
-  const factionService = new FactionService(ns, eventHandler);
+  const currentActivityService = new CurrentActivityService(ns, eventHandler);
 
   while (true) {
-    const canSetup = setupService.canSetup();
-    if (canSetup) {
+    if (envService.hasSingularity()) {
       setupService.setup();
-      factionService.handleCurrentFactionAugments();
-    }
 
-    if (factionService.isWorkingForFaction()) {
-      factionService.handleSwitchingFactions();
-    }
+      currentActivityService.handleCurrentFactionAugments();
 
-    // if (factionService.isWorkingForCompany()) {
-    //   factionService.handleCompanyPromotions();
-    // }
+      if (currentActivityService.isWorkingForFaction()) {
+        currentActivityService.handleSwitchingFactions();
+      }
+
+      // if (currentActivityService.isWorkingForCompany()) {
+      //   currentActivityService.handleCompanyPromotions();
+      // }
+    }
 
     if (envService.getDoBuy()) {
       hacknetService.purchaseUpgradeOrNode();
