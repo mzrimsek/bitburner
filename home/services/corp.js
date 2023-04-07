@@ -137,15 +137,26 @@ export class CorpService {
 
             try {
               divisionInfo.cities.forEach(async cityName => {
+                const officeInfo = this.corp.getOffice(divisionInfo.name, cityName);
+                const employees = officeInfo.employees;
+
+                const availableResearch = this.#getAvailableResearchForDivision(divisionInfo);
+                const hasAllResearch = availableResearch.length === 0;
+                const engineeringModifier = hasAllResearch ? 0.3 : 0.25;
+                const researchModifier = hasAllResearch ? 0 : 0.05;
+
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
                   cityName,
                   CORP_OFFICE_UNITS.TRAINING,
                   0
                 );
-
-                const officeInfo = this.corp.getOffice(divisionInfo.name, cityName);
-                const employees = officeInfo.employees;
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.RESEARCH,
+                  Math.floor(employees * researchModifier)
+                );
 
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
@@ -157,7 +168,7 @@ export class CorpService {
                   divisionInfo.name,
                   cityName,
                   CORP_OFFICE_UNITS.ENGINEERING,
-                  Math.floor(employees * 0.25)
+                  Math.floor(employees * engineeringModifier)
                 );
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
@@ -170,12 +181,6 @@ export class CorpService {
                   cityName,
                   CORP_OFFICE_UNITS.BUSINESS,
                   Math.floor(employees * 0.1)
-                );
-                this.corp.setAutoJobAssignment(
-                  divisionInfo.name,
-                  cityName,
-                  CORP_OFFICE_UNITS.RESEARCH,
-                  Math.floor(employees * 0.05)
                 );
               });
             } catch (e) {
