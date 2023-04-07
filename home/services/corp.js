@@ -145,6 +145,9 @@ export class CorpService {
                 const engineeringModifier = hasAllResearch ? 0.3 : 0.25;
                 const researchModifier = hasAllResearch ? 0 : 0.05;
 
+                // need to take division modifiers into account to help allocated employees more where they will have more of an impact
+                // we should always hvae at least 1 employee in each job though, with the exception of research when we are all out
+
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
                   cityName,

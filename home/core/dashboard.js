@@ -35,6 +35,10 @@ export async function main(ns) {
         currentActivityService.handleDoingHomicide();
       }
 
+      if (currentActivityService.isIdle()) {
+        currentActivityService.handleIdle();
+      }
+
       // if (currentActivityService.isWorkingForCompany()) {
       //   currentActivityService.handleCompanyPromotions();
       // }

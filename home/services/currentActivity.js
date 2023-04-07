@@ -83,12 +83,16 @@ export class CurrentActivityService {
     );
 
     if (unpurchasedFactionAugmentsThatWeDoNotHaveTheRepFor.length === 0) {
-      const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
-      if (nextFaction) {
-        this.#workForFaction(nextFaction);
-      } else {
-        this.sing.commitCrime('Homicide');
-      }
+      this.#findAFactionOrKill(purchasedAugments);
+    }
+  }
+
+  #findAFactionOrKill(purchasedAugments) {
+    const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
+    if (nextFaction) {
+      this.#workForFaction(nextFaction);
+    } else {
+      this.sing.commitCrime('Homicide');
     }
   }
 
@@ -119,6 +123,16 @@ export class CurrentActivityService {
   handleSwitchCompanies() {
     // basically if the current company you're at you're one of the top jobs
     // then see if there are another other companies we have a job at that we can switch to
+  }
+
+  handleIdle() {
+    const purchasedAugments = this.sing.getOwnedAugmentations(true);
+    this.#findAFactionOrKill(purchasedAugments);
+  }
+
+  isIdle() {
+    const currentJob = this.sing.getCurrentWork();
+    return !currentJob;
   }
 
   isWorkingForFaction() {
