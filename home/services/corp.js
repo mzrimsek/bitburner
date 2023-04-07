@@ -147,6 +147,8 @@ export class CorpService {
 
                 // need to take division modifiers into account to help allocated employees more where they will have more of an impact
                 // we should always hvae at least 1 employee in each job though, with the exception of research when we are all out
+                // may need to figure out how to wait a few "ticks" because moving employees around takes time
+                // would probably make sense as some flag that is tracked internally to the service for when to try assigning employees again
 
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
