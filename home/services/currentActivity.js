@@ -67,13 +67,22 @@ export class CurrentActivityService {
   handleSwitchingFactions() {
     const currentJob = this.sing.getCurrentWork();
     const factionName = currentJob.factionName;
+
     const purchasedAugments = this.sing.getOwnedAugmentations(true);
     const factionAugments = this.sing.getAugmentationsFromFaction(factionName);
-    const factionAugmentsNotPurchased = factionAugments.filter(
+    const unpurchasedFactionAugments = factionAugments.filter(
       augmentName => !purchasedAugments.includes(augmentName)
     );
 
-    if (factionAugmentsNotPurchased.length === 0) {
+    const unpurchasedFactionAugmentsThatWeDoNotHaveTheRepFor = unpurchasedFactionAugments.filter(
+      augmentName => {
+        const rep = this.sing.getFactionRep(factionName);
+        const repReq = this.sing.getAugmentationRepReq(augmentName);
+        return rep < repReq;
+      }
+    );
+
+    if (unpurchasedFactionAugmentsThatWeDoNotHaveTheRepFor.length === 0) {
       const nextFaction = this.#getNextFactionToWorkFor(purchasedAugments);
       if (nextFaction) {
         this.#workForFaction(nextFaction);

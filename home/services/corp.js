@@ -72,6 +72,8 @@ export class CorpService {
           }
         }
 
+        // this.#unassignAllEmployeesForCorp(); // this is for debugging/testing
+
         if (hasOfficeApi) {
           this.#handleResearch(divisionInfo);
 
@@ -155,7 +157,7 @@ export class CorpService {
                   divisionInfo.name,
                   cityName,
                   CORP_OFFICE_UNITS.ENGINEERING,
-                  Math.floor(employees * 0.3)
+                  Math.floor(employees * 0.25)
                 );
                 this.corp.setAutoJobAssignment(
                   divisionInfo.name,
@@ -168,6 +170,12 @@ export class CorpService {
                   cityName,
                   CORP_OFFICE_UNITS.BUSINESS,
                   Math.floor(employees * 0.1)
+                );
+                this.corp.setAutoJobAssignment(
+                  divisionInfo.name,
+                  cityName,
+                  CORP_OFFICE_UNITS.RESEARCH,
+                  Math.floor(employees * 0.05)
                 );
               });
             } catch (e) {
@@ -182,6 +190,13 @@ export class CorpService {
       // only buy up to 80% warehouse capacity
       // probably want logic to upgrade warehouse size
       // possibly incorporate bulk buying into this logic?
+
+      // since most of the parts of expanding initially are now automated, I think we can probably automate expanding divisions as well
+      // as long as we still need to toggle on the sustained money sucks
+
+      // once we are full expanded, buy any single time upgrades we have left
+      // once there are no more single time upgrades, start buying repeat upgrades
+      // for now we can just naively buy the cheapest repeat upgrade we can afford
     }
 
     // figure out logic for Market-TA.I or Market-TA.II
@@ -212,6 +227,16 @@ export class CorpService {
       return this.#getAvailableResearchForDivision(divisionInfo).length === 0;
     });
     return hasAllResearch;
+  }
+
+  #unassignAllEmployeesForCorp() {
+    const corpInfo = this.corp.getCorporation();
+    corpInfo.divisions.forEach(divisionName => {
+      const divisionInfo = this.corp.getDivision(divisionName);
+      divisionInfo.cities.forEach(cityName => {
+        this.#unassignAllEmployees(divisionInfo, cityName);
+      });
+    });
   }
 
   #unassignAllEmployees(divisionInfo, cityName) {
