@@ -243,6 +243,8 @@ export class CurrentActivityService {
 
   // when getting an invite from CSEC, NiteSEC, etc, accept it automatically
   // prioritize CSEC, NiteSEC, etc when switching factions
+  // if you have enough favor to buy rep, calculate how much rep to buy to be able to buy all the augments, and then buy that much once we can afford it
+  // if we can purchase no other augments, do the repeat augment upgrade
 
   #log(...args) {
     utilLog('faction', ...args);
