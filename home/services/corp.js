@@ -203,10 +203,13 @@ export class CorpService {
 
       // since most of the parts of expanding initially are now automated, I think we can probably automate expanding divisions as well
       // as long as we still need to toggle on the sustained money sucks
+      // make some fun random names like we did with Tobacco
 
       // once we are full expanded, buy any single time upgrades we have left
       // once there are no more single time upgrades, start buying repeat upgrades
       // for now we can just naively buy the cheapest repeat upgrade we can afford
+
+      // add some fun random names to pick from for products for each division that makes em
     }
 
     // figure out logic for Market-TA.I or Market-TA.II
