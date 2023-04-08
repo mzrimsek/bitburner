@@ -42,6 +42,15 @@ export class EnvService {
     return ownedSourceFiles.some(sourceFile => sourceFile.n === 4);
   }
 
+  hasAllStockAccess() {
+    return (
+      this.ns.stock.hasWSEAccount() &&
+      this.ns.stock.hasTIXAPIAccess() &&
+      this.ns.stock.has4SData() &&
+      this.ns.stock.has4SDataTIXAPI()
+    );
+  }
+
   #getBooleanEnvVal(name) {
     return this.ns.peek(PORT_MAPPING[name]) === 1;
   }

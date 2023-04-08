@@ -223,7 +223,8 @@ export class CorpService {
 
   getDividendEarnings() {
     const corpInfo = this.corp.getCorporation();
-    return this.ns.formatNumber(corpInfo.dividendEarnings);
+    const earnings = Number.isNaN(corpInfo.dividendEarnings) ? 0 : corpInfo.dividendEarnings;
+    return this.ns.formatNumber(earnings);
   }
 
   /**

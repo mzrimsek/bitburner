@@ -68,6 +68,15 @@ export async function main(ns) {
       await corpService.handleCorporation();
     }
 
+    if (envService.hasAllStockAccess()) {
+      runStonks(ns);
+    }
+
     await ns.sleep(100);
   }
+}
+
+/** @param {import("..").NS } ns */
+function runStonks(ns) {
+  ns.run('/core/stonks.js', 1, ...ns.args);
 }

@@ -25,17 +25,6 @@ export async function handleStonks(
     'stock.sellStock'
   ];
   logsToDisable.forEach(l => ns.disableLog(l));
-  let is4SigmaAvailable = true;
-  try {
-    ns.stock.getForecast('FNS');
-  } catch (error) {
-    is4SigmaAvailable = false;
-  }
-
-  if (!is4SigmaAvailable) {
-    ns.tprint('ERROR Purchase the 4Sigma API access, otherwise this script is not doing anything');
-    ns.exit();
-  }
 
   ns.atExit(() => {
     ns.closeTail(ns.pid);

@@ -45,9 +45,8 @@ export async function main(ns) {
   const initLiquidCash = currentLiquidCash !== DEFAULT_PORT_VALUE ? currentLiquidCash : 5;
   initPort(ns, PORT_MAPPING.STONKS_LIQUID_CASH_M, initLiquidCash);
 
-  ns.run('/core/dashboard.js', 1);
+  ns.run('/core/dashboard.js', 1, openWindowsParam);
   ns.run('/core/attackServer.js', 1, openWindowsParam);
-  ns.run('/core/stonks.js', 1, openWindowsParam); // this fails during the initial bootstrap because it tries to launch the script before the automation has a chance to buy all the stock access upgrades
 
   ns.run('/monitoring/hud.js', 1);
   ns.run('/monitoring/log.js', 1);
