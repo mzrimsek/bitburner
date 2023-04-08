@@ -1,5 +1,7 @@
 import { connectTo } from 'utils.js';
 
+// update this to also run the port opening scripts if they ports on target machines are not all open
+
 /** @param {import(".").NS } ns */
 export async function main(ns) {
   const isHelp = ns.args.includes('--help') || ns.args.includes('-h');
