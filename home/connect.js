@@ -3,6 +3,14 @@ import { AttackService } from 'services/attack.js';
 
 // update this to also run the port opening scripts if they ports on target machines are not all open
 
+/** @type {Record<string, string>} */
+const CORE_TARGETS = {
+  CYBERSEC: 'CSEC',
+  NITESEC: 'avmnite-02h',
+  BLACKHAND: 'I.I.I.I',
+  BITRUNNERS: 'run4theh111z'
+};
+
 /** @param {import(".").NS } ns */
 export async function main(ns) {
   const attackService = new AttackService(ns);
@@ -14,7 +22,16 @@ export async function main(ns) {
     ns.exit();
   }
 
-  const navToCSEC = ns.args.includes('--csec') || ns.args.includes('-c');
+  const isBlast = ns.args.includes('--blast') || ns.args.includes('-a');
+  if (isBlast) {
+    const servers = Object.keys(CORE_TARGETS).map(key => CORE_TARGETS[key]);
+    for (const server of servers) {
+      await attemptToOpenServer(ns, server, attackService);
+    }
+    ns.exit();
+  }
+
+  const navToCSEC = ns.args.includes('--cybersec') || ns.args.includes('-c');
   const navToNiteSec = ns.args.includes('--nitesec') || ns.args.includes('-n');
   const navToBlackHand = ns.args.includes('--blackhand') || ns.args.includes('-b');
   const navToBitrunners = ns.args.includes('--bitrunners') || ns.args.includes('-r');
@@ -42,19 +59,19 @@ export async function main(ns) {
   }
 
   if (navToCSEC) {
-    target = 'CSEC';
+    target = CORE_TARGETS.CYBERSEC;
   }
 
   if (navToNiteSec) {
-    target = 'avmnite-02h';
+    target = CORE_TARGETS.NITESEC;
   }
 
   if (navToBlackHand) {
-    target = 'I.I.I.I';
+    target = CORE_TARGETS.BLACKHAND;
   }
 
   if (navToBitrunners) {
-    target = 'run4theh111z';
+    target = CORE_TARGETS.BITRUNNERS;
   }
 
   if (navToCave) {
@@ -72,9 +89,21 @@ export async function main(ns) {
 
   connectTo(ns, target);
 
+  if (tryToBackdoor) {
+    await attemptToOpenServer(ns, target, attackService);
+  }
+}
+
+/**
+ *
+ * @param {import(".").NS} ns
+ * @param {string} target
+ * @param {AttackService} attackService
+ */
+async function attemptToOpenServer(ns, target, attackService) {
   const canBackdoor =
     ns.hasRootAccess(target) && ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(target);
-  if (tryToBackdoor && canBackdoor) {
+  if (canBackdoor) {
     const server = ns.getServer(target);
     await attackService.openServer(server, 'home');
   } else if (tryToBackdoor && !canBackdoor) {
@@ -88,13 +117,16 @@ function printHelpMessage(ns) {
   ns.tprint('Determines path to target server and connects if able.');
   ns.tprint('Usage: ./connect.js [options]');
   ns.tprint('Options:');
-  ns.tprint('  -c, --csec\t\t\tConnect to CSEC server');
+  ns.tprint('  -c, --cybersec\t\t\tConnect to CyberSec server');
   ns.tprint('  -n, --nitesec\t\t\tConnect to NiteSec server');
   ns.tprint('  -b, --blackhand\t\t\tConnect to BlackHand server');
   ns.tprint('  -r, --bitrunners\t\t\tConnect to BitRunners server');
   ns.tprint('  -e, --cave\t\t\tConnect to The Cave server');
   ns.tprint(
     '  -d, --backdoor\t\t\tAttempt to backdoor target server after connecting, then connect to home server'
+  );
+  ns.tprint(
+    '  -a, --blast\t\t\tAtttempt to connect to and fully open CyberSec, NiteSec, Black Hand, and BitRunners servers'
   );
   ns.tprint('  -h, --help\t\t\tShow this help message');
 }
