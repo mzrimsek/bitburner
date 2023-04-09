@@ -96,9 +96,9 @@ export class AttackService {
     const canBackdoor =
       this.envService.hasSingularity() && this.ns.hasRootAccess(server.hostname) && canHackTarget;
     if (canBackdoor && !server.backdoorInstalled) {
-      connectTo(this.ns, server.hostname);
-      await this.ns.singularity.installBackdoor();
-      connectTo(this.ns, returnTo);
+      // connectTo(this.ns, server.hostname); // figure out why awaiting here doesn't seem to work?
+      // await this.ns.singularity.installBackdoor();
+      // connectTo(this.ns, returnTo);
     }
   }
 
