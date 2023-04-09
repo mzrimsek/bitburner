@@ -22,7 +22,7 @@ export class CorpService {
 
     this.eventHandler = eventHandler;
 
-    this.envService = new EnvService(ns);
+    this.envService = new EnvService(ns, eventHandler);
   }
 
   async handleCorporation() {

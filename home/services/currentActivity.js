@@ -21,7 +21,7 @@ export class CurrentActivityService {
 
     this.eventHandler = eventHandler;
 
-    this.envService = new EnvService(ns);
+    this.envService = new EnvService(ns, eventHandler);
   }
 
   handleCurrentFactionAugments() {

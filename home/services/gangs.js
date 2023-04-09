@@ -31,7 +31,7 @@ export class GangService {
 
     this.eventHandler = eventHandler;
 
-    this.envService = new EnvService(ns);
+    this.envService = new EnvService(ns, eventHandler);
   }
 
   /** @param {import("..").ScriptHandler?} eventHandler */

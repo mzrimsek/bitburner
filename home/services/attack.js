@@ -7,6 +7,8 @@ import {
   connectTo
 } from 'utils.js';
 
+import { EnvService } from 'services/env.js';
+
 export class AttackService {
   #hackSource = 'home';
   #excludedServers = [this.#hackSource];
@@ -21,6 +23,8 @@ export class AttackService {
   constructor(ns, eventHandler = logEventHandler) {
     this.ns = ns;
     this.eventHandler = eventHandler;
+
+    this.envService = new EnvService(ns, eventHandler);
   }
 
   async initiateAttack() {
@@ -40,6 +44,62 @@ export class AttackService {
       serverName => !serverName.includes('hacknet')
     );
     await this.#coordinateAttack(nonHacknetServerNames);
+  }
+
+  /**
+   *  @param {Server} server
+   */
+  async openServer(server, returnTo = this.#hackSource) {
+    const hasSshHack = hasFileOnHome(this.ns, 'BruteSSH.exe');
+    if (!server.sshPortOpen && hasSshHack) {
+      this.#log(server.hostname, 'Opening SSH port');
+      this.ns.brutessh(server.hostname);
+    }
+
+    const hasFtpHack = hasFileOnHome(this.ns, 'FTPCrack.exe');
+    if (!server.ftpPortOpen && hasFtpHack) {
+      this.#log(server.hostname, 'Opening FTP port');
+      this.ns.ftpcrack(server.hostname);
+    }
+
+    const hasSmtpHack = hasFileOnHome(this.ns, 'relaySMTP.exe');
+    if (!server.smtpPortOpen && hasSmtpHack) {
+      this.#log(server.hostname, 'Opening SMTP port');
+      this.ns.relaysmtp(server.hostname);
+    }
+
+    const hasHttpHack = hasFileOnHome(this.ns, 'HTTPWorm.exe');
+    if (!server.httpPortOpen && hasHttpHack) {
+      this.#log(server.hostname, 'Opening HTTP port');
+      this.ns.httpworm(server.hostname);
+    }
+
+    const hasSqlHack = hasFileOnHome(this.ns, 'SQLInject.exe');
+    if (!server.sqlPortOpen && hasSqlHack) {
+      this.#log(server.hostname, 'Opening SQL port');
+      this.ns.sqlinject(server.hostname);
+    }
+
+    // get admin access
+    const hasNukeHack = hasFileOnHome(this.ns, 'NUKE.exe');
+    if (
+      !server.hasAdminRights &&
+      hasNukeHack &&
+      server.numOpenPortsRequired <= server.openPortCount
+    ) {
+      this.#log(server.hostname, 'Getting root access');
+      this.ns.nuke(server.hostname);
+    }
+
+    const canBackdoor =
+      envService.hasSingularity() &&
+      ns.hasRootAccess(server.hostname) &&
+      ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(server.hostname);
+    if (canBackdoor && !server.backdoorInstalled) {
+      connectTo(this.ns, server.hostname);
+      await this.ns.singularity.installBackdoor();
+      connectTo(this.ns, returnTo);
+    }
   }
 
   /**
@@ -191,61 +251,7 @@ export class AttackService {
   async #openServers(serverNames) {
     this.#log('opening servers...');
     const servers = await this.#getServers(serverNames);
-    servers.forEach(async server => await this.#openServer(server));
-  }
-
-  /**
-   *  @param {Server} server
-   */
-  async #openServer(server) {
-    const hasSshHack = hasFileOnHome(this.ns, 'BruteSSH.exe');
-    if (!server.sshPortOpen && hasSshHack) {
-      this.#log(server.hostname, 'Opening SSH port');
-      this.ns.brutessh(server.hostname);
-    }
-
-    const hasFtpHack = hasFileOnHome(this.ns, 'FTPCrack.exe');
-    if (!server.ftpPortOpen && hasFtpHack) {
-      this.#log(server.hostname, 'Opening FTP port');
-      this.ns.ftpcrack(server.hostname);
-    }
-
-    const hasSmtpHack = hasFileOnHome(this.ns, 'relaySMTP.exe');
-    if (!server.smtpPortOpen && hasSmtpHack) {
-      this.#log(server.hostname, 'Opening SMTP port');
-      this.ns.relaysmtp(server.hostname);
-    }
-
-    const hasHttpHack = hasFileOnHome(this.ns, 'HTTPWorm.exe');
-    if (!server.httpPortOpen && hasHttpHack) {
-      this.#log(server.hostname, 'Opening HTTP port');
-      this.ns.httpworm(server.hostname);
-    }
-
-    const hasSqlHack = hasFileOnHome(this.ns, 'SQLInject.exe');
-    if (!server.sqlPortOpen && hasSqlHack) {
-      this.#log(server.hostname, 'Opening SQL port');
-      this.ns.sqlinject(server.hostname);
-    }
-
-    // get admin access
-    const hasNukeHack = hasFileOnHome(this.ns, 'NUKE.exe');
-    if (
-      !server.hasAdminRights &&
-      hasNukeHack &&
-      server.numOpenPortsRequired <= server.openPortCount
-    ) {
-      this.#log(server.hostname, 'Getting root access');
-      this.ns.nuke(server.hostname);
-    }
-
-    // install backdoor
-    // TODO check for singularity
-    if (server.hasAdminRights && !server.backdoorInstalled) {
-      //connectTo(server.hostname);
-      // await this.ns.singularity.installBackdoor();
-      //connectTo(this.#hackSource);
-    }
+    servers.forEach(async server => await this.openServer(server));
   }
 
   /**

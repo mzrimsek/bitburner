@@ -19,7 +19,7 @@ export class HacknetService {
 
     this.eventHandler = eventHandler;
 
-    this.corpService = new CorpService(ns);
+    this.corpService = new CorpService(ns, eventHandler);
   }
 
   purchaseUpgradeOrNode() {

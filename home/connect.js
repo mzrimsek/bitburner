@@ -1,9 +1,12 @@
 import { connectTo } from 'utils.js';
+import { AttackService } from 'services/attack.js';
 
 // update this to also run the port opening scripts if they ports on target machines are not all open
 
 /** @param {import(".").NS } ns */
 export async function main(ns) {
+  const attackService = new AttackService(ns);
+
   const isHelp = ns.args.includes('--help') || ns.args.includes('-h');
 
   if (isHelp) {
@@ -72,10 +75,10 @@ export async function main(ns) {
   const canBackdoor =
     ns.hasRootAccess(target) && ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(target);
   if (tryToBackdoor && canBackdoor) {
-    await ns.singularity.installBackdoor();
-    connectTo(ns, 'home');
+    await attackService.openServer(target, 'home');
   } else if (tryToBackdoor && !canBackdoor) {
     ns.tprint('Unable to backdoor target server');
+    connectTo(this.ns, 'home');
   }
 }
 
