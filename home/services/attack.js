@@ -91,10 +91,10 @@ export class AttackService {
       this.ns.nuke(server.hostname);
     }
 
+    const canHackTarget =
+      this.ns.getHackingLevel() >= this.ns.getServerRequiredHackingLevel(server.hostname);
     const canBackdoor =
-      envService.hasSingularity() &&
-      ns.hasRootAccess(server.hostname) &&
-      ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(server.hostname);
+      this.envService.hasSingularity() && this.ns.hasRootAccess(server.hostname) && canHackTarget;
     if (canBackdoor && !server.backdoorInstalled) {
       connectTo(this.ns, server.hostname);
       await this.ns.singularity.installBackdoor();

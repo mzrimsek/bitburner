@@ -75,7 +75,8 @@ export async function main(ns) {
   const canBackdoor =
     ns.hasRootAccess(target) && ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(target);
   if (tryToBackdoor && canBackdoor) {
-    await attackService.openServer(target, 'home');
+    const server = ns.getServer(target);
+    await attackService.openServer(server, 'home');
   } else if (tryToBackdoor && !canBackdoor) {
     ns.tprint('Unable to backdoor target server');
     connectTo(ns, 'home');
