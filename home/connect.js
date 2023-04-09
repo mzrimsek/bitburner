@@ -78,7 +78,7 @@ export async function main(ns) {
     await attackService.openServer(target, 'home');
   } else if (tryToBackdoor && !canBackdoor) {
     ns.tprint('Unable to backdoor target server');
-    connectTo(this.ns, 'home');
+    connectTo(ns, 'home');
   }
 }
 
