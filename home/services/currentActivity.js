@@ -3,7 +3,7 @@ import { EnvService } from 'services/env.js';
 
 // TODO add some event logging
 export class CurrentActivityService {
-  #SPECIAL_FACTIONS = ['CSEC', 'NiteSec', 'The Black Hand', 'BitRunners'];
+  #SPECIAL_FACTIONS = ['CyberSec', 'NiteSec', 'The Black Hand', 'BitRunners'];
 
   #EXTRA_SPECIAL_FACTIONS = ['Illuminati', 'The Covenant'];
 
@@ -123,6 +123,19 @@ export class CurrentActivityService {
   handleSwitchCompanies() {
     // basically if the current company you're at you're one of the top jobs
     // then see if there are another other companies we have a job at that we can switch to
+  }
+
+  acceptNeutralFactionInvites() {
+    const invites = this.sing.checkFactionInvitations();
+    invites.forEach(factionName => {
+      if (
+        this.#EXIT_FACTION === factionName ||
+        this.#SPECIAL_FACTIONS.includes(factionName) ||
+        this.#EXTRA_SPECIAL_FACTIONS.includes(factionName)
+      ) {
+        this.sing.joinFaction(factionName);
+      }
+    });
   }
 
   handleIdle() {

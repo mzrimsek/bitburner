@@ -26,6 +26,7 @@ export async function main(ns) {
       setupService.setup();
 
       currentActivityService.handleCurrentFactionAugments();
+      currentActivityService.acceptNeutralFactionInvites();
 
       if (currentActivityService.isWorkingForFaction()) {
         currentActivityService.handleSwitchingFactions();
