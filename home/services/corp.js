@@ -475,12 +475,15 @@ export class CorpService {
     const industryData = this.corp.getIndustryData(divisionInfo.type);
     if (industryData.producedMaterials && industryData.producedMaterials.length > 0) {
       divisionInfo.cities.forEach(cityName => {
-        industryData.producedMaterials.forEach(materialName => {
-          const materialInfo = this.corp.getMaterial(divisionInfo.name, cityName, materialName);
-          if (materialInfo.sCost !== 'MP') {
-            this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
-          }
-        });
+        const hasWarehouse = this.corp.hasWarehouse(divisionInfo.name, cityName);
+        if (hasWarehouse) {
+          industryData.producedMaterials.forEach(materialName => {
+            const materialInfo = this.corp.getMaterial(divisionInfo.name, cityName, materialName);
+            if (materialInfo.sCost !== 'MP') {
+              this.corp.sellMaterial(divisionInfo.name, cityName, materialName, 'PROD', 'MP'); // just sell what we produce for now
+            }
+          });
+        }
       });
     }
   }
