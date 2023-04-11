@@ -106,7 +106,7 @@ async function attemptToOpenServer(ns, target, attackService) {
   if (canBackdoor) {
     const server = ns.getServer(target);
     await attackService.openServer(server, 'home');
-  } else if (tryToBackdoor && !canBackdoor) {
+  } else if (!canBackdoor) {
     ns.tprint('Unable to backdoor target server');
     connectTo(ns, 'home');
   }
