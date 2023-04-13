@@ -167,7 +167,6 @@ export class CurrentActivityService {
 
   isCommittingCrime() {
     const currentJob = this.sing.getCurrentWork();
-    console.log(currentJob);
     return currentJob && currentJob.type === 'CRIME';
   }
 
