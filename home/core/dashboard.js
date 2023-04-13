@@ -7,6 +7,7 @@ import { SleeveService } from 'services/sleeves.js';
 import { CorpService } from 'services/corp.js';
 import { SetupService } from 'services/setup.js';
 import { CurrentActivityService } from 'services/currentActivity.js';
+import { BladeService } from 'services/blade.js';
 
 /** @param {import("..").NS } ns */
 export async function main(ns) {
@@ -20,6 +21,7 @@ export async function main(ns) {
   const corpService = new CorpService(ns, eventHandler);
   const setupService = new SetupService(ns, eventHandler);
   const currentActivityService = new CurrentActivityService(ns, eventHandler);
+  const bladeService = new BladeService(ns, eventHandler);
 
   while (true) {
     if (envService.hasSingularity()) {
@@ -39,6 +41,10 @@ export async function main(ns) {
       if (currentActivityService.isIdle()) {
         currentActivityService.handleIdle();
       }
+
+      // if (currentActivityService.isDoingBladeburner()) {
+      //   bladeService.handleBladeburner();
+      // }
 
       // if (currentActivityService.isWorkingForCompany()) {
       //   currentActivityService.handleCompanyPromotions();
@@ -72,6 +78,10 @@ export async function main(ns) {
     if (envService.hasAllStockAccess()) {
       runStonks(ns);
     }
+
+    // if (!bladeService.isBladeburner()) {
+    //   bladeService.handleJoinBladeburner();
+    // }
 
     await ns.sleep(100);
   }

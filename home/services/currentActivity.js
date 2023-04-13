@@ -1,5 +1,6 @@
 import { log as utilLog, logEventHandler } from 'utils.js';
 import { EnvService } from 'services/env.js';
+import { BladeService } from 'services/blade.js';
 
 // TODO add some event logging
 export class CurrentActivityService {
@@ -22,6 +23,7 @@ export class CurrentActivityService {
     this.eventHandler = eventHandler;
 
     this.envService = new EnvService(ns, eventHandler);
+    this.bladeService = new BladeService(ns, eventHandler);
   }
 
   handleCurrentFactionAugments() {
@@ -165,6 +167,7 @@ export class CurrentActivityService {
 
   isCommittingCrime() {
     const currentJob = this.sing.getCurrentWork();
+    console.log(currentJob);
     return currentJob && currentJob.type === 'CRIME';
   }
 
@@ -172,6 +175,12 @@ export class CurrentActivityService {
     const isCommittingCrime = this.isCommittingCrime();
     const currentJob = this.sing.getCurrentWork();
     return isCommittingCrime && currentJob.crimeType === 'Homicide';
+  }
+
+  isDoingBladeburner() {
+    const isBladeburner = this.bladeService.isBladeburner();
+    const isDoingBladeburner = this.bladeService.isDoingBladeburner();
+    return isBladeburner && isDoingBladeburner;
   }
 
   #workForFaction(nextFaction) {
