@@ -23,8 +23,6 @@ Most services send log events when they take some kind of action. These events a
 
 Similarly, other ports are setup to act essentially as environment variables that allow services to alter their behavior based on whatever state those values are in. For example, when the DO_STONKS port is set to 0, no stock buying automation will take place, only sales. These values are displayed by the ShowEnv tail window.
 
-Many of these services
-
 ## Development
 
 Only really relevant here if you're using the VS Code extension and API server.
