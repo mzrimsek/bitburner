@@ -46,7 +46,6 @@ export async function main(ns) {
   initPort(ns, PORT_MAPPING.STONKS_LIQUID_CASH_M, initLiquidCash);
 
   ns.run('/core/dashboard.js', 1, openWindowsParam);
-  ns.run('/core/attackServer.js', 1, openWindowsParam);
 
   ns.run('/monitoring/hud.js', 1);
   ns.run('/monitoring/log.js', 1);
@@ -58,7 +57,10 @@ function printHelpMessage(ns) {
   ns.tprint(
     'Bootstrap script for the home server. This script will start all the other scripts and set up the ports for communication between them.'
   );
-  ns.tprint('Usage: ./bootstrap.js [options]');
+  ns.tprint('Usage:');
+  ns.tprint('  alias: boot [options]');
+  ns.tprint('  script: ./bootstrap.js [options]');
+  ns.tprint('');
   ns.tprint('Options:');
   ns.tprint('  -s, --stonks\t\t\tStart with stocks enabled');
   ns.tprint('  -b, --stopped\t\t\tStart without bot purchasing and upgrading enabled');
@@ -66,7 +68,11 @@ function printHelpMessage(ns) {
   ns.tprint('  -o, --open\t\t\tOpen all windows on start');
   ns.tprint('  -h, --help\t\t\tShow this help message');
   ns.tprint('');
-  ns.tprint('Helpful Aliases:');
+  ns.tprint('Ex:');
+  ns.tprint('  boot --stonks --no-gang');
+  ns.tprint('  boot -sg');
+  ns.tprint('');
+  ns.tprint('Control Aliases:');
   ns.tprint('  tbuy\t\t\t\tToggle bots and hacknet nodes and upgrades');
   ns.tprint('  tstonk\t\t\t\tToggle stonks');
   ns.tprint('  tgang\t\t\t\tToggle gang monitoring');
@@ -74,6 +80,13 @@ function printHelpMessage(ns) {
   ns.tprint('  tcah\t\t\t\tToggle automatic corp office expansion and hiring');
   ns.tprint('  tcaa\t\t\t\tToggle automatic corp office advertising');
   ns.tprint('  slimit\t\t\t\tSet the limit for how much liquid cash to keep out of stonks');
+  ns.tprint('');
+  ns.tprint('Utility Aliases:');
+  ns.tprint('  boot\t\t\tRun the bootstrap script. Pass any of the above options');
+  ns.tprint(
+    '  reset\t\t\tInstall augmentations and reinitialize the bootstrap script with default options'
+  );
+  ns.tprint('  conn\t\t\tRuns the connect utility script. Provide --help flag for more info');
 }
 /* bots printout
 const numMaxedServers = servers.filter(server => server.maxRam === MAX_RAM).length;

@@ -75,8 +75,12 @@ export async function main(ns) {
       await corpService.handleCorporation();
     }
 
-    if (envService.hasAllStockAccess()) {
+    if (envService.hasAllStockAccess() && !isStonksRunning(ns)) {
       runStonks(ns);
+    }
+
+    if (!isAttackRunning(ns)) {
+      coordinateAttack(ns);
     }
 
     // if (!bladeService.isBladeburner()) {
@@ -89,5 +93,24 @@ export async function main(ns) {
 
 /** @param {import("..").NS } ns */
 function runStonks(ns) {
-  ns.run('/core/stonks.js', 1, ...ns.args);
+  runScript(ns, '/core/stonks.js');
+}
+
+/** @param {import("..").NS } ns */
+function isStonksRunning(ns) {
+  return ns.scriptRunning('/core/stonks.js', 'home');
+}
+
+/** @param {import("..").NS } ns */
+function coordinateAttack(ns) {
+  runScript(ns, '/core/attackServer.js');
+}
+
+/** @param {import("..").NS } ns */
+function isAttackRunning(ns) {
+  return ns.scriptRunning('/core/attackServer.js', 'home');
+}
+
+function runScript(ns, scriptName) {
+  ns.run(scriptName, 1, ...ns.args);
 }

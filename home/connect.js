@@ -115,7 +115,10 @@ async function attemptToOpenServer(ns, target, attackService) {
 /** @param {import(".").NS } ns */
 function printHelpMessage(ns) {
   ns.tprint('Determines path to target server and connects if able.');
-  ns.tprint('Usage: ./connect.js [options]');
+  ns.tprint('Usage:');
+  ns.tprint('  alias: conn [options]');
+  ns.tprint('  script: ./connect.js [options]');
+  ns.tprint('');
   ns.tprint('Options:');
   ns.tprint('  -c, --cybersec\t\t\tConnect to CyberSec server');
   ns.tprint('  -n, --nitesec\t\t\tConnect to NiteSec server');
